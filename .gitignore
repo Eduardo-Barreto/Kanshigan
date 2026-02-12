@@ -1,0 +1,37 @@
+# Typst build output
+*.pdf
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# ML artifacts
+*.pt
+*.pth
+*.onnx
+*.engine
+wandb/
+mlruns/
+runs/
+
+# Data (tracked via DVC)
+data/raw/
+data/processed/
+*.dvc
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Misc
+.env
+*.log
