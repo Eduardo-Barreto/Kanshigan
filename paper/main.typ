@@ -13,7 +13,7 @@
       email: "eu@barreto.sh"
     ),
     (
-      name: "Pedro Henrique de Azeredo Cruz",
+      name: "Pedro Henrique de Azeredo Coutinho Cruz",
       organization: [Instituto de Tecnologia e Liderança],
       location: [São Paulo, Brasil],
       email: "pedro.cruz@sou.inteli.edu.br"
