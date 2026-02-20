@@ -21,4 +21,5 @@ jobs:
           GITLAB_USERNAME: ${{ secrets.USERNAME }}
         run: |
           git remote add gitlab "https://${GITLAB_USERNAME}:${GITLAB_PAT}@${GITLAB_URL#https://}"
-          git push gitlab --mirror
+          git push gitlab --all --force
+          git push gitlab --tags --force
