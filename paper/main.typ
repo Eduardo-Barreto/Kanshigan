@@ -10,25 +10,25 @@
       name: "Eduardo Barreto",
       organization: [Instituto de Tecnologia e Liderança],
       location: [São Paulo, Brasil],
-      email: "TODO"
+      email: "eu@barreto.sh"
     ),
     (
       name: "Pedro Henrique de Azeredo Cruz",
       organization: [Instituto de Tecnologia e Liderança],
       location: [São Paulo, Brasil],
-      email: "TODO"
+      email: "pedro.cruz@sou.inteli.edu.br"
     ),
     (
       name: "Luan Ramos de Mello",
       organization: [Instituto de Tecnologia e Liderança],
       location: [São Paulo, Brasil],
-      email: "TODO"
+      email: "luan.mello@sou.inteli.edu.br"
     ),
     (
       name: "Rodrigo Mangoni Nicola",
       organization: [Instituto de Tecnologia e Liderança],
       location: [São Paulo, Brasil],
-      email: "TODO"
+      email: "rodrigo.nicola0@gmail.com"
     ),
   ),
   index-terms: (
