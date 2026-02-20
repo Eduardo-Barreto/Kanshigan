@@ -1,0 +1,23 @@
+name: Build Paper
+
+on:
+  push:
+    branches: [main]
+    paths: [paper/**]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: typst-community/setup-typst@v4
+
+      - name: Compile PDF
+        run: typst compile paper/main.typ paper/kanshigan.pdf
+
+      - name: Upload PDF
+        uses: actions/upload-artifact@v4
+        with:
+          name: kanshigan-paper
+          path: paper/kanshigan.pdf
