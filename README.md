@@ -1,6 +1,7 @@
 # Kanshigan
 Automated Analysis of Robot Sumo Matches through Computer Vision
 
-## Paper
+## Documents
 
-[Latest PDF](https://nightly.link/Eduardo-Barreto/Kanshigan/workflows/build-paper/main/kanshigan-paper.zip)
+- [Paper (IEEE)](https://nightly.link/Eduardo-Barreto/Kanshigan/workflows/build-paper/main/kanshigan-paper.zip)
+- [Projeto de Pesquisa (ABNT)](https://nightly.link/Eduardo-Barreto/Kanshigan/workflows/build-paper/main/projeto-de-pesquisa.zip)
