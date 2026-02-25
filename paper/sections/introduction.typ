@@ -14,6 +14,6 @@ In the computer vision literature, sports analytics has seen significant advance
 
 This paper makes the following contributions:
 + *Kanshigan*, the first open-source computer vision pipeline for automated analysis of Robot Sumo matches.
-+ The first publicly available annotated dataset of 3kg autonomous Robot Sumo matches.
++ The first publicly available annotated dataset representative of the current competitive 3kg autonomous Robot Sumo category.
 + A comparative benchmark of detection and tracking approaches applied to this novel domain.
 + A set of standardized quantitative performance metrics for Robot Sumo (position, velocity, acceleration, reaction time).
