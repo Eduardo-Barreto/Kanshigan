@@ -1,9 +1,11 @@
-name: Build Paper
+name: Build Documents
 
 on:
   push:
     branches: [main]
-    paths: [paper/**]
+    paths:
+      - paper/**
+      - projeto-de-pesquisa/**
 
 jobs:
   build:
@@ -16,11 +18,20 @@ jobs:
       - name: Install fonts
         run: sudo apt-get install -y fonts-texgyre
 
-      - name: Compile PDF
+      - name: Compile Paper
         run: typst compile paper/main.typ paper/kanshigan.pdf
 
-      - name: Upload PDF
+      - name: Compile Projeto de Pesquisa
+        run: typst compile projeto-de-pesquisa/main.typ projeto-de-pesquisa/projeto-de-pesquisa.pdf
+
+      - name: Upload Paper
         uses: actions/upload-artifact@v4
         with:
           name: kanshigan-paper
           path: paper/kanshigan.pdf
+
+      - name: Upload Projeto de Pesquisa
+        uses: actions/upload-artifact@v4
+        with:
+          name: projeto-de-pesquisa
+          path: projeto-de-pesquisa/projeto-de-pesquisa.pdf
