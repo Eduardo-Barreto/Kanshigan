@@ -1,0 +1,26 @@
+[project]
+name = "sam3-test"
+version = "0.1.0"
+description = "SAM 3 annotation experiment for Robot Sumo"
+requires-python = ">=3.12"
+dependencies = [
+    "torch>=2.7.0",
+    "torchvision",
+    "torchaudio",
+    "sam3[notebooks,train]",
+    "opencv-python>=4.10.0",
+    "setuptools<82",
+    "pandas>=2.3.3",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cuda"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cuda" }
+torchvision = { index = "pytorch-cuda" }
+torchaudio = { index = "pytorch-cuda" }
+sam3 = { git = "https://github.com/facebookresearch/sam3.git" }
+
