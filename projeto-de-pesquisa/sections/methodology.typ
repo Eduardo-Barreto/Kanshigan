@@ -1,5 +1,17 @@
 = Metodologia
 
+== Natureza e tipo de pesquisa
+
+Quanto à natureza, esta pesquisa é *aplicada*: utiliza técnicas existentes de visão computacional para resolver um problema específico do domínio de Sumô de Robôs, sem propor novos modelos ou arquiteturas.
+
+Quanto à abordagem, é *quantitativa*. A avaliação dos pipelines se baseia em métricas objetivas: mAP para detecção, MOTA e IDF1 para tracking, precision e recall para eventos, além de FPS e uso de VRAM para viabilidade prática.
+
+Quanto aos objetivos, é *exploratória*. Não existe pipeline consolidado para análise automática de partidas de Sumô de Robôs, e a pesquisa investiga quais combinações de arquiteturas de detecção e tracking produzem resultados viáveis nesse domínio.
+
+Quanto aos procedimentos, é *experimental*. Variáveis independentes (arquitetura de detecção, algoritmo de tracking, resolução, taxa de quadros) são manipuladas sistematicamente e seus efeitos medidos sobre as métricas de avaliação.
+
+== Pipeline proposto
+
 O pipeline proposto consiste em cinco etapas sequenciais: detecção do dohyo, detecção dos robôs, multi-object tracking, extração de métricas e detecção de eventos.
 
 == Construção do dataset
