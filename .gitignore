@@ -26,6 +26,12 @@ data/raw/
 data/processed/
 *.dvc
 
+# Notebook data
+notebooks/data/
+notebooks/output/
+
+__marimo__/
+
 # IDE
 .vscode/
 .idea/

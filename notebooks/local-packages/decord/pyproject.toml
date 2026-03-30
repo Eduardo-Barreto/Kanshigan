@@ -1,0 +1,8 @@
+[project]
+name = "decord"
+version = "0.6.0"
+description = "macOS stub: satisfies the 'decord' requirement by installing eva-decord, which ships arm64 wheels"
+requires-python = ">=3.11"
+dependencies = [
+    "eva-decord>=0.6.1",
+]
