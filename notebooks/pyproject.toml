@@ -1,0 +1,38 @@
+[project]
+name = "notebooks"
+version = "0.1.0"
+description = "SAM 3 segmentation experiments – Marimo notebooks"
+requires-python = ">=3.11"
+dependencies = [
+    "marimo>=0.21.1",
+    "torch>=2.7.0",
+    "torchvision",
+    "torchaudio",
+    "decord",
+    "sam3[notebooks,train]",
+    "opencv-python>=4.10.0",
+    "setuptools<82",
+    "pandas>=2.3.3",
+    "pillow",
+    "triton; sys_platform == 'linux'",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cuda"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cuda", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+torchvision = [
+  { index = "pytorch-cuda", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+torchaudio = [
+  { index = "pytorch-cuda", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+sam3 = { git = "https://github.com/pedrocruz2/sam3-macos-patch.git" }
+# On macOS, 'decord' (required by sam3) has no arm64 wheels. This local stub
+# redirects to eva-decord, which is a drop-in replacement with arm64 support.
+decord = { path = "local-packages/decord", marker = "sys_platform == 'darwin'" }
