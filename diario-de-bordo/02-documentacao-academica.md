@@ -2,12 +2,12 @@
 
 Dois documentos mantidos em paralelo, ambos em Typst:
 
-**Paper IEEE (inglês):** `paper/`
+**Paper IEEE (inglês):** `docs/paper/`
 - Formato: `@preview/charged-ieee:0.1.4`
 - Foco: contribuição técnica, mais conciso
 - Seções: Introduction, Related Work, Proposed Methodology, Conclusion
 
-**Projeto de Pesquisa ABNT (português):** `projeto-de-pesquisa/`
+**Projeto de Pesquisa ABNT (português):** `docs/projeto-de-pesquisa/`
 - Formato ABNT para entrega institucional
 - Mais detalhado que o paper, com cronograma de 12 meses
 - Seções: Introdução, Revisão de Literatura, Metodologia, Resultados Esperados, Cronograma, Conclusão

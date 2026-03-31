@@ -4,9 +4,9 @@ on:
   push:
     branches: [main]
     paths:
-      - paper/**
-      - projeto-de-pesquisa/**
-      - project-plan/**
+      - docs/paper/**
+      - docs/projeto-de-pesquisa/**
+      - docs/project-plan/**
 
 jobs:
   build:
@@ -25,28 +25,28 @@ jobs:
           fc-cache -fv
 
       - name: Compile Paper
-        run: typst compile paper/main.typ paper/kanshigan.pdf
+        run: typst compile docs/paper/main.typ docs/paper/kanshigan.pdf
 
       - name: Compile Projeto de Pesquisa
-        run: typst compile projeto-de-pesquisa/main.typ projeto-de-pesquisa/projeto-de-pesquisa.pdf
+        run: typst compile docs/projeto-de-pesquisa/main.typ docs/projeto-de-pesquisa/projeto-de-pesquisa.pdf
 
       - name: Upload Paper
         uses: actions/upload-artifact@v4
         with:
           name: kanshigan-paper
-          path: paper/kanshigan.pdf
+          path: docs/paper/kanshigan.pdf
 
       - name: Upload Projeto de Pesquisa
         uses: actions/upload-artifact@v4
         with:
           name: projeto-de-pesquisa
-          path: projeto-de-pesquisa/projeto-de-pesquisa.pdf
+          path: docs/projeto-de-pesquisa/projeto-de-pesquisa.pdf
 
       - name: Compile Project Plan
-        run: typst compile project-plan/main.typ project-plan/project-plan.pdf
+        run: typst compile docs/project-plan/main.typ docs/project-plan/project-plan.pdf
 
       - name: Upload Project Plan
         uses: actions/upload-artifact@v4
         with:
           name: project-plan
-          path: project-plan/project-plan.pdf
+          path: docs/project-plan/project-plan.pdf
