@@ -20,8 +20,8 @@ jobs:
         run: |
           sudo apt-get install -y fonts-texgyre
           mkdir -p ~/.local/share/fonts
-          curl -fsSL -o /tmp/manrope.zip "https://fonts.google.com/download?family=Manrope"
-          unzip -o /tmp/manrope.zip -d ~/.local/share/fonts/manrope
+          curl -fsSL -o ~/.local/share/fonts/Manrope.ttf \
+            "https://raw.githubusercontent.com/google/fonts/main/ofl/manrope/Manrope%5Bwght%5D.ttf"
           fc-cache -fv
 
       - name: Compile Paper
