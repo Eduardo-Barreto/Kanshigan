@@ -35,7 +35,7 @@ keep_idx_gpu = keep_idx.to(device=out_binary_masks.device, non_blocking=True)
 
 ## O custo de manter o fork
 
-O fork funciona agora, mas tem um custo de manutenção real. O SAM 3.1 (Object Multiplex) [saiu dia 27 de março](https://ai.meta.com/blog/segment-anything-model-3/), e cada release upstream vai exigir que alguém re-aplique os patches. O [Sompote/SAM3_CPU](https://github.com/Sompote/SAM3_CPU/) é outro fork que tentou resolver o mesmo problema e tem 1 star, o destino comum de forks de compatibilidade de device. O HuggingFace acompanha releases upstream automaticamente, e o time de manutenção é dedicado.
+O fork funciona agora, mas tem um custo de manutenção real. O SAM 3.1 (Object Multiplex) [saiu dia 27 de março](https://ai.meta.com/blog/segment-anything-model-3/), e cada release upstream vai exigir que alguém reaplique os patches. O [Sompote/SAM3_CPU](https://github.com/Sompote/SAM3_CPU/) é outro fork que tentou resolver o mesmo problema e tem 1 star, o destino comum de forks de compatibilidade de device. O HuggingFace acompanha releases upstream automaticamente, e o time de manutenção é dedicado.
 
 A Meta também [sinalizou](https://github.com/facebookresearch/sam3/issues/164) que aceita PRs de device-agnostic inference pro image predictor (o [PR #173](https://github.com/facebookresearch/sam3/pull/173) está aberto). Mas o video predictor eles disseram que é "highly optimized for the multi-gpu setting" e não têm planos de suportar outros devices. O caminho upstream é parcial, o que reforça a vantagem do HuggingFace.
 
