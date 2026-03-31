@@ -12,12 +12,17 @@ O `transformers` expõe `Sam3Model` e `Sam3Processor` sem dependência de triton
 from transformers import Sam3Processor, Sam3Model
 import torch
 
-device = "mps" if torch.backends.mps.is_available() else "cpu"
+if torch.cuda.is_available():
+    device = "cuda"
+elif torch.backends.mps.is_available():
+    device = "mps"
+else:
+    device = "cpu"
 model = Sam3Model.from_pretrained("facebook/sam3").to(device)
 processor = Sam3Processor.from_pretrained("facebook/sam3")
 ```
 
-Isso eliminaria três workarounds de uma vez:
+O HuggingFace também expõe modelos de vídeo: o [`Sam3VideoModel`](https://huggingface.co/docs/transformers/model_doc/sam3_video) faz tracking com prompt de texto, que é exatamente o que validamos no experimento 05 (detectar robôs via `"object on metal platform"` e propagar entre frames). Existe também o [`Sam3TrackerVideoModel`](https://huggingface.co/docs/transformers/model_doc/sam3_tracker_video) pra tracking com prompts visuais (pontos, boxes, masks), caso no futuro a gente queira apontar manualmente os robôs num frame inicial em vez de usar texto. Isso eliminaria três workarounds de uma vez:
 
 - O fork `pedrocruz2/sam3-macos-patch` (patches manuais em 9 arquivos do SAM 3)
 - O `local-packages/decord` stub que redireciona pro `eva-decord`
@@ -45,6 +50,7 @@ Independente de migrar ou não pro HuggingFace, o device detection nos scripts p
 
 ```python
 import sys
+import torch
 gpus_to_use = [torch.cuda.current_device()] if sys.platform == "linux" and torch.cuda.is_available() else []
 ```
 
