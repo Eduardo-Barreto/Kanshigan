@@ -21,10 +21,13 @@ wandb/
 mlruns/
 runs/
 
-# Data (tracked via DVC)
-data/raw/
-data/processed/
-*.dvc
+# Data (content tracked via DVC, pointers tracked in git)
+/data/raw/**
+/data/processed/**
+!/data/raw/.gitkeep
+!/data/processed/.gitkeep
+!/data/**/*.dvc
+!/data/**/.gitignore
 
 # Notebook data
 notebooks/data/
