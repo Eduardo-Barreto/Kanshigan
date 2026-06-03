@@ -56,7 +56,7 @@ A unidade aqui é **BPS — boxes per second**, não FPS. Volto nisso no [próxi
 
 ## Os números
 
-- **3B de parâmetros** (~4B em disco, BF16).
+- **~3.4B de parâmetros no total:** Qwen2.5-3B (decoder, 3B) + MoonViT-SO-400M (encoder, ~400M). A metadata do model card arredonda isso pra "4B params" — é contagem de parâmetros, não tamanho de arquivo. Os pesos BF16 ocupam **7.2GB em disco**, que já não cabem na 4070 Laptop 8GB ([próximo arquivo](02-viabilidade-na-4070-e-no-macos.md): OOM medido).
 - Treinado em **138M amostras**, **12M imagens únicas**, **785M+ bounding boxes**. A composição é dominada por detecção geral (66.9% das queries), mas tem bastante GUI grounding (16.5%), referring, OCR e layout de documentos.
 - A rotulagem foi híbrida, usando inclusive **SAM 3, Qwen3-VL, Molmo e Rex-Omni** como anotadores automáticos. (Detalhe simpático: o SAM 3 que descartei como pipeline final apareceu como ferramenta de anotação no treino deste modelo. É exatamente o papel que reservei pra ele.)
 

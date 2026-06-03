@@ -9,16 +9,16 @@ Fechando a pasta sobre o [LocateAnything](01-o-que-e-o-locate-anything.md). Os [
 | **Tarefa** | Detecção/grounding open-vocab (boxes/pontos) | Segmentação + detecção + tracking por conceito | Open-set detection | Open-vocab detection real-time | Detecção closed-set | Detecção closed-set end-to-end |
 | **Tracking nativo** | Não | Sim (vídeo) | Não | Não | Não (usa ByteTrack/BoT-SORT) | Não (usa tracker) |
 | **Prompt textual** | Sim (frágil) | Sim (frágil) | Sim | Sim | Não (classes fixas) | Não |
-| **Params** | 3B (~4B BF16) | encoder pesado | ~172M (Swin-T) | leve (base YOLOv8) | 3–68M (n→x) | ~32–67M (L→X) |
+| **Params** | ~3.4B (7.2GB BF16) | encoder pesado | ~172M (Swin-T) | leve (base YOLOv8) | 3–68M (n→x) | ~32–67M (L→X) |
 | **Acurácia (COCO)** | 54.7 F1 zero-shot | n/a (seg) | 56.6 zero-shot | ~35–39 zero-shot | >55 mAP **fine-tuned** | 53–55 AP |
 | **Velocidade** | 12.7 BPS @ H100 (≈6 FPS p/ 2 obj) | 8–12 FPS @ H100 1080p | baixo FPS | ~74 FPS | 50–100+ FPS | 74–124 FPS (T4) |
-| **Roda em 8GB?** | Não (4B BF16) | Não (OOM >100 frames, testado) | Apertado | Sim | Sim | Sim |
+| **Roda em 8GB?** | Não (OOM medido na 4070) | Não (OOM >100 frames, testado) | Apertado | Sim | Sim | Sim |
 | **macOS/MPS** | Não documentado | Parcial via HuggingFace | Parcial | Sim | Sim (`device=mps`) | Parcial/Sim |
 | **Treina domínio pequeno** | Não (cluster 8-GPU) | Pesado | Médio | Médio | Sim (horas em laptop) | Sim (mais pesado que YOLO) |
 | **Licença** | NVIDIA (não-comercial) | Meta (ver termos) | Apache-2.0 | AGPL/Ultralytics | AGPL-3.0 (Ultralytics) | Apache-2.0 |
 | **Papel no Kanshigan** | Anotação (opcional) | Anotação (já decidido) | Anotação alternativa | Anotação/baseline | **Pipeline final (líder)** | **Alternativa transformer** |
 
-Notas: os FPS de YOLO/RT-DETR são em GPU e variam bastante na 4070 Laptop (de 1–2 FPS sem TensorRT por subutilização até 100+ FPS com modelos pequenos e engine otimizada). **BPS não é FPS.** Os números de VRAM do LocateAnything são estimados a partir do tamanho BF16, não oficiais.
+Notas: a tabela mistura números de **hardwares e unidades diferentes** (BPS em H100, FPS em T4/GPU, AP/F1 em datasets distintos) — leia como **ordem de grandeza**, não comparação direta. **BPS (boxes/s) não é FPS (frames/s).** Os FPS de YOLO/RT-DETR variam bastante na 4070 Laptop (de 1–2 FPS sem TensorRT por subutilização até 100+ FPS com modelos pequenos e engine otimizada). Já o "não roda em 8GB" do LocateAnything **não é estimativa: é OOM medido na própria 4070 Laptop** (`torch.OutOfMemoryError`, ver [arquivo 02](02-viabilidade-na-4070-e-no-macos.md)). Os params são contagem (~3.4B), e o `7.2GB` é o tamanho dos pesos em BF16 medido em disco.
 
 ## Decisão
 

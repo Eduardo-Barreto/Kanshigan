@@ -2,15 +2,19 @@
 
 O [arquivo anterior](01-o-que-e-o-locate-anything.md) explicou o que o LocateAnything é. Este aqui responde a parte que decide tudo: **ele roda no nosso hardware e atende o nosso caso de uso?** A resposta é não, e os motivos são quase um espelho dos cinco gargalos que documentei pro SAM 3.
 
-## Gargalo 1: o modelo não cabe na 8GB
+## Gargalo 1: o modelo não cabe na 8GB (medido, não estimado)
 
-O LocateAnything-3B tem 3 bilhões de parâmetros, ~4B em disco em BF16. Só os pesos em BF16 já são da ordem de **~8GB**. Isso praticamente preenche a RTX 4070 Laptop de 8GB **antes** de carregar ativações e o KV cache do decoder.
+O LocateAnything tem **~3.4B parâmetros** (Qwen2.5-3B + MoonViT-SO-400M; a NVIDIA arredonda pra "4B" na metadata do model card, que é contagem de parâmetros, não tamanho de arquivo). Os pesos BF16 ocupam **7.2GB em disco** (medido no cache do HuggingFace). Isso sozinho já é quase toda a RTX 4070 Laptop de 8GB, antes de qualquer ativação.
 
-A NVIDIA só reporta benchmarks em **H100**. Não existe número oficial de VRAM de inferência nem de FPS em GPU de consumidor. O model card lista microarquiteturas suportadas e inclui Lovelace (a família da 4070/4090), mas a única placa de consumidor citada é a **RTX 4090 — que tem 24GB, não 8GB**.
+E não parou na estimativa: rodei. Montei um teste mínimo (`experiments/locate-anything-test/`) carregando `nvidia/LocateAnything-3B` em BF16 na 4070 Laptop (8188 MiB totais, 7.63 GiB utilizáveis). O modelo **carregou**, mas estourou no forward do vision encoder com uma imagem 848×478:
 
-Preciso ser honesto sobre o que é fato e o que é estimativa aqui: o `~8GB de pesos` é **estimativa** baseada no tamanho BF16, não um número medido pela NVIDIA. Mas a ausência de qualquer número oficial pra 8GB já é, por si só, um sinal de alerta. O SAM 3 pelo menos eu consegui rodar e medir o ponto de OOM (~100 frames). Com o LocateAnything, a fonte oficial simplesmente não responde "roda em 8GB?".
+> `torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 306.00 MiB. GPU 0 has a total capacity of 7.63 GiB of which 134.62 MiB is free. (...) this process has 7.48 GiB memory in use.`
 
-E não há quantização suportada oficialmente — sem TensorRT, TensorRT-LLM ou Triton ainda. Então não dá nem pra apostar num INT8/INT4 fácil pra caber.
+Com pesos de 7.2GB carregados na placa de 7.63 GiB úteis, sobra quase nada pra rodar a rede. A alocação de 306 MiB que estourou já é durante o forward: não tem margem nem pro encoder. Contraste com o SAM 3, que roda nessa mesma máquina e só estoura depois de ~100 frames.
+
+A NVIDIA só reporta benchmarks em **H100** e não publica VRAM de inferência em GPU de consumidor. O model card lista as microarquiteturas suportadas e inclui Lovelace (família da 4070/4090), mas a única placa de consumidor citada é a **RTX 4090 — que tem 24GB, não 8GB**.
+
+Não há quantização suportada oficialmente (sem TensorRT/Triton ainda), então não dá pra apostar num INT8/INT4 fácil pra caber.
 
 ## Gargalo 2: "12.7 BPS" não é FPS de vídeo
 
