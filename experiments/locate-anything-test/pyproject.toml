@@ -1,0 +1,32 @@
+[project]
+name = "locate-anything-test"
+version = "0.1.0"
+description = "NVIDIA LocateAnything-3B open-vocab detection experiment for Robot Sumo"
+requires-python = ">=3.12"
+dependencies = [
+    "torch>=2.7.0",
+    "torchvision",
+    "transformers==4.57.1",
+    "numpy==1.26.4",
+    "pillow==11.1.0",
+    "opencv-python-headless==4.11.0.86",
+    "peft",
+    "decord==0.6.0",
+    "lmdb==1.7.5",
+    "accelerate",
+    "matplotlib>=3.9",
+    "einops",
+    "sentencepiece",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cuda"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cuda" }
+torchvision = { index = "pytorch-cuda" }
+
+[tool.uv]
+environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
