@@ -1,0 +1,16 @@
+# Copie para clips.yaml e edite. Não comite clips.yaml.
+# subset: jp (broadcast) | br (amador)
+# start/end: segundos no video bruto. Cada round vira 1 clip.
+
+clips:
+  - id: br_atena_bullbassauro_r01
+    source: atenavsbullbassauro.mp4
+    subset: br
+    start: 0
+    end: 8
+
+  - id: br_betternrobos_r01
+    source: betternrobos.mp4
+    subset: br
+    start: 0
+    end: 9
