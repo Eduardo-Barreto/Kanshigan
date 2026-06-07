@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - docs/paper/**
+      - docs/paper-sbc/**
       - docs/projeto-de-pesquisa/**
       - docs/project-plan/**
       - .github/workflows/build-paper.yml
@@ -19,7 +20,7 @@ jobs:
 
       - name: Install fonts
         run: |
-          sudo apt-get install -y fonts-texgyre
+          sudo apt-get install -y fonts-texgyre fonts-liberation
           mkdir -p ~/.local/share/fonts
           curl -fsSL -o ~/.local/share/fonts/Manrope.ttf \
             "https://raw.githubusercontent.com/google/fonts/main/ofl/manrope/Manrope%5Bwght%5D.ttf"
@@ -27,6 +28,15 @@ jobs:
 
       - name: Compile Paper
         run: typst compile docs/paper/main.typ docs/paper/kanshigan.pdf
+
+      - name: Compile SBC Paper
+        run: typst compile --root . docs/paper-sbc/main.typ docs/paper-sbc/kanshigan-sbc.pdf
+
+      - name: Upload SBC Paper
+        uses: actions/upload-artifact@v4
+        with:
+          name: kanshigan-sbc
+          path: docs/paper-sbc/kanshigan-sbc.pdf
 
       - name: Compile Projeto de Pesquisa
         run: typst compile docs/projeto-de-pesquisa/main.typ docs/projeto-de-pesquisa/projeto-de-pesquisa.pdf
