@@ -1,0 +1,8 @@
+# Large media and run artifacts are not committed; metrics JSON and figures are.
+*.mp4
+*.avi
+*.mov
+preview/
+training/
+*.pt
+*.pth
