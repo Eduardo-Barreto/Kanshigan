@@ -11,8 +11,13 @@ preservar a resolução temporal que os eventos sub-segundo exigem.
   reuso da última detecção válida em quadros de falha.
 + *Calibração espacial*: a elipse detectada é a imagem oblíqua de um círculo de
   154 cm de diâmetro; seu eixo maior fixa a escala centímetro-por-pixel.
-+ *Detecção dos robôs* com YOLOv8s @jocher2023yolo, filtrando detecções fora da
-  elipse e mantendo no máximo dois robôs por quadro.
++ *Recorte no dohyo*: o quadro é cortado na elipse detectada antes da detecção. Os
+  robôs ocupam fração pequena do quadro; alimentar o quadro inteiro a um detector de
+  640 px os encolhe abaixo do que sobrevive ao borrão de movimento, e o fundo (plateia,
+  mãos) gera falso positivo. O recorte amplia os robôs cerca de três vezes e remove o
+  fundo. As caixas voltam a coordenadas nativas por um deslocamento.
++ *Detecção dos robôs* com YOLOv8s @jocher2023yolo sobre o recorte, filtrando
+  detecções fora da elipse e mantendo no máximo dois robôs por quadro.
 + *Rastreamento* com OC-SORT @cao2023ocsort, escolhido por lidar com o movimento
   não linear de colisões e giros. As detecções viram trajetórias contínuas.
 + *Extração de métricas* no referencial do dohyo, em centímetros. Expressar cada

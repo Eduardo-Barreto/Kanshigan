@@ -23,37 +23,39 @@ treino e revisado manualmente quadro a quadro.
     align: (left, center, center, left),
     stroke: 0.4pt,
     table.header([*Subconjunto*], [*Clips*], [*Quadros*], [*Anotação*]),
-    [Treino], [6], [431], [SAM 3, quadros completos],
-    [Validação], [1], [57], [SAM 3, quadros completos],
+    [Treino], [6], [423], [SAM 3, quadros completos],
+    [Validação], [1], [59], [SAM 3, quadros completos],
     [Gold (teste)], [1], [59], [SAM 3 + revisão manual],
   ),
 )
 
 == Detecção
 
-O detector com fine-tuning no domínio (E2) atinge mAP\@0.5 de 0.938 na validação e
-0.871 no round gold held-out, com recall de 0.91, contra 0.003 do YOLOv8s
-pré-treinado em COCO sem fine-tuning (E3). A queda de duas ordens de grandeza no
-baseline confirma que o domínio exige treino específico: os robôs não correspondem a
-nenhuma classe COCO. O recall alto no gold mostra que o detector encontra ambos os
-robôs de forma consistente, dado treino com rótulos completos.
+O detector com fine-tuning no domínio (E2), operando sobre o recorte do dohyo, atinge
+mAP\@0.5 de 0.994 na validação e 0.984 no round gold held-out, com recall e precisão
+de 0.98, contra 0.026 do YOLOv8s pré-treinado em COCO sem fine-tuning (E3). A queda de
+duas ordens de grandeza no baseline confirma que o domínio exige treino específico: os
+robôs não correspondem a nenhuma classe COCO. O recorte no dohyo foi decisivo: antes
+dele, com o quadro inteiro, o detector caía para recall 0.91 e precisão 0.71 (perdendo
+robôs em movimento e gerando falso positivo no fundo); ampliar os robôs e remover o
+fundo levou ambos a 0.98.
 
 #figure(
-  caption: [Acurácia do detector. E2 é o experimento principal; E3 é o baseline sem fine-tuning. mAP no round gold held-out, revisado manualmente.],
+  caption: [Acurácia do detector sobre o recorte do dohyo. E2 é o experimento principal; E3 é o baseline sem fine-tuning. mAP no round gold held-out, revisado manualmente.],
   table(
     columns: 5,
     align: (left, center, center, center, center),
     stroke: 0.4pt,
     table.header([*Config.*], [*mAP\@.5 (val)*], [*mAP\@.5 (gold)*], [*mAP\@.5:.95 (gold)*], [*Recall (gold)*]),
-    [E2 YOLOv8s fine-tuned], [0.938], [0.871], [0.527], [0.907],
-    [E3 YOLOv8s COCO], [---], [0.003], [0.001], [0.364],
+    [E2 YOLOv8s fine-tuned], [0.994], [0.984], [0.766], [0.982],
+    [E3 YOLOv8s COCO], [---], [0.026], [0.017], [0.745],
   ),
 ) <tab-detector>
 
 == Viabilidade
 
 A pipeline completa (decodificação, detecção do dohyo, YOLO, OC-SORT, métricas e
-eventos) roda a 93 quadros por segundo em batch 1, com pico de 82 MB de memória de
+eventos) roda a 133 quadros por segundo em batch 1, com pico de 82 MB de memória de
 GPU alocada pelo detector. Em contraste, o SAM 3 usado como anotador roda a cerca de
 2 quadros por segundo sobre entrada decimada de 480×270, com cerca de 7 GB de VRAM ---
 confirmando a decisão de usá-lo apenas como anotador (E1), nunca na inferência final.
@@ -65,7 +67,7 @@ confirmando a decisão de usá-lo apenas como anotador (E1), nunca na inferênci
     align: (left, center, center),
     stroke: 0.4pt,
     table.header([*Componente*], [*FPS*], [*VRAM*]),
-    [Pipeline E2 (inferência)], [93], [82 MB],
+    [Pipeline E2 (inferência)], [133], [82 MB],
     [SAM 3 (anotador, E1)], [~2], [~7 GB],
   ),
 ) <tab-viability>
@@ -79,7 +81,7 @@ confirmando a decisão de usá-lo apenas como anotador (E1), nunca na inferênci
 
 Qualitativamente, o rastreamento mantém identidades A e B consistentes ao longo do
 round held-out (@fig-traj), com o detector cinemático projetando posição e
-velocidade no referencial do dohyo (velocidade máxima observada da ordem de 2 m/s,
+velocidade no referencial do dohyo (velocidade máxima observada da ordem de 3 m/s,
 coerente com a modalidade). A detecção de início de round dispara de forma
 confiável; a detecção de ring-out e de primeiro contato ainda requer calibração dos
 limiares sobre o gold, conforme previsto no protocolo. As métricas quantitativas de

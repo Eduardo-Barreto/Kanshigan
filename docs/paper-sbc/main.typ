@@ -20,9 +20,9 @@
     that no prior work covers jointly, and we build the pipeline from
     tracking-by-detection: a YOLOv8s detector trained on a dataset semi-automatically
     annotated with SAM 3, followed by OC-SORT tracking. On real tournament footage,
-    the detector reaches mAP\@0.5 of 0.87 with 0.91 recall on a held-out,
-    manually-reviewed round (versus 0.003 for COCO weights without fine-tuning), and
-    the full pipeline runs at 93 FPS using 82 MB of GPU memory on a consumer laptop
+    the detector reaches mAP\@0.5 of 0.98 with 0.98 recall on a held-out,
+    manually-reviewed round (versus 0.03 for COCO weights without fine-tuning), and
+    the full pipeline runs at 133 FPS using 82 MB of GPU memory on a consumer laptop
     GPU, confirming practical viability.
   ],
   resumo: [
@@ -37,9 +37,9 @@
     nenhum trabalho anterior cobre em conjunto, e construímos a pipeline a partir do
     paradigma tracking-by-detection: um detector YOLOv8s treinado sobre uma base
     anotada de forma semiautomática com o SAM 3, seguido de rastreamento OC-SORT.
-    Sobre footage real de torneios, o detector atinge mAP\@0.5 de 0.87 com recall de
-    0.91 em um round held-out revisado manualmente (contra 0.003 dos pesos COCO sem
-    fine-tuning), e a pipeline completa roda a 93 FPS usando 82 MB de memória de GPU
+    Sobre footage real de torneios, o detector atinge mAP\@0.5 de 0.98 com recall de
+    0.98 em um round held-out revisado manualmente (contra 0.03 dos pesos COCO sem
+    fine-tuning), e a pipeline completa roda a 133 FPS usando 82 MB de memória de GPU
     em uma GPU de notebook de consumo, confirmando viabilidade prática.
   ],
 )
