@@ -79,12 +79,23 @@ confirmando a decisão de usá-lo apenas como anotador (E1), nunca na inferênci
   caption: [Trajetórias dos dois robôs no round gold, no referencial centrado no dohyo (círculo de raio 77 cm). A projeção por quadro cancela o movimento da câmera de mão.],
 ) <fig-traj>
 
-Qualitativamente, o rastreamento mantém identidades A e B consistentes ao longo do
-round held-out (@fig-traj), com o detector cinemático projetando posição e
-velocidade no referencial do dohyo (velocidade máxima observada da ordem de 3 m/s,
-coerente com a modalidade). A detecção de início de round dispara de forma
-confiável; a detecção de ring-out e de primeiro contato ainda requer calibração dos
-limiares sobre o gold, conforme previsto no protocolo. As métricas quantitativas de
-rastreamento (IDF1, HOTA, ID switches) dependem de um gold com identidades anotadas
-quadro a quadro, próximo passo desta linha; serão reportadas na sequência. A troca de identidade em oclusão prolongada entre robôs idênticos
-é a limitação esperada do rastreador motion-only, discutida a seguir.
+Contra um gold com identidades anotadas e revisadas manualmente, o OC-SORT atinge
+IDF1 de 0.94 e MOTA de 0.90, com uma única troca de identidade no round. O detector
+cinemático projeta posição e velocidade no referencial do dohyo (@fig-traj),
+com velocidade máxima da ordem de 3 m/s, coerente com a modalidade.
+
+#figure(
+  caption: [Rastreamento contra o gold com identidades, no round held-out.],
+  table(
+    columns: 4,
+    align: (left, center, center, center),
+    stroke: 0.4pt,
+    table.header([*Tracker*], [*MOTA*], [*IDF1*], [*ID switches*]),
+    [OC-SORT], [0.90], [0.94], [1],
+  ),
+) <tab-tracking>
+
+A única troca de identidade ocorre na aproximação entre os dois robôs idênticos: é a
+limitação esperada do rastreador motion-only, discutida a seguir. A detecção de
+início de round dispara de forma confiável; a de ring-out e primeiro contato ainda
+requer calibração dos limiares sobre o gold, conforme previsto no protocolo.
