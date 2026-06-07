@@ -1,17 +1,26 @@
-"""Cut and decimate raw videos into clips for SAM 3 annotation.
+"""Cut raw videos into clips, cropped to the dohyo, for SAM 3 annotation.
 
 Reads spec from configs/clips.yaml (source, source_fps, start, end, subset).
-For each clip, emits two outputs:
-  data/processed/clips/<subset>/<clip_id>.mp4         native fps, full res (for inference + review)
-  data/processed/sam_input/<clip_id>.mp4              10 fps + 480x270 (for SAM 3)
+Each clip is cut to its round window, then cropped to the dohyo (the robots are a
+small fraction of the full frame; cropping zooms them in and drops the background).
+For each clip, emits:
+  data/processed/clips/<subset>/<clip_id>.mp4   cropped, native fps (inference + frame dump)
+  data/processed/sam_input/<clip_id>.mp4        cropped, 10 fps, ~480 wide (for SAM 3)
+  data/processed/clips/<subset>/<clip_id>.roi.json   crop rectangle in native pixels
 
 Usage:
     uv run python prep_clips.py
 """
 
+import json
 import subprocess
+import tempfile
 from pathlib import Path
+
+import cv2
 import yaml
+
+from crop import clip_roi, crop_frame
 
 ROOT = Path(__file__).resolve().parents[2]
 CLIPS_YAML = Path(__file__).parent / "configs" / "clips.yaml"
@@ -19,30 +28,36 @@ CLIPS_DIR = ROOT / "data" / "processed" / "clips"
 SAM_DIR = ROOT / "data" / "processed" / "sam_input"
 
 SAM_FPS = 10
-SAM_W, SAM_H = 480, 270
+SAM_WIDTH = 480
 
 
-def cut_native(src: Path, start: float, end: float, dst: Path) -> None:
+def _cut(src: Path, start: float, end: float, dst: Path) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
-    cmd = [
-        "ffmpeg", "-y", "-loglevel", "error",
-        "-ss", f"{start}", "-to", f"{end}",
-        "-i", str(src),
-        "-c", "copy", str(dst),
-    ]
-    subprocess.run(cmd, check=True)
+    subprocess.run(
+        ["ffmpeg", "-y", "-loglevel", "error", "-ss", f"{start}", "-to", f"{end}", "-i", str(src), "-c", "copy", str(dst)],
+        check=True,
+    )
 
 
-def cut_sam_input(src: Path, dst: Path) -> None:
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    vf = f"fps={SAM_FPS},scale={SAM_W}:{SAM_H}:flags=lanczos"
-    cmd = [
-        "ffmpeg", "-y", "-loglevel", "error",
-        "-i", str(src),
-        "-vf", vf,
-        "-an", str(dst),
-    ]
-    subprocess.run(cmd, check=True)
+def _read_frames(path: Path):
+    cap = cv2.VideoCapture(str(path))
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    frames = []
+    while True:
+        ok, frame = cap.read()
+        if not ok:
+            break
+        frames.append(frame)
+    cap.release()
+    return frames, fps
+
+
+def _write(frames, fps, size, path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    writer = cv2.VideoWriter(str(path), cv2.VideoWriter_fourcc(*"mp4v"), fps, size)
+    for frame in frames:
+        writer.write(frame)
+    writer.release()
 
 
 def main() -> None:
@@ -51,20 +66,31 @@ def main() -> None:
 
     spec = yaml.safe_load(CLIPS_YAML.read_text())
     for clip in spec["clips"]:
-        clip_id = clip["id"]
-        subset = clip["subset"]
+        clip_id, subset = clip["id"], clip["subset"]
         src = Path(clip["source"])
         if not src.is_absolute():
             src = ROOT / src
 
+        with tempfile.TemporaryDirectory() as tmp:
+            raw = Path(tmp) / "cut.mp4"
+            _cut(src, clip["start"], clip["end"], raw)
+            frames, fps = _read_frames(raw)
+
+        sample = frames[:: max(1, len(frames) // 12)]
+        roi = clip_roi(sample)
+        x0, y0, w, h = roi
+        cropped = [crop_frame(f, roi) for f in frames]
+        print(f"[{clip_id}] {clip['start']}-{clip['end']} from {src.name}; dohyo crop {w}x{h}")
+
         native_path = CLIPS_DIR / subset / f"{clip_id}.mp4"
-        sam_path = SAM_DIR / f"{clip_id}.mp4"
+        _write(cropped, fps, (w, h), native_path)
+        (native_path.with_suffix(".roi.json")).write_text(json.dumps({"x0": x0, "y0": y0, "w": w, "h": h}))
 
-        print(f"[{clip_id}] cut native {clip['start']}-{clip['end']} from {src.name}")
-        cut_native(src, clip["start"], clip["end"], native_path)
-
-        print(f"[{clip_id}] build SAM input ({SAM_FPS} fps, {SAM_W}x{SAM_H})")
-        cut_sam_input(native_path, sam_path)
+        sam_h = int(round(SAM_WIDTH * h / w))
+        sam_h -= sam_h % 2
+        step = max(1, round(fps / SAM_FPS))
+        sam_frames = [cv2.resize(f, (SAM_WIDTH, sam_h)) for f in cropped[::step]]
+        _write(sam_frames, SAM_FPS, (SAM_WIDTH, sam_h), SAM_DIR / f"{clip_id}.mp4")
 
 
 if __name__ == "__main__":

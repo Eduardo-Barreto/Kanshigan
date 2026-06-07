@@ -25,6 +25,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
+from crop import clip_roi, crop_frame
 from dohyo import detect_calibration, point_in_ellipse
 from events import EventConfig, detect_events
 from metrics import Kinematics, kinematics_from_track
@@ -69,19 +70,27 @@ def per_frame_calibrations(frames: list[np.ndarray]) -> list[Calibration]:
     return [c if c is not None else first_valid for c in raw]
 
 
-def detect_robots(model, frame: np.ndarray, cal: Calibration) -> tuple[list, list]:
-    """YOLO detections kept only inside the dohyo, top-2 by confidence."""
-    result = model(frame, imgsz=IMG_SIZE, verbose=False)[0]
+def detect_robots(model, frame: np.ndarray, cal: Calibration, roi: tuple[int, int, int, int]) -> tuple[list, list]:
+    """YOLO on the dohyo crop, boxes mapped back to native, kept inside the dohyo.
+
+    Detecting on the crop makes the robots large enough to survive motion blur and
+    removes the background; the box is then offset back to native coordinates so
+    tracking and metrics stay in the world frame.
+    """
+    crop = crop_frame(frame, roi)
+    result = model(crop, imgsz=IMG_SIZE, verbose=False)[0]
     boxes = result.boxes
     if boxes is None or len(boxes) == 0:
         return [], []
     xywh = boxes.xywh.cpu().numpy()
     confs = boxes.conf.cpu().numpy()
+    x0, y0, _, _ = roi
     kept = []
     for (cx, cy, w, h), conf in zip(xywh, confs):
-        if not point_in_ellipse(cx, cy, cal, margin=1.15):
+        ncx, ncy = cx + x0, cy + y0
+        if not point_in_ellipse(ncx, ncy, cal, margin=1.15):
             continue
-        kept.append(((cx - w / 2, cy - h / 2, w, h), float(conf)))
+        kept.append(((ncx - w / 2, ncy - h / 2, w, h), float(conf)))
     kept.sort(key=lambda kc: kc[1], reverse=True)
     kept = kept[:MAX_ROBOTS]
     return [b for b, _ in kept], [c for _, c in kept]
@@ -113,8 +122,9 @@ def run(video: Path, weights: Path, tracker_name: str, out_dir: Path, cfg: Event
     started = time.perf_counter()
     model = YOLO(str(weights))
     calibrations = per_frame_calibrations(frames)
+    roi = clip_roi(frames[:: max(1, len(frames) // 12)])
 
-    detections = [detect_robots(model, f, cal) for f, cal in zip(frames, calibrations)]
+    detections = [detect_robots(model, f, cal, roi) for f, cal in zip(frames, calibrations)]
     tracker = build_tracker(tracker_name)
     tracks = run_tracker(tracker, detections, frames, fps)
 
