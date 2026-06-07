@@ -114,10 +114,33 @@ inclusive com os robôs em movimento (validado no overlay nativo raw→recorte�
 Início de round dispara confiável; ring-out e contato precisam de calibração.
 IDF1/HOTA dependem de um gold com identidades anotadas (próximo passo).
 
+## Rastreamento medido (gold com identidades aprovado)
+
+Geramos um gold com identidades A/B ligando as duas caixas por continuidade de
+centroide; o usuário revisou e aprovou o overlay. Contra ele, OC-SORT: **IDF1 0.94,
+MOTA 0.90, 1 ID switch**. O único switch ocorre na aproximação dos robôs idênticos:
+a limitação esperada do tracker motion-only.
+
+## Tentativa de fonte japonesa (heterogeneidade C3)
+
+Baixamos um torneio regional japonês (câmera fixa cenital, oposto da BR de mão) para
+estressar a heterogeneidade de qualidade. O segmentador de rounds funcionou muito
+melhor aqui (26 rounds únicos limpos), e o detector clássico de dohyo generalizou de
+cara para o footage JP. Mas a anotação SAM 3 **falhou** no JP: os robôs em vista
+cenital ficam pequenos no recorte e um deles é preto sobre dohyo escuro, então o SAM
+pegava no máximo um robô (0% dos quadros com os dois). Logo, não dá para treinar no
+JP com anotação semiautomática como está.
+
+Achado mais forte que treinar no JP: o detector treinado **só com BR** detecta os
+dois robôs no JP em **zero-shot** nos quadros nítidos (transferência cross-source,
+evidência direta de C3), com recall menor nos quadros de robô pequeno/escuro. Fica
+documentado: transferência zero-shot demonstrada; treino multi-fonte no JP depende de
+anotação melhor (prompt/resolução ou revisão manual), trabalho futuro.
+
 ## Status
 
 - Pipeline com recorte no dohyo: detecção e tracking sólidos em footage held-out
-  (mAP 0.984, recall/precisão 0.98), inclusive robôs em movimento.
-- Gold aprovado manualmente e transformado para o espaço recortado; números
-  consolidados no artigo SBC.
-- Pendente: gold com identidades para IDF1/HOTA; calibração dos limiares de evento.
+  (mAP 0.984, recall/precisão 0.98; IDF1 0.94, MOTA 0.90), inclusive robôs em movimento.
+- Gold (detecção e identidades) aprovado manualmente; números consolidados no artigo.
+- Transferência zero-shot BR→JP demonstrada (C3); treino multi-fonte é trabalho futuro.
+- Pendente: calibração dos limiares de evento (ring-out/contato) com timestamps do gold.

@@ -18,11 +18,22 @@ como expectativa; o Deep HM-SORT @deephmsort2024, com características profundas
 próximo passo para endereçar o ponto, e o ByteTrack entra como segundo ponto
 experimental para comparação empírica de rastreadores.
 
+== Transferência cross-source (C3)
+
+Como evidência inicial da restrição de qualidade heterogênea (C3), avaliamos o
+detector treinado apenas com footage amador brasileiro (câmera de mão, ângulo
+oblíquo) sobre footage de torneio japonês (câmera fixa cenital). Em zero-shot, sem
+nenhum exemplo japonês no treino, o detector localiza ambos os robôs nos quadros
+nítidos, demonstrando transferência entre fontes. O recall cai nos quadros de vista
+cenital com robôs pequenos e escuros, e a anotação semiautomática com SAM 3 falha
+nesse caso (segmenta no máximo um robô), o que impede, por ora, o treino multi-fonte.
+Anotação dedicada para a fonte japonesa fica como trabalho futuro.
+
 == Trabalhos futuros
 
-Além da homografia e do rastreador com aparência, planejamos: ampliar o conjunto de
-dados, incluindo footage de broadcast japonês para estressar a heterogeneidade de
-qualidade (C3); ablação do detector com RT-DETR @zhao2024rtdetr na arena controlada;
+Além da homografia e do rastreador com aparência, planejamos: treino multi-fonte com
+footage de broadcast japonês para fechar a heterogeneidade de qualidade (C3); ablação
+do detector com RT-DETR @zhao2024rtdetr na arena controlada;
 detecção de contato por máscara em vez de bounding box; e a evolução para uma
 plataforma colaborativa aberta de análise de combate de robôs. A pipeline e o
 conjunto de dados são públicos para reprodução e extensão.
