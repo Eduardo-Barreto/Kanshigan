@@ -86,26 +86,38 @@ rótulo completo (os dois robôs), descartando os incompletos.
 revisado/aprovado manualmente quadro a quadro (100% completo). Nenhum número de
 avaliação é tratado como válido sem essa aprovação.
 
-## Resultados medidos (gold aprovado)
+## Recorte no dohyo: a correção decisiva
 
-Conjunto após filtro de quadros completos: treino 431 (6 clips), validação 57,
-gold 59 (1 round revisado manualmente).
+Mesmo com dados limpos, o detector ainda perdia robôs em movimento e gerava falso
+positivo no fundo (precisão 0.71). Causa: os robôs ocupam fração pequena do quadro;
+alimentar o quadro inteiro a um detector de 640 px os encolhe abaixo do que sobrevive
+ao borrão de movimento. A correção foi **recortar no dohyo** antes de detectar (o
+dohyo já é detectado pela visão clássica): o robô fica ~3x maior e o fundo some. As
+caixas voltam a coordenadas nativas por um deslocamento. O gold revisado é
+transformado para o espaço recortado deterministicamente, preservando a revisão
+manual.
 
-**Detector.** YOLOv8s com fine-tuning (E2): mAP@0.5 de 0.938 na validação e 0.871 no
-gold held-out, com recall 0.91. Baseline COCO sem fine-tuning (E3): mAP@0.5 de 0.003.
-O recall alto confirma que o detector encontra ambos os robôs, dado treino com
-rótulos completos.
+## Resultados medidos (gold aprovado, pipeline com recorte)
 
-**Viabilidade.** Pipeline completa a 93 FPS, pico de 82 MB de VRAM (RTX 4070 Laptop).
-SAM 3 anotador a ~2 FPS, ~7 GB --- justifica usá-lo só como anotador.
+Conjunto após recorte e filtro de quadros completos: treino 423 (6 clips),
+validação 59, gold 59 (1 round revisado manualmente).
 
-**Rastreamento e eventos.** OC-SORT mantém A/B consistentes no round held-out. Início
-de round dispara confiável; ring-out e contato precisam de calibração. IDF1/HOTA
-dependem de um gold com identidades anotadas (próximo passo).
+**Detector.** YOLOv8s fine-tuned (E2) sobre o recorte: mAP@0.5 de 0.994 na validação
+e **0.984 no gold held-out, com recall e precisão de 0.98**. Baseline COCO (E3):
+mAP@0.5 de 0.026. O recorte levou recall 0.91→0.98 e precisão 0.71→0.98.
+
+**Viabilidade.** Pipeline completa a 133 FPS, pico de 82 MB de VRAM (RTX 4070 Laptop).
+SAM 3 anotador a ~2 FPS, ~7 GB.
+
+**Rastreamento e eventos.** OC-SORT mantém A/B consistentes no round held-out,
+inclusive com os robôs em movimento (validado no overlay nativo raw→recorte→volta).
+Início de round dispara confiável; ring-out e contato precisam de calibração.
+IDF1/HOTA dependem de um gold com identidades anotadas (próximo passo).
 
 ## Status
 
-- Dados re-segmentados em rounds únicos, anotados e filtrados; pipeline ponta a ponta
-  validada em footage held-out, com overlay mostrando os dois robôs rotulados A/B.
-- Gold aprovado manualmente; números do detector consolidados no artigo SBC.
+- Pipeline com recorte no dohyo: detecção e tracking sólidos em footage held-out
+  (mAP 0.984, recall/precisão 0.98), inclusive robôs em movimento.
+- Gold aprovado manualmente e transformado para o espaço recortado; números
+  consolidados no artigo SBC.
 - Pendente: gold com identidades para IDF1/HOTA; calibração dos limiares de evento.
