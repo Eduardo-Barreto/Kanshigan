@@ -39,13 +39,15 @@ def _t_ms(frame: int, k: Kinematics) -> float:
 
 
 def _round_start(a: Kinematics, b: Kinematics, cfg: EventConfig) -> Event | None:
+    """First frame either robot charges. Robots take turns, so requiring both to
+    move at once would mark the final clash, not the release (hajime)."""
     shared = np.intersect1d(a.frames, b.frames)
     if shared.size == 0:
         return None
     ia = np.searchsorted(a.frames, shared)
     ib = np.searchsorted(b.frames, shared)
-    both_moving = np.minimum(a.speed_cms[ia], b.speed_cms[ib]) > cfg.v_min_start_cms
-    hits = np.flatnonzero(both_moving)
+    either_moving = np.maximum(a.speed_cms[ia], b.speed_cms[ib]) > cfg.v_min_start_cms
+    hits = np.flatnonzero(either_moving)
     if hits.size == 0:
         return None
     frame = int(shared[hits[0]])

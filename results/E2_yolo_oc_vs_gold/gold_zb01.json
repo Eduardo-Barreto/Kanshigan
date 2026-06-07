@@ -4009,8 +4009,8 @@
   "events": [
     {
       "kind": "round_start",
-      "t_ms": 5183.333333333334,
-      "frame": 311,
+      "t_ms": 16.666666666666668,
+      "frame": 1,
       "robot_id": null,
       "note": null
     },
@@ -4037,8 +4037,8 @@
     }
   ],
   "viability": {
-    "end_to_end_fps": 132.61,
-    "wall_time_s": 2.9,
+    "end_to_end_fps": 141.68,
+    "wall_time_s": 2.72,
     "peak_vram_mb": 82.2
   }
 }

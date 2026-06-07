@@ -14,15 +14,15 @@ def _still(robot_id, x, y, n=40):
 
 
 class TestRoundStart:
-    def test_detects_first_frame_both_robots_move(self):
+    def test_detects_first_frame_a_robot_charges(self):
         frames = np.arange(40)
-        # both start still then accelerate outward after frame 10
-        x = np.where(frames < 10, -20.0, -20.0 + 3.0 * (frames - 10))
-        a = compute_kinematics("A", frames, x, np.zeros(40), FPS)
-        b = compute_kinematics("B", frames, -x, np.zeros(40), FPS)
+        # both still until frame 10, then one robot charges
+        x_a = np.where(frames < 10, -20.0, -20.0 + 3.0 * (frames - 10))
+        a = compute_kinematics("A", frames, x_a, np.zeros(40), FPS)
+        b = compute_kinematics("B", frames, np.full(40, 20.0), np.zeros(40), FPS)
         events = detect_events(a, b)
         start = next(e for e in events if e.kind == "round_start")
-        assert start.frame >= 9
+        assert 9 <= start.frame <= 14
 
 
 class TestRingOut:
