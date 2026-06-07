@@ -100,11 +100,11 @@ def _write_chunk(frames_rgb: list[np.ndarray], fps: float, path: Path) -> None:
     writer.release()
 
 
-def _run_session(predictor, video_path: Path) -> dict[int, np.ndarray]:
+def _run_session(predictor, video_path: Path, prompt: str) -> dict[int, np.ndarray]:
     resp = predictor.handle_request(request=dict(type="start_session", resource_path=str(video_path)))
     session_id = resp["session_id"]
     resp = predictor.handle_request(
-        request=dict(type="add_prompt", session_id=session_id, frame_index=0, text=PROMPT)
+        request=dict(type="add_prompt", session_id=session_id, frame_index=0, text=prompt)
     )
     out_per_frame = {0: resp["outputs"]}
     for r in predictor.handle_stream_request(
@@ -125,7 +125,7 @@ def _run_session(predictor, video_path: Path) -> dict[int, np.ndarray]:
     return masks
 
 
-def run_sam(sam_frames: list[np.ndarray], sam_fps: float) -> dict[int, np.ndarray]:
+def run_sam(sam_frames: list[np.ndarray], sam_fps: float, prompt: str = PROMPT) -> dict[int, np.ndarray]:
     """Masks per global frame index, processing in chunks to bound VRAM.
 
     SAM 3's video predictor keeps feature maps for every frame in a session, so a
@@ -141,7 +141,7 @@ def run_sam(sam_frames: list[np.ndarray], sam_fps: float) -> dict[int, np.ndarra
             chunk_path = Path(tmp) / f"chunk_{start:05d}.mp4"
             _write_chunk(chunk, sam_fps, chunk_path)
             print(f"  chunk {start}-{start + len(chunk) - 1}")
-            for local_idx, masks in _run_session(predictor, chunk_path).items():
+            for local_idx, masks in _run_session(predictor, chunk_path, prompt).items():
                 result[start + local_idx] = masks
             torch.cuda.empty_cache()
     return result
@@ -150,7 +150,8 @@ def run_sam(sam_frames: list[np.ndarray], sam_fps: float) -> dict[int, np.ndarra
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("clip_id")
-    ap.add_argument("--split", choices=("train", "val", "gold"), default="train")
+    ap.add_argument("--split", default="train", help="output subdir under data/annotations (train|val|gold or scratch name)")
+    ap.add_argument("--prompt", default=PROMPT, help="SAM 3 text prompt")
     args = ap.parse_args()
 
     clip_id = args.clip_id
@@ -179,7 +180,7 @@ def main() -> None:
     native_count = int(native_cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
     print(f"[{clip_id}] running SAM 3 ({len(sam_frames)} frames @ {sam_fps:.1f}fps, {sam_w}x{sam_h})")
-    masks_per_frame = run_sam(sam_frames, sam_fps)
+    masks_per_frame = run_sam(sam_frames, sam_fps, args.prompt)
 
     stride = max(1, round(native_fps / sam_fps))
     written = 0
