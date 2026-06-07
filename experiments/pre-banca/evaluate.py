@@ -48,12 +48,16 @@ def _load_mot(path: Path) -> dict[int, dict[int, np.ndarray]]:
 
 
 def evaluate_tracking(pred_mot: Path, gold_mot: Path) -> dict:
+    if not hasattr(np, "asfarray"):  # motmetrics predates NumPy 2.0
+        np.asfarray = lambda a, dtype=np.float64: np.asarray(a, dtype=dtype)
     import motmetrics as mm
 
     gt = _load_mot(gold_mot)
     hyp = _load_mot(pred_mot)
     acc = mm.MOTAccumulator(auto_id=False)
-    for frame in sorted(set(gt) | set(hyp)):
+    # Evaluate only on annotated frames: the gold is sampled sparser than inference,
+    # so scoring inference-only frames would count every one as a false positive.
+    for frame in sorted(gt):
         g = gt.get(frame, {})
         h = hyp.get(frame, {})
         gids, gboxes = list(g.keys()), list(g.values())
