@@ -1,0 +1,36 @@
+[project]
+name = "kanshigan-pre-banca"
+version = "0.1.0"
+description = "Pipeline pre-banca: YOLOv8 training, OC-SORT tracking, evaluation, bbox editor. SAM annotation lives in ../sam3-poc."
+requires-python = ">=3.12"
+dependencies = [
+    "torch>=2.7.0",
+    "torchvision",
+    "ultralytics>=8.3.0",
+    "boxmot>=13.0.0",
+    "opencv-python>=4.10.0",
+    "numpy>=1.26.0",
+    "pyyaml>=6.0",
+    "scipy>=1.13.0",
+    "motmetrics>=1.4.0",
+    "matplotlib>=3.9.0",
+    "pandas>=2.2.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[[tool.uv.index]]
+name = "pytorch-cuda"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cuda" }
+torchvision = { index = "pytorch-cuda" }
