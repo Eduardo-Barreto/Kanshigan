@@ -2,184 +2,149 @@
 
 ## Contexto
 
-Esta entrada documenta a execução do plano definido nos diários [12](12-design-da-pipeline-pre-banca.md)
-e [13](13-protocolo-experimental-e-cronograma.md): aquisição de dados,
-implementação da pipeline completa, anotação semiautomática e os ajustes que a
-realidade dos dados impôs sobre o design.
+Esta entrada conta a execução do plano dos diários [12](12-design-da-pipeline-pre-banca.md)
+e [13](13-protocolo-experimental-e-cronograma.md): da aquisição de dados ao detector
+multi-fonte avaliado. É um relato da jornada, então registra também o que falhou, por
+quê, e o que corrigiu cada ponto. Os números finais aparecem consolidados na seção de
+resultados; o texto antes dela mostra como chegamos neles.
 
 ## Aquisição de dados
 
-Sem dataset público do domínio, os clips vêm de torneios reais via `yt-dlp`. O
-subconjunto brasileiro usa seis partidas autônomas (categoria Auto, 3 kg) do
-canal da ThunderRatz, cada vídeo já recortado em uma partida (IRONCup 2025 e
-outras). Cada vídeo tem cartões de abertura, patrocínio e b-roll; os trechos de
-partida foram identificados por inspeção de contact-sheets e recortados em
-`configs/clips.yaml` (fora do git, dado versionado por DVC).
+Sem dataset público do domínio, os clips vêm de torneios reais baixados com `yt-dlp`,
+de duas fontes propositalmente diferentes (para a restrição de qualidade heterogênea,
+C3):
 
-Para o broadcast japonês, a live do All Japan Robot Sumo 2025 (4h16) tem metadados
-de capítulos inconsistentes (a "premiação" alegava durar quatro horas), então não
-serve para corte cego. Clips japoneses individuais avaliados eram recapitulações
-mistas, sem rounds contínuos limpos. O broadcast japonês fica como trabalho futuro
-para estressar a heterogeneidade de qualidade (restrição C3), conforme já previsto
-na discussão do artigo.
+- **Brasil (IRONCup 2025, canal ThunderRatz):** seis partidas autônomas de 3 kg,
+  câmera de mão em ângulo oblíquo. Cada vídeo tem cartões de abertura, patrocínio e
+  b-roll; os trechos de partida foram identificados por contact-sheets.
+- **Japão (torneio regional):** câmera fixa cenital, oposto da captura brasileira.
+  Vídeo contínuo de várias partidas.
 
-## Ajustes de design forçados pelos dados reais
+O `configs/clips.yaml` (fora do git; dado versionado por DVC) lista os recortes. A live
+de 4h do All Japan 2025 foi descartada como fonte primária: metadados de capítulos
+inconsistentes e muito corte; ela reaparece adiante só como teste extremo.
 
-Três premissas do design não sobreviveram ao contato com a footage real:
+## Premissas de design que a footage real quebrou
 
-**Câmera não é cenital fixa.** A footage brasileira é de mão, com movimento e ângulo
-oblíquo. Consequências: a detecção do dohyo passa a ser por quadro (com reuso da
-última detecção válida em falhas), e as métricas viram referencial centrado no
-dohyo, o que cancela o movimento de câmera (o dohyo é fixo no mundo). A calibração
-centímetro-por-pixel por escala isotrópica vira aproximação, com o erro de
-perspectiva documentado como limitação; retificação por homografia fica para o
-trabalho final.
+Três suposições do plano não sobreviveram ao contato com os dados, e cada uma virou uma
+correção na pipeline:
 
-**Detecção do dohyo por "maior região branca" falha.** O dohyo real é uma
-plataforma preta com anel branco (tawara), sobre tapete colorido, com fundo ruidoso
-(texto de overlay, cercas, pessoas). A heurística do PoC pegava objetos brancos do
-fundo. A solução foi pontuar cada elipse candidata por tamanho, centralidade e
-razão de aspecto (um círculo visto de lado é mais largo que alto), escolhendo a de
-maior escore. Validado visualmente em múltiplos frames reais.
+**A câmera não é cenital fixa (no BR).** A captura brasileira é de mão, com movimento e
+ângulo oblíquo. Por isso a detecção do dohyo passou a ser por quadro (reusando a última
+detecção válida nas falhas) e as métricas passaram a viver no referencial centrado no
+dohyo, o que cancela o movimento da câmera, já que o dohyo é fixo no mundo. A calibração
+centímetro-por-pixel por escala isotrópica vira aproximação sob perspectiva; a
+retificação por homografia fica para o trabalho final.
 
-**SAM 3 estoura a VRAM de 8 GB em clips longos.** O preditor de vídeo do SAM 3
-mantém feature maps de todos os quadros da sessão; clips de centenas de quadros
-esgotam a GPU. A correção foi processar em janelas de 60 quadros, encerrando a
-sessão entre janelas (`close_session`) para liberar memória, e ler os quadros
-nativos sob demanda em vez de carregar o clip inteiro em RAM (um clip de 84 s a
-1080p60 não cabe nos 30 GB de RAM). Rounds de Sumô são curtos, então uma janela
-cobre um round inteiro.
+**Detectar o dohyo pela "maior região branca" falha.** O dohyo é uma plataforma escura
+com anel branco (tawara) sobre tapete colorido, com fundo ruidoso (overlays, cercas,
+plateia). A heurística do PoC pegava objetos brancos do fundo. A correção foi pontuar
+cada elipse candidata por tamanho, centralidade e razão de aspecto (um círculo visto de
+lado é mais largo que alto) e escolher a de maior escore. Validado em vários frames
+reais, incluindo a arena japonesa de cor diferente.
 
-## Pipeline implementada
+**SAM 3 estoura a VRAM de 8 GB em clips longos.** O preditor de vídeo guarda feature
+maps de todos os quadros da sessão. A correção: processar em janelas curtas, encerrar a
+sessão entre janelas (`close_session`) para liberar memória, e ler os quadros nativos
+sob demanda em vez de carregar o clip inteiro em RAM (84 s a 1080p60 não cabe nos 30 GB).
 
-A pipeline de inferência está implementada em `experiments/pre-banca/`, modular e
-testada na lógica pura (sem GPU):
+## Qualidade dos dados: três iterações
 
-- `dohyo.py`: detecção da arena e calibração.
-- `tracking.py`: OC-SORT (boxmot) com convenção de identidade A/B.
-- `metrics.py`: cinemática por Savitzky-Golay no referencial do dohyo.
-- `events.py`: eventos determinísticos (início, contato, ring-out, vencedor).
-- `infer.py`: orquestração ponta a ponta, saída JSON + vídeo + MOT.
-- `train.py`, `evaluate.py`: treino do YOLOv8s e avaliação contra o gold.
+A primeira passada deu números bonitos mas enganosos, porque os dados estavam ruins, não
+a pipeline. Cada problema foi diagnosticado e corrigido:
 
-A suíte de testes (`pytest`) cobre geometria do dohyo, cinemática, regras de evento
-e atribuição de identidade. A anotação semiautomática (SAM 3 → bbox YOLO) gera o
-conjunto de treino e validação, com divisão por clip para evitar vazamento entre
-quadros vizinhos.
+**Clips multi-round e ending.** Cada vídeo concatena vários rounds mais um encerramento
+de patrocínio. Em clip multi-round o SAM perdia um robô em boa parte dos quadros; em
+round único limpo ele pega os dois. Solução: segmentar em rounds únicos por motion mais
+presença do dohyo (`segment_rounds.py`) e descartar as endings.
 
-## Iteração de qualidade dos dados
+**Rótulos incompletos.** Quadro com só um robô é rótulo incompleto que ensina o detector
+a ignorar um robô. Passamos a treinar apenas com quadros de rótulo completo (os dois
+robôs).
 
-A primeira passada produziu números enganosos porque os dados estavam ruins, não a
-pipeline. Duas causas, ambas apontadas na revisão:
+**Robôs pequenos somem no quadro inteiro (a correção decisiva).** Mesmo com dados
+limpos, o detector perdia robôs em movimento e gerava falso positivo no fundo (precisão
+0.71). Causa: o robô ocupa fração pequena do quadro, e reduzir o quadro inteiro para 640
+px o encolhe abaixo do que sobrevive ao borrão de movimento. Solução: **recortar no
+dohyo** antes de detectar (o dohyo já é detectado). O robô fica cerca de três vezes
+maior e o fundo some; as caixas voltam às coordenadas nativas por um deslocamento. Isso
+levou recall e precisão de ~0.9/0.71 para ~0.98/0.98.
 
-**Clips multi-round + ending.** Cada vídeo BR concatena vários rounds mais um outro
-de patrocínio. Em clip multi-round, o SAM 3 perdia um robô em ~35% dos quadros
-(durante resets e na ending). Em round único limpo, o SAM 3 pega os dois robôs em
-93% dos quadros. A correção foi segmentar em rounds únicos (motion + presença do
-dohyo, em `segment_rounds.py`) e descartar as endings.
+**Gold revisado por humano (gate de aprovação).** Os golds (um round por fonte) são
+pré-anotados pelo SAM e revisados manualmente quadro a quadro pelo autor. Nenhum número
+de avaliação é tratado como válido sem essa aprovação.
 
-**Rótulos incompletos no treino.** Quadros com só um robô são rótulos incompletos
-que ensinam o detector a ignorar um robô. Passamos a treinar apenas com quadros de
-rótulo completo (os dois robôs), descartando os incompletos.
+## A fonte japonesa: de "inviável" a multi-fonte
 
-**Gold revisado por humano.** O gold (um round único) foi pré-anotado pelo SAM 3 e
-revisado/aprovado manualmente quadro a quadro (100% completo). Nenhum número de
-avaliação é tratado como válido sem essa aprovação.
+A anotação SAM no JP parecia falhar por completo, e quase a descartamos como inviável.
+Instrumentando o SAM, o motivo real apareceu: ele tem limiares de detecção fixos no
+código (`new_det_thresh=0.7`, `score_threshold_detection=0.5`) altos demais para os
+robôs japoneses, caixas pretas pequenas que pontuam baixo para o conceito textual. Não
+era prompt nem resolução nem ponto de corte: era o limiar. Uma varredura num round que
+dava zero quadro: limiar 0.5 dava 2 quadros com os dois robôs; limiar 0.15 dava 45 de
+57. Adicionamos um limiar configurável (`--score-thresh`) e um filtro geométrico que
+descarta caixas fora do dohyo (falsos positivos que surgem no limiar baixo).
 
-## Recorte no dohyo: a correção decisiva
+Com isso o JP foi de 16 para **202 quadros com os dois robôs**, e o conjunto virou
+multi-fonte de verdade. A restrição C3 deixou de ser projeção e virou resultado medido.
+Lição: antes de declarar uma ferramenta incapaz, instrumentar e checar os parâmetros
+padrão dela.
 
-Mesmo com dados limpos, o detector ainda perdia robôs em movimento e gerava falso
-positivo no fundo (precisão 0.71). Causa: os robôs ocupam fração pequena do quadro;
-alimentar o quadro inteiro a um detector de 640 px os encolhe abaixo do que sobrevive
-ao borrão de movimento. A correção foi **recortar no dohyo** antes de detectar (o
-dohyo já é detectado pela visão clássica): o robô fica ~3x maior e o fundo some. As
-caixas voltam a coordenadas nativas por um deslocamento. O gold revisado é
-transformado para o espaço recortado deterministicamente, preservando a revisão
-manual.
+## Resultados medidos
 
-## Resultados medidos (gold aprovado, pipeline com recorte)
+Conjunto, após segmentar em rounds únicos, recortar no dohyo e filtrar quadros de rótulo
+completo (treino e validação) com gold revisado manualmente:
 
-Conjunto após recorte e filtro de quadros completos: treino 423 (6 clips),
-validação 59, gold 59 (1 round revisado manualmente).
+| Subconjunto | BR | JP |
+|---|---|---|
+| Treino | 423 | 202 |
+| Validação | 59 | 15 |
+| Gold (teste) | 59 | 57 |
 
-**Detector.** YOLOv8s fine-tuned (E2) sobre o recorte: mAP@0.5 de 0.994 na validação
-e **0.984 no gold held-out, com recall e precisão de 0.98**. Baseline COCO (E3):
-mAP@0.5 de 0.026. O recorte levou recall 0.91→0.98 e precisão 0.71→0.98.
+**Detector multi-fonte (YOLOv8s fine-tuned, E2)**, no gold held-out de cada fonte:
 
-**Viabilidade.** Pipeline completa a 133 FPS, pico de 82 MB de VRAM (RTX 4070 Laptop).
-SAM 3 anotador a ~2 FPS, ~7 GB.
+| Fonte | mAP@0.5 | mAP@0.5:0.95 | precisão | recall |
+|---|---|---|---|---|
+| Gold BR (câmera de mão) | 0.985 | 0.781 | 0.99 | 0.98 |
+| Gold JP (cenital fixa) | 0.976 | 0.695 | 0.99 | 0.91 |
+| E3 baseline COCO (gold BR) | 0.026 | 0.017 | 0.03 | 0.75 |
 
-**Rastreamento e eventos.** OC-SORT mantém A/B consistentes no round held-out,
-inclusive com os robôs em movimento (validado no overlay nativo raw→recorte→volta).
-Início de round dispara confiável; ring-out e contato precisam de calibração.
-IDF1/HOTA dependem de um gold com identidades anotadas (próximo passo).
+Um único detector acima de 0.97 nas duas fontes, apesar das câmeras opostas, é a entrega
+concreta de C3. O baseline COCO sem fine-tuning, duas ordens de grandeza abaixo, mostra
+que o domínio exige treino específico.
 
-## Rastreamento medido (gold com identidades aprovado)
+**Rastreamento (OC-SORT, gold de identidades aprovado):** IDF1 0.93, MOTA 0.88, 1 troca
+de identidade no round. O único switch ocorre na aproximação dos dois robôs idênticos: a
+limitação esperada de um tracker motion-only.
 
-Geramos um gold com identidades A/B ligando as duas caixas por continuidade de
-centroide; o usuário revisou e aprovou o overlay. Contra ele, OC-SORT: **IDF1 0.94,
-MOTA 0.90, 1 ID switch**. O único switch ocorre na aproximação dos robôs idênticos:
-a limitação esperada do tracker motion-only.
+**Viabilidade (RTX 4070 Laptop 8 GB):** pipeline completa a 133 FPS com pico de 82 MB de
+VRAM. O SAM como anotador roda a ~2 FPS com ~7 GB, o que justifica usá-lo só como
+anotador, nunca na inferência.
 
-## Tentativa de fonte japonesa (heterogeneidade C3)
-
-Baixamos um torneio regional japonês (câmera fixa cenital, oposto da BR de mão) para
-estressar a heterogeneidade de qualidade. O segmentador de rounds funcionou muito
-melhor aqui (26 rounds únicos limpos), e o detector clássico de dohyo generalizou de
-cara para o footage JP.
-
-A anotação SAM 3 no JP foi uma investigação em camadas:
-- **Decimação a 480px**: SAM achava 0-1 robô. Diagnóstico instrumentado: o SAM
-  rodava limpo (sem OOM) mas retornava 0 máscaras, pois o robô em vista cenital
-  ficava com ~15px, abaixo do que o detector de conceito do SAM dispara.
-- **Prompts**: testados toy, robot, sumo robot, black robot, machine. Nenhum mudou
-  o resultado: não era problema de prompt.
-- **Resolução 960px**: o robô dobra de tamanho e o SAM passa a pegar os dois robôs.
-  Mas só em rounds que começam com os robôs nítidos e separados.
-- **Gargalo real**: o SAM 3 vídeo semeia no frame 0; rounds JP costumam começar com
-  os robôs colados/ocluídos/sendo posicionados, então o SAM não engata no round
-  inteiro. Resultado: dos 8 rounds JP, só 1 anotou limpo (16 quadros com os dois).
-
-Primeira conclusão (errada): "anotação semiautomática do JP não é viável". O usuário
-questionou, e ao instrumentar o SAM descobri o verdadeiro motivo: o SAM 3 tem limiares
-de detecção hardcoded (`new_det_thresh=0.7`, `score_threshold_detection=0.5`) altos
-demais para os robôs japoneses, caixas pretas pequenas que pontuam baixo para o
-conceito "toy". Varredura no round que dava 0 quadros: limiar 0.5 → 2 quadros com os
-dois robôs; limiar 0.15 → 45/57. Adicionei limiar configurável (`--score-thresh`) e um
-filtro geométrico que descarta caixas fora do dohyo (falsos positivos que surgem no
-limiar baixo).
-
-Resultado: o JP passou de 16 para **202 quadros com os dois robôs**. O conjunto virou
-multi-fonte de verdade (treino 423 BR + 202 JP; gold com um round por fonte, ambos
-revisados manualmente). Um único detector atinge mAP@0.5 de 0.985 no gold BR e 0.976
-no gold JP, apesar das câmeras opostas (mão oblíqua vs cenital fixa): a restrição C3
-deixou de ser projeção e virou resultado medido. Lição: antes de declarar uma
-ferramenta "incapaz", instrumentar e checar os parâmetros padrão dela.
+**Eventos:** o início de round dispara de forma confiável; ring-out e primeiro contato
+ainda dependem de calibração de limiar com timestamps marcados no gold.
 
 ## Caso extremo: final de mundial (o alvo máximo)
 
-Testamos a pipeline e o SAM na final do 84º All Japan Robot Sumo (3 kg autônomo),
-baixada via yt-dlp. É broadcast bem fora da distribuição: arena azul-escura, overlay
-de placar, cortes frequentes (dohyo, operador, replay) e colisões com blur extremo.
-Achados:
-- A detecção do dohyo generaliza para a arena de cor nova.
-- No Round 1, nosso modelo e o SAM acham os dois robôs na maior parte dos quadros; no
-  auge da colisão o blur derruba ambos. O replay em câmera lenta é mais difícil pro
-  SAM (blur do replay), e o nosso modelo segura ao menos um robô.
-- O gargalo não é a semelhança/bandeira dos robôs: é o blur do combate de elite.
+Testamos pipeline e SAM na final do 84º All Japan Robot Sumo (3 kg autônomo): broadcast
+muito fora da distribuição de treino, com arena azul-escura, overlay de placar, cortes
+frequentes e colisões de blur extremo. A detecção do dohyo generaliza para a arena nova.
+No Round 1, nosso modelo e o SAM acham os dois robôs na maior parte dos quadros; no auge
+da colisão o blur derruba ambos. O replay em câmera lenta, contra a intuição, é mais
+difícil para o SAM (o replay desfoca cada quadro). O gargalo não é a semelhança nem as
+bandeiras dos robôs: é o blur do combate de elite. Esse vídeo fica registrado como o
+alvo máximo do projeto, e fechá-lo exige dados de treino dessa distribuição.
 
-Lição de método: comparando modelo×SAM, o vídeo do SAM "parecia" pior por causa de um
-recorte ruim no meu script de teste (amostrei os primeiros 12 quadros pra achar a ROI,
-em vez de espalhados como a pipeline faz). Corrigida a amostragem, o SAM no Round 1
-saltou de 18 para 45 de 61 quadros com os dois robôs. Ou seja: qualidade do recorte
-domina a anotação. A pipeline commitada já usa amostragem espalhada; foi erro do
-script avulso. Esse vídeo de mundial fica registrado como o alvo máximo do projeto.
+Detalhe de método: ao comparar modelo e SAM, o vídeo do SAM parecia pior por um recorte
+ruim no script de teste (amostrava os primeiros quadros para achar a ROI, em vez de
+espalhados como a pipeline faz). Corrigida a amostragem, o SAM no Round 1 saltou de 18
+para 45 de 61 quadros com os dois robôs: a qualidade do recorte domina a anotação.
 
 ## Status
 
-- Conjunto multi-fonte (423 BR + 202 JP no treino), com recorte no dohyo.
-- Detector multi-fonte: mAP@0.5 0.985 no gold BR e 0.976 no gold JP (ambos aprovados
-  manualmente); recall/precisão ~0.98; C3 medido, não projetado.
-- Tracking: IDF1 0.93, MOTA 0.88, 1 ID switch (gold de identidades aprovado).
-- Viabilidade: 133 FPS, 82 MB VRAM.
-- Pendente: calibração dos limiares de evento (ring-out/contato) com timestamps do gold.
+- Pipeline ponta a ponta com recorte no dohyo, testada na lógica pura (sem GPU).
+- Conjunto multi-fonte (BR + JP), golds aprovados manualmente.
+- Detector mAP@0.5 0.985 (BR) e 0.976 (JP); tracking IDF1 0.93 / MOTA 0.88; 133 FPS.
+- Artigo SBC, README e este diário consolidados; resultados reprodutíveis.
+- Pendente: calibração dos eventos (ring-out e contato) com timestamps do gold; treino
+  com a distribuição de broadcast de mundial.
