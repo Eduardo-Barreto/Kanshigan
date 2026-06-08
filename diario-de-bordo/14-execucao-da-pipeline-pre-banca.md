@@ -140,16 +140,27 @@ A anotação SAM 3 no JP foi uma investigação em camadas:
   os robôs colados/ocluídos/sendo posicionados, então o SAM não engata no round
   inteiro. Resultado: dos 8 rounds JP, só 1 anotou limpo (16 quadros com os dois).
 
-Conclusão honesta: anotação semiautomática do JP não é viável como está (16 quadros
-de 1 round não dá para treinar sem viés). O detector treinado só com BR detecta os
-robôs JP em zero-shot nos quadros nítidos, evidência inicial de C3. Treino
-multi-fonte no JP depende de anotação manual (como o gold) ou de semear o SAM num
-frame nítido escolhido, não no frame 0: trabalho futuro.
+Primeira conclusão (errada): "anotação semiautomática do JP não é viável". O usuário
+questionou, e ao instrumentar o SAM descobri o verdadeiro motivo: o SAM 3 tem limiares
+de detecção hardcoded (`new_det_thresh=0.7`, `score_threshold_detection=0.5`) altos
+demais para os robôs japoneses, caixas pretas pequenas que pontuam baixo para o
+conceito "toy". Varredura no round que dava 0 quadros: limiar 0.5 → 2 quadros com os
+dois robôs; limiar 0.15 → 45/57. Adicionei limiar configurável (`--score-thresh`) e um
+filtro geométrico que descarta caixas fora do dohyo (falsos positivos que surgem no
+limiar baixo).
+
+Resultado: o JP passou de 16 para **202 quadros com os dois robôs**. O conjunto virou
+multi-fonte de verdade (treino 423 BR + 202 JP; gold com um round por fonte, ambos
+revisados manualmente). Um único detector atinge mAP@0.5 de 0.985 no gold BR e 0.976
+no gold JP, apesar das câmeras opostas (mão oblíqua vs cenital fixa): a restrição C3
+deixou de ser projeção e virou resultado medido. Lição: antes de declarar uma
+ferramenta "incapaz", instrumentar e checar os parâmetros padrão dela.
 
 ## Status
 
-- Pipeline com recorte no dohyo: detecção e tracking sólidos em footage held-out
-  (mAP 0.984, recall/precisão 0.98; IDF1 0.94, MOTA 0.90), inclusive robôs em movimento.
-- Gold (detecção e identidades) aprovado manualmente; números consolidados no artigo.
-- Transferência zero-shot BR→JP demonstrada (C3); treino multi-fonte é trabalho futuro.
+- Conjunto multi-fonte (423 BR + 202 JP no treino), com recorte no dohyo.
+- Detector multi-fonte: mAP@0.5 0.985 no gold BR e 0.976 no gold JP (ambos aprovados
+  manualmente); recall/precisão ~0.98; C3 medido, não projetado.
+- Tracking: IDF1 0.93, MOTA 0.88, 1 ID switch (gold de identidades aprovado).
+- Viabilidade: 133 FPS, 82 MB VRAM.
 - Pendente: calibração dos limiares de evento (ring-out/contato) com timestamps do gold.

@@ -1,54 +1,59 @@
 = Resultados Parciais
 
 Esta seção reporta os resultados medidos sobre footage real até a pré-banca. Todos
-os números são medidos, não projetados. O conjunto de avaliação é pequeno (um round
-held-out, anotado e revisado manualmente), então os valores indicam ordem de
-grandeza e viabilidade, não um modelo definitivo (ver limitações na @sec-discussao).
+os números são medidos, não projetados. O conjunto de avaliação é pequeno (dois rounds
+held-out, um por fonte, anotados e revisados manualmente), então os valores indicam
+ordem de grandeza e viabilidade, não um modelo definitivo (ver limitações na
+@sec-discussao).
 As medições de hardware usaram uma RTX 4070 Laptop de 8 GB.
 
 == Conjunto de dados
 
-O conjunto vem de partidas autônomas de 3 kg da IRONCup 2025, recortadas em rounds
-individuais (rastreamento e eventos só fazem sentido dentro de um round). A divisão
-é por round/clip, não por quadro, para evitar vazamento entre quadros vizinhos quase
+O conjunto é multi-fonte, atendendo à restrição de qualidade heterogênea (C3): footage
+amador brasileiro da IRONCup 2025 (câmera de mão, ângulo oblíquo) e footage de torneio
+regional japonês (câmera fixa cenital). Os vídeos são recortados em rounds individuais
+(rastreamento e eventos só fazem sentido dentro de um round). A divisão é por
+round/clip, não por quadro, para evitar vazamento entre quadros vizinhos quase
 idênticos. Para treino e validação mantemos apenas os quadros em que o anotador
 produziu rótulos completos (os dois robôs), descartando quadros incompletos que
-ensinariam o detector a ignorar um robô. O gold é um round inteiro mantido fora do
-treino e revisado manualmente quadro a quadro.
+ensinariam o detector a ignorar um robô. O gold tem um round por fonte, mantido fora
+do treino e revisado manualmente quadro a quadro.
 
 #figure(
-  caption: [Composição do conjunto, após filtrar quadros de rótulo completo. Treino e validação anotados via SAM 3; gold revisado manualmente.],
+  caption: [Composição do conjunto multi-fonte, após filtrar quadros de rótulo completo. Treino e validação anotados via SAM 3; gold revisado manualmente.],
   table(
-    columns: 4,
-    align: (left, center, center, left),
+    columns: 5,
+    align: (left, center, center, center, left),
     stroke: 0.4pt,
-    table.header([*Subconjunto*], [*Clips*], [*Quadros*], [*Anotação*]),
-    [Treino], [6], [423], [SAM 3, quadros completos],
-    [Validação], [1], [59], [SAM 3, quadros completos],
-    [Gold (teste)], [1], [59], [SAM 3 + revisão manual],
+    table.header([*Subconjunto*], [*Clips*], [*BR*], [*JP*], [*Anotação*]),
+    [Treino], [14], [423], [202], [SAM 3, quadros completos],
+    [Validação], [2], [59], [15], [SAM 3, quadros completos],
+    [Gold (teste)], [2], [59], [57], [SAM 3 + revisão manual],
   ),
 )
 
 == Detecção
 
-O detector com fine-tuning no domínio (E2), operando sobre o recorte do dohyo, atinge
-mAP\@0.5 de 0.994 na validação e 0.984 no round gold held-out, com recall e precisão
-de 0.98, contra 0.026 do YOLOv8s pré-treinado em COCO sem fine-tuning (E3). A queda de
-duas ordens de grandeza no baseline confirma que o domínio exige treino específico: os
-robôs não correspondem a nenhuma classe COCO. O recorte no dohyo foi decisivo: antes
-dele, com o quadro inteiro, o detector caía para recall 0.91 e precisão 0.71 (perdendo
-robôs em movimento e gerando falso positivo no fundo); ampliar os robôs e remover o
-fundo levou ambos a 0.98.
+O detector com fine-tuning no domínio (E2), treinado nas duas fontes e operando sobre
+o recorte do dohyo, atinge mAP\@0.5 de 0.985 no gold brasileiro e 0.976 no gold
+japonês held-out, contra 0.026 do YOLOv8s pré-treinado em COCO sem fine-tuning (E3) ---
+duas ordens de grandeza abaixo, confirmando que o domínio exige treino específico. Que
+um único detector alcance mAP acima de 0.97 em ambas as fontes, apesar das câmeras
+opostas (mão oblíqua vs cenital fixa), é a evidência central de que a pipeline atende à
+heterogeneidade de qualidade (C3). O recorte no dohyo foi decisivo: sem ele, no quadro
+inteiro, o detector caía para recall 0.91 e precisão 0.71 (perdia robôs em movimento e
+gerava falso positivo no fundo); ampliar os robôs e remover o fundo levou ambos a 0.98.
 
 #figure(
-  caption: [Acurácia do detector sobre o recorte do dohyo. E2 é o experimento principal; E3 é o baseline sem fine-tuning. mAP no round gold held-out, revisado manualmente.],
+  caption: [Acurácia do detector multi-fonte sobre o recorte do dohyo, por fonte, no gold held-out revisado manualmente. E3 é o baseline COCO sem fine-tuning (gold BR).],
   table(
     columns: 5,
     align: (left, center, center, center, center),
     stroke: 0.4pt,
-    table.header([*Config.*], [*mAP\@.5 (val)*], [*mAP\@.5 (gold)*], [*mAP\@.5:.95 (gold)*], [*Recall (gold)*]),
-    [E2 YOLOv8s fine-tuned], [0.994], [0.984], [0.766], [0.982],
-    [E3 YOLOv8s COCO], [---], [0.026], [0.017], [0.745],
+    table.header([*Config. / fonte*], [*mAP\@.5*], [*mAP\@.5:.95*], [*Precisão*], [*Recall*]),
+    [E2 fine-tuned --- gold BR], [0.985], [0.781], [0.990], [0.982],
+    [E2 fine-tuned --- gold JP], [0.976], [0.695], [0.991], [0.915],
+    [E3 COCO --- gold BR], [0.026], [0.017], [0.031], [0.745],
   ),
 ) <tab-detector>
 
@@ -80,7 +85,7 @@ confirmando a decisão de usá-lo apenas como anotador (E1), nunca na inferênci
 ) <fig-traj>
 
 Contra um gold com identidades anotadas e revisadas manualmente, o OC-SORT atinge
-IDF1 de 0.94 e MOTA de 0.90, com uma única troca de identidade no round. O detector
+IDF1 de 0.93 e MOTA de 0.88, com uma única troca de identidade no round. O detector
 cinemático projeta posição e velocidade no referencial do dohyo (@fig-traj),
 com velocidade máxima da ordem de 3 m/s, coerente com a modalidade.
 
@@ -91,7 +96,7 @@ com velocidade máxima da ordem de 3 m/s, coerente com a modalidade.
     align: (left, center, center, center),
     stroke: 0.4pt,
     table.header([*Tracker*], [*MOTA*], [*IDF1*], [*ID switches*]),
-    [OC-SORT], [0.90], [0.94], [1],
+    [OC-SORT], [0.88], [0.93], [1],
   ),
 ) <tab-tracking>
 

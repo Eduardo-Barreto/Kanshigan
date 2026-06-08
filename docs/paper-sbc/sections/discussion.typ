@@ -18,26 +18,22 @@ como expectativa; o Deep HM-SORT @deephmsort2024, com características profundas
 próximo passo para endereçar o ponto, e o ByteTrack entra como segundo ponto
 experimental para comparação empírica de rastreadores.
 
-== Transferência cross-source (C3)
+== Anotação heterogênea (C3)
 
-Como evidência inicial da restrição de qualidade heterogênea (C3), avaliamos o
-detector treinado apenas com footage amador brasileiro (câmera de mão, ângulo
-oblíquo) sobre footage de torneio japonês (câmera fixa cenital). Em zero-shot, sem
-nenhum exemplo japonês no treino, o detector localiza ambos os robôs nos quadros
-nítidos, demonstrando transferência entre fontes. O recall cai nos quadros de vista
-cenital com robôs pequenos e escuros. A anotação semiautomática com SAM 3 na fonte
-japonesa esbarra em dois pontos: a entrada decimada precisa de mais resolução (a 480
-px o robô cenital fica abaixo do tamanho de detecção do SAM; a 960 px ele volta a
-segmentar os dois robôs), e o SAM de vídeo semeia no primeiro quadro, que em muitos
-rounds japoneses começa com os robôs ocluídos. Por isso o treino multi-fonte depende
-de anotação manual ou de semeadura em um quadro nítido escolhido, deixado como
-trabalho futuro.
+Treinar nas duas fontes exigiu adaptar a anotação semiautomática. Os robôs japoneses,
+em vista cenital, são caixas pretas pequenas que pontuam baixo para o conceito textual
+do SAM 3, então o limiar de detecção padrão (0.5 a 0.7) os perdia por completo;
+baixá-lo para 0.15, somado a uma resolução de entrada maior (960 px) e a um filtro
+geométrico que descarta caixas fora do dohyo, recuperou os dois robôs. Com isso o
+treino multi-fonte foi viabilizado, e um único detector atinge mAP acima de 0.97 em
+ambas as fontes, apesar das câmeras opostas. Essa robustez entre fontes é a entrega
+concreta da restrição C3.
 
 == Trabalhos futuros
 
-Além da homografia e do rastreador com aparência, planejamos: treino multi-fonte com
-footage de broadcast japonês para fechar a heterogeneidade de qualidade (C3); ablação
-do detector com RT-DETR @zhao2024rtdetr na arena controlada;
+Além da homografia e do rastreador com aparência, planejamos: ampliar a base japonesa
+e adicionar broadcast profissional; ablação do detector com RT-DETR @zhao2024rtdetr na
+arena controlada;
 detecção de contato por máscara em vez de bounding box; e a evolução para uma
 plataforma colaborativa aberta de análise de combate de robôs. A pipeline e o
 conjunto de dados são públicos para reprodução e extensão.

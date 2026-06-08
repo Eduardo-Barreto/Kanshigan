@@ -18,12 +18,13 @@
     (position, velocity, acceleration) and events (round start, contact, ring-out)
     from match video. We frame the problem by the intersection of six constraints
     that no prior work covers jointly, and we build the pipeline from
-    tracking-by-detection: a YOLOv8s detector trained on a dataset semi-automatically
-    annotated with SAM 3, followed by OC-SORT tracking. On real tournament footage,
-    the detector reaches mAP\@0.5 of 0.98 with 0.98 recall on a held-out,
-    manually-reviewed round (versus 0.03 for COCO weights without fine-tuning), and
-    the full pipeline runs at 133 FPS using 82 MB of GPU memory on a consumer laptop
-    GPU, confirming practical viability.
+    tracking-by-detection: a YOLOv8s detector trained on a multi-source dataset
+    semi-automatically annotated with SAM 3, followed by OC-SORT tracking. Across two
+    heterogeneous sources (handheld Brazilian and fixed-overhead Japanese footage), a
+    single detector reaches mAP\@0.5 of 0.99 and 0.98 on held-out, manually-reviewed
+    rounds from each (versus 0.03 for COCO weights without fine-tuning); tracking
+    reaches IDF1 0.93, and the full pipeline runs at 133 FPS using 82 MB of GPU memory
+    on a consumer laptop GPU, confirming practical viability.
   ],
   resumo: [
     Partidas de Sumô de Robôs são decididas em rounds que frequentemente duram
@@ -36,11 +37,13 @@
     partida. Caracterizamos o problema pela interseção de seis restrições que
     nenhum trabalho anterior cobre em conjunto, e construímos a pipeline a partir do
     paradigma tracking-by-detection: um detector YOLOv8s treinado sobre uma base
-    anotada de forma semiautomática com o SAM 3, seguido de rastreamento OC-SORT.
-    Sobre footage real de torneios, o detector atinge mAP\@0.5 de 0.98 com recall de
-    0.98 em um round held-out revisado manualmente (contra 0.03 dos pesos COCO sem
-    fine-tuning), e a pipeline completa roda a 133 FPS usando 82 MB de memória de GPU
-    em uma GPU de notebook de consumo, confirmando viabilidade prática.
+    multi-fonte anotada de forma semiautomática com o SAM 3, seguido de rastreamento
+    OC-SORT. Entre duas fontes heterogêneas (footage amador brasileiro de câmera de mão
+    e footage japonês de câmera cenital fixa), um único detector atinge mAP\@0.5 de 0.99
+    e 0.98 em rounds held-out revisados manualmente de cada fonte (contra 0.03 dos pesos
+    COCO sem fine-tuning); o rastreamento atinge IDF1 0.93, e a pipeline completa roda a
+    133 FPS usando 82 MB de memória de GPU em uma GPU de notebook, confirmando
+    viabilidade prática.
   ],
 )
 

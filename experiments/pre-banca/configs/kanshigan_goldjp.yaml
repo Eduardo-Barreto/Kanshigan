@@ -1,0 +1,7 @@
+path: ../../data/annotations
+train: train/images
+val: val/images
+test: gold_jp/images
+
+names:
+  0: robot
