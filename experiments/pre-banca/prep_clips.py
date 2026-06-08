@@ -28,7 +28,7 @@ CLIPS_DIR = ROOT / "data" / "processed" / "clips"
 SAM_DIR = ROOT / "data" / "processed" / "sam_input"
 
 SAM_FPS = 10
-SAM_WIDTH = 480
+SAM_WIDTH = 960  # overhead JP robots fall below SAM's detection size at 480; 960 catches both
 
 
 def _cut(src: Path, start: float, end: float, dst: Path) -> None:

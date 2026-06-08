@@ -25,9 +25,13 @@ detector treinado apenas com footage amador brasileiro (câmera de mão, ângulo
 oblíquo) sobre footage de torneio japonês (câmera fixa cenital). Em zero-shot, sem
 nenhum exemplo japonês no treino, o detector localiza ambos os robôs nos quadros
 nítidos, demonstrando transferência entre fontes. O recall cai nos quadros de vista
-cenital com robôs pequenos e escuros, e a anotação semiautomática com SAM 3 falha
-nesse caso (segmenta no máximo um robô), o que impede, por ora, o treino multi-fonte.
-Anotação dedicada para a fonte japonesa fica como trabalho futuro.
+cenital com robôs pequenos e escuros. A anotação semiautomática com SAM 3 na fonte
+japonesa esbarra em dois pontos: a entrada decimada precisa de mais resolução (a 480
+px o robô cenital fica abaixo do tamanho de detecção do SAM; a 960 px ele volta a
+segmentar os dois robôs), e o SAM de vídeo semeia no primeiro quadro, que em muitos
+rounds japoneses começa com os robôs ocluídos. Por isso o treino multi-fonte depende
+de anotação manual ou de semeadura em um quadro nítido escolhido, deixado como
+trabalho futuro.
 
 == Trabalhos futuros
 

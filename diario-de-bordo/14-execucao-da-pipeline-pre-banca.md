@@ -126,16 +126,25 @@ a limitação esperada do tracker motion-only.
 Baixamos um torneio regional japonês (câmera fixa cenital, oposto da BR de mão) para
 estressar a heterogeneidade de qualidade. O segmentador de rounds funcionou muito
 melhor aqui (26 rounds únicos limpos), e o detector clássico de dohyo generalizou de
-cara para o footage JP. Mas a anotação SAM 3 **falhou** no JP: os robôs em vista
-cenital ficam pequenos no recorte e um deles é preto sobre dohyo escuro, então o SAM
-pegava no máximo um robô (0% dos quadros com os dois). Logo, não dá para treinar no
-JP com anotação semiautomática como está.
+cara para o footage JP.
 
-Achado mais forte que treinar no JP: o detector treinado **só com BR** detecta os
-dois robôs no JP em **zero-shot** nos quadros nítidos (transferência cross-source,
-evidência direta de C3), com recall menor nos quadros de robô pequeno/escuro. Fica
-documentado: transferência zero-shot demonstrada; treino multi-fonte no JP depende de
-anotação melhor (prompt/resolução ou revisão manual), trabalho futuro.
+A anotação SAM 3 no JP foi uma investigação em camadas:
+- **Decimação a 480px**: SAM achava 0-1 robô. Diagnóstico instrumentado: o SAM
+  rodava limpo (sem OOM) mas retornava 0 máscaras, pois o robô em vista cenital
+  ficava com ~15px, abaixo do que o detector de conceito do SAM dispara.
+- **Prompts**: testados toy, robot, sumo robot, black robot, machine. Nenhum mudou
+  o resultado: não era problema de prompt.
+- **Resolução 960px**: o robô dobra de tamanho e o SAM passa a pegar os dois robôs.
+  Mas só em rounds que começam com os robôs nítidos e separados.
+- **Gargalo real**: o SAM 3 vídeo semeia no frame 0; rounds JP costumam começar com
+  os robôs colados/ocluídos/sendo posicionados, então o SAM não engata no round
+  inteiro. Resultado: dos 8 rounds JP, só 1 anotou limpo (16 quadros com os dois).
+
+Conclusão honesta: anotação semiautomática do JP não é viável como está (16 quadros
+de 1 round não dá para treinar sem viés). O detector treinado só com BR detecta os
+robôs JP em zero-shot nos quadros nítidos, evidência inicial de C3. Treino
+multi-fonte no JP depende de anotação manual (como o gold) ou de semear o SAM num
+frame nítido escolhido, não no frame 0: trabalho futuro.
 
 ## Status
 
