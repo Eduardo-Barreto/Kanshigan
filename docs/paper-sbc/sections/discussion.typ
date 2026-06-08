@@ -55,22 +55,25 @@ circular, não a aparência de um campeonato específico.
 Testamos a pipeline na final do 84º All Japan Robot Sumo (3 kg autônomo), footage de
 broadcast bem fora da distribuição de treino: arena azul-escura, overlay de placar,
 cortes frequentes entre dohyo e operadores, e colisões muito mais violentas, com blur
-extremo. A @fig-worlds segue o nosso detector ao longo da dificuldade do Round 1 (linha
-de cima) e o compara com o SAM 3 (linha de baixo). No início, com os robôs ainda em
-movimento lento, o detector rastreia os dois de forma estável, e a detecção do dohyo
-generaliza para a arena de cor nova. No auge da colisão, porém, o movimento rápido e o
-blur extremo derrubam todas as caixas: o modelo perde os dois robôs exatamente no lance
-decisivo, e da colisão em diante a metade final do round fica majoritariamente sem
-detecção. É o modo de falha que importa registrar, e que um quadro do início, sozinho,
-esconderia. O SAM 3 esbarra no mesmo limite: o replay em câmera lenta, que se esperaria
-mais fácil, ainda chega desfocado quadro a quadro. O fator limitante não é a semelhança
-entre os robôs, que carregam bandeiras distintas, mas o blur do combate de elite.
-Fechar esse caso exige dados de treino dessa distribuição, com movimento rápido e blur,
-não apenas mais exemplos da arena.
+extremo. A @fig-worlds compara o nosso detector e o SAM 3 nos mesmos dois instantes do
+Round 1: o início, com os robôs em movimento lento, e o auge da colisão, em movimento
+rápido. Cada linha é um instante; à esquerda, o nosso detector no quadro nativo; à
+direita, o SAM 3 no recorte do dohyo do mesmo quadro. No início, os dois métodos
+localizam os dois robôs, e a detecção do dohyo generaliza para a arena de cor nova. No
+auge da colisão, porém, o movimento rápido e o blur extremo derrubam o nosso detector,
+que perde as duas caixas no lance decisivo; da colisão em diante, a metade final do
+round fica majoritariamente sem detecção. É o modo de falha que importa registrar, e
+que um quadro do início, sozinho, esconderia. No mesmo instante, o SAM 3, sobre o
+recorte mais limpo e com propagação temporal, ainda sustenta um dos robôs. O fator
+limitante não é a semelhança entre os robôs, que carregam bandeiras distintas, mas o
+blur do combate de elite. O SAM 3 é mais robusto nesse instante, mas é o anotador
+pesado e offline, não a pipeline em tempo real; fechar o caso no modelo rápido exige
+dados de treino dessa distribuição, com movimento rápido e blur, não apenas mais
+exemplos da arena.
 
 #figure(
   image("/results/figures/worlds_model_vs_sam.png", width: 100%),
-  caption: [Pipeline na final de mundial (out-of-distribution). Linha de cima: nosso detector no Round 1, do início em movimento lento (rastreia A e B) ao auge da colisão em movimento rápido (perde os dois sob blur). Linha de baixo: SAM 3 no recorte do dohyo, no Round 1 e no replay em câmera lenta.],
+  caption: [Nosso detector vs SAM 3 nos mesmos instantes do Round 1 da final de mundial (out-of-distribution). Cada linha é um instante; à esquerda, nosso detector no quadro nativo; à direita, SAM 3 no recorte do dohyo. Em cima, o início em movimento lento: ambos acham os dois robôs. Embaixo, o auge da colisão em movimento rápido: nosso modelo perde os dois, o SAM mantém um.],
 ) <fig-worlds>
 
 == Trabalhos futuros

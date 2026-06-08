@@ -130,14 +130,29 @@ def cross_category_rc() -> None:
     cv2.imwrite(str(FIGURES / "cross_category_rc.png"), hstack([left, right]))
 
 
+SAM_DECIMATION = 3  # native 30 fps decimated to the 10 fps SAM input, aligned at frame 0
+
+
 def worlds_model_vs_sam() -> None:
+    """Model vs SAM 3 at the SAME two instants of Round 1: the slow start and the clash.
+
+    Pairing the same instant per row makes the comparison fair: each row is one moment,
+    our detector on the native frame (left) against SAM 3 on the dohyo crop (right). The
+    SAM frame is the native frame divided by the decimation factor, so both panels show
+    the same time despite the different frame rates.
+    """
     cell = 640
     r1 = WORLDS / "w_round1.json"
-    model_start = banner(fit_width(grab(WORLDS / "w_round1_overlay.mp4", both_robots_frame(r1)), cell), "Round 1, início (movimento lento) - nosso modelo rastreia A e B")
-    model_clash = banner(fit_width(grab(WORLDS / "w_round1_overlay.mp4", tracking_loss_frame(r1)), cell), "Round 1, auge da colisão (movimento rápido) - nosso modelo perde os dois")
-    sam_r1 = banner(fit_width(grab(WORLDS / "w_round1_SAM.mp4", 30), cell), "Round 1 - SAM 3 (recorte do dohyo)")
-    sam_rp = banner(fit_width(grab(WORLDS / "w_replay_SAM.mp4", 40), cell), "Replay câmera lenta - SAM 3")
-    grid = vstack([hstack([model_start, model_clash]), hstack([sam_r1, sam_rp])])
+    # snap each instant to a native frame the SAM clip also sampled (a multiple of the
+    # decimation), so model and SAM panels show the exact same time, not a frame apart.
+    snap = lambda f: round(f / SAM_DECIMATION) * SAM_DECIMATION
+    start_f = snap(both_robots_frame(r1))
+    clash_f = snap(tracking_loss_frame(r1))
+    model_start = banner(fit_width(grab(WORLDS / "w_round1_overlay.mp4", start_f), cell), "Início (movimento lento) - nosso modelo rastreia A e B")
+    sam_start = banner(fit_width(grab(WORLDS / "w_round1_SAM.mp4", start_f // SAM_DECIMATION), cell), "Início (movimento lento) - SAM 3 no recorte do dohyo")
+    model_clash = banner(fit_width(grab(WORLDS / "w_round1_overlay.mp4", clash_f), cell), "Auge da colisão (movimento rápido) - nosso modelo perde os dois")
+    sam_clash = banner(fit_width(grab(WORLDS / "w_round1_SAM.mp4", clash_f // SAM_DECIMATION), cell), "Auge da colisão (movimento rápido) - SAM 3 no recorte do dohyo")
+    grid = vstack([hstack([model_start, sam_start]), hstack([model_clash, sam_clash])])
     cv2.imwrite(str(FIGURES / "worlds_model_vs_sam.png"), grid)
 
 
