@@ -10,7 +10,7 @@ As medições de hardware usaram uma RTX 4070 Laptop de 8 GB.
 == Conjunto de dados
 
 O conjunto é multi-fonte, atendendo à restrição de qualidade heterogênea (C3): footage
-amador brasileiro da IRONCup 2025 (câmera de mão, ângulo oblíquo) e footage de torneio
+brasileiro da IRONCup 2025 (câmera de mão, ângulo oblíquo) e footage de torneio
 regional japonês (câmera fixa cenital). Os vídeos são recortados em rounds individuais
 (rastreamento e eventos só fazem sentido dentro de um round). A divisão é por
 round/clip, não por quadro, para evitar vazamento entre quadros vizinhos quase
@@ -59,7 +59,7 @@ gerava falso positivo no fundo); ampliar os robôs e remover o fundo levou ambos
 
 #figure(
   image("/results/figures/qualitative_br_jp.png", width: 100%),
-  caption: [Saída da pipeline em footage real das duas fontes: arena (amarelo) e robôs A (verde) e B (laranja) detectados e rastreados. À esquerda, amador BR (câmera de mão); à direita, torneio JP (câmera cenital fixa).],
+  caption: [Saída da pipeline em footage real das duas fontes: arena (amarelo) e robôs A (verde) e B (laranja) detectados e rastreados. À esquerda, BR (câmera de mão); à direita, torneio JP (câmera cenital fixa).],
 ) <fig-qualitative>
 
 == Viabilidade

@@ -10,7 +10,7 @@ realidade dos dados impôs sobre o design.
 ## Aquisição de dados
 
 Sem dataset público do domínio, os clips vêm de torneios reais via `yt-dlp`. O
-subconjunto amador brasileiro usa seis partidas autônomas (categoria Auto, 3 kg) do
+subconjunto brasileiro usa seis partidas autônomas (categoria Auto, 3 kg) do
 canal da ThunderRatz, cada vídeo já recortado em uma partida (IRONCup 2025 e
 outras). Cada vídeo tem cartões de abertura, patrocínio e b-roll; os trechos de
 partida foram identificados por inspeção de contact-sheets e recortados em
@@ -27,7 +27,7 @@ na discussão do artigo.
 
 Três premissas do design não sobreviveram ao contato com a footage real:
 
-**Câmera não é cenital fixa.** A footage amadora é de mão, com movimento e ângulo
+**Câmera não é cenital fixa.** A footage brasileira é de mão, com movimento e ângulo
 oblíquo. Consequências: a detecção do dohyo passa a ser por quadro (com reuso da
 última detecção válida em falhas), e as métricas viram referencial centrado no
 dohyo, o que cancela o movimento de câmera (o dohyo é fixo no mundo). A calibração

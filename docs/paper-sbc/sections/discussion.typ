@@ -5,7 +5,7 @@
 O conjunto gold é pequeno, o que impede intervalos de confiança e testes de
 significância robustos. Reportamos os números como ordem de grandeza e demonstração
 de viabilidade, não como modelo definitivo; essa honestidade responde diretamente
-ao critério de validação. A footage amadora é capturada com câmera de mão e ângulo
+ao critério de validação. A footage brasileira é capturada com câmera de mão e ângulo
 oblíquo, então a calibração centímetro-por-pixel por escala isotrópica é uma
 aproximação: a perspectiva introduz erro de foreshortening que as métricas de
 detecção e rastreamento (mAP, IDF1, FPS) não sofrem, mas que afeta as métricas

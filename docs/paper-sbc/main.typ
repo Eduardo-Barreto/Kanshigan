@@ -38,7 +38,7 @@
     nenhum trabalho anterior cobre em conjunto, e construímos a pipeline a partir do
     paradigma tracking-by-detection: um detector YOLOv8s treinado sobre uma base
     multi-fonte anotada de forma semiautomática com o SAM 3, seguido de rastreamento
-    OC-SORT. Entre duas fontes heterogêneas (footage amador brasileiro de câmera de mão
+    OC-SORT. Entre duas fontes heterogêneas (footage brasileiro de câmera de mão
     e footage japonês de câmera cenital fixa), um único detector atinge mAP\@0.5 de 0.99
     e 0.98 em rounds held-out revisados manualmente de cada fonte (contra 0.03 dos pesos
     COCO sem fine-tuning); o rastreamento atinge IDF1 0.93, e a pipeline completa roda a

@@ -7,7 +7,7 @@ preservar a resolução temporal que os eventos sub-segundo exigem.
 + *Detecção do dohyo* por visão clássica: limiarização de luminância para isolar a
   borda branca (tawara), morfologia e ajuste de elipse ao maior contorno
   plausível, selecionado por um escore que combina tamanho, centralidade e razão
-  de aspecto. A câmera amadora se move, então a calibração é feita por quadro, com
+  de aspecto. A câmera de mão se move, então a calibração é feita por quadro, com
   reuso da última detecção válida em quadros de falha.
 + *Calibração espacial*: a elipse detectada é a imagem oblíqua de um círculo de
   154 cm de diâmetro; seu eixo maior fixa a escala centímetro-por-pixel.

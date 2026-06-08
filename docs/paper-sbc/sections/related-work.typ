@@ -31,7 +31,7 @@ restrições que o problema impõe. A literatura cobre cada restrição isoladam
 nenhum trabalho cobre a interseção. Definimos seis características:
 *C1* eventos sub-segundo com decisão crítica;
 *C2* aparência uniforme entre alvos, sem marcadores;
-*C3* vídeo de qualidade heterogênea (broadcast e amador);
+*C3* vídeo de qualidade heterogênea (broadcast e câmera de mão);
 *C4* ausência de marcadores fiduciais;
 *C5* movimento não linear (colisões, giros, ricochetes);
 *C6* análise post-match, não embarcada.
