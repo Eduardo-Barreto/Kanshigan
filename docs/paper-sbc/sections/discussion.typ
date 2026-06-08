@@ -11,12 +11,17 @@ detecção e rastreamento (mAP, IDF1, FPS) não sofrem, mas que afeta as métric
 cinemáticas em centímetros. A retificação por homografia da arena fica como
 trabalho futuro.
 
-Tanto o OC-SORT quanto o ByteTrack são motion-only, sem características de aparência.
-Em oclusão prolongada entre dois robôs visualmente idênticos, podem trocar
-identidades; no round gold isso aconteceu uma vez com o OC-SORT e nenhuma com o
-ByteTrack, mas um único round não decide entre eles. O passo seguinte é um rastreador
-com aparência, como o Deep HM-SORT @deephmsort2024, e mais rounds gold com identidade
-para uma comparação estatisticamente robusta.
+Rastreadores motion-only podem trocar identidades sob oclusão prolongada entre dois
+robôs idênticos. Testamos diretamente se a aparência corrige isso: além de OC-SORT e
+ByteTrack, avaliamos DeepOCSORT e BoT-SORT, ambos com ReID, sobre as mesmas detecções
+(@tab-tracking). A aparência não ajudou. Os quatro mantêm no máximo uma troca no round
+gold, mas o passo de ReID custa de 35 a 40 vezes em throughput sem ganho de acurácia.
+A causa é o próprio domínio: dois robôs pretos quase idênticos oferecem pouco sinal de
+aparência para o ReID explorar, então o movimento basta. Para este caso, o motion-only
+é a escolha viável. Um rastreador de aparência especializado em alvos pouco texturizados,
+como o Deep HM-SORT @deephmsort2024, e mais rounds gold com identidade ainda podem
+refinar essa comparação com significância estatística; a base de um round, porém, já
+indica que a aparência genérica não compensa aqui.
 
 == Anotação heterogênea (C3)
 

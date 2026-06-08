@@ -124,26 +124,43 @@ decisão de usá-lo apenas como anotador (E1), fora da inferência final.
 
 == Rastreamento: comparação de algoritmos
 
-Para a parte de rastreamento da pergunta de pesquisa, comparamos OC-SORT e ByteTrack
-sobre as mesmas detecções, contra um gold com identidades anotadas e revisadas
-manualmente (@tab-tracking). Os dois alcançam IDF1 acima de 0.93. O ByteTrack fica
-ligeiramente à frente neste round (IDF1 0.95, MOTA 0.90, sem troca de identidade),
-enquanto o OC-SORT tem uma única troca, na aproximação entre os dois robôs idênticos,
-a limitação esperada de um rastreador motion-only sem aparência (@sec-discussao). A um
-único round held-out, a diferença é pequena demais para eleger um vencedor; o ponto é
-que ambos sustentam identidade estável no caso típico.
+Para a parte de rastreamento da pergunta de pesquisa, comparamos quatro rastreadores
+sobre as *mesmas* detecções (detector YOLO26n fixo, round held-out), contra um gold
+com identidades anotadas e revisadas manualmente (@tab-tracking). Dois são motion-only
+(OC-SORT e ByteTrack) e dois usam aparência via ReID (DeepOCSORT e BoT-SORT). Fixar as
+detecções isola o efeito do rastreador: qualquer diferença é dele, não do detector.
+
+Os quatro sustentam identidade no caso típico, com no máximo uma troca, sempre na
+aproximação entre os dois robôs idênticos. A aparência não traz ganho de acurácia: o
+BoT-SORT empata com o ByteTrack (MOTA 0.89, IDF1 0.94) e o DeepOCSORT fica atrás dos
+dois motion-only. O custo, porém, é grande: o passo de ReID derruba o throughput do
+rastreador de mais de 3000 quadros por segundo para menos de 100, cerca de 35 a 40
+vezes mais lento, sem retorno em acurácia. A razão é estrutural: os dois robôs são
+caixas pretas pequenas e quase idênticas, então a aparência carrega pouco sinal
+discriminativo, e sobra o movimento, que os rastreadores baratos já modelam bem
+(@sec-discussao). Para este domínio, o rastreador motion-only é a escolha certa no eixo
+acurácia-vs-viabilidade. A um único round held-out, a diferença de acurácia entre os
+quatro é pequena demais para eleger um vencedor isolado; o resultado robusto é a
+dominância do motion-only sobre o de aparência.
 
 #figure(
-  caption: [Rastreamento sobre as mesmas detecções, contra o gold com identidades, no round held-out.],
+  caption: [Quatro rastreadores sobre detecções idênticas (detector fixo), contra o gold com identidades no round held-out. FPS medido só no estágio de rastreamento, isolando o custo próprio do rastreador.],
   table(
-    columns: 4,
-    align: (left, center, center, center),
+    columns: 6,
+    align: (left, left, center, center, center, center),
     stroke: 0.4pt,
-    table.header([*Tracker*], [*MOTA*], [*IDF1*], [*ID switches*]),
-    [OC-SORT], [0.88], [0.93], [1],
-    [ByteTrack], [0.90], [0.95], [0],
+    table.header([*Tracker*], [*Tipo*], [*MOTA*], [*IDF1*], [*ID switches*], [*FPS*]),
+    [OC-SORT], [movimento], [0.88], [0.93], [1], [3183],
+    [ByteTrack], [movimento], [0.89], [0.94], [1], [3448],
+    [DeepOCSORT], [aparência], [0.86], [0.92], [1], [81],
+    [BoT-SORT], [aparência], [0.89], [0.94], [1], [94],
   ),
 ) <tab-tracking>
+
+#figure(
+  image("/results/figures/tracker_comparison.png", width: 100%),
+  caption: [Acurácia de identidade quase empatada entre os quatro rastreadores (esquerda) frente a um throughput que difere por mais de uma ordem de grandeza (direita, escala log): a aparência não melhora a identidade e custa cerca de 35 a 40 vezes em FPS.],
+) <fig-tracker-comparison>
 
 A partir das trajetórias rastreadas, o detector cinemático projeta posição e velocidade
 no referencial do dohyo. No round gold, a velocidade de pico medida é de 2,9 m/s

@@ -19,9 +19,11 @@ preservar a resolução temporal que os eventos sub-segundo exigem.
 + *Detecção dos robôs* com um detector YOLO sobre o recorte, filtrando detecções
   fora da elipse e mantendo no máximo dois robôs por quadro. Comparamos duas
   arquiteturas, o YOLOv8s @jocher2023yolo e o YOLO26n compacto.
-+ *Rastreamento* com um rastreador motion-only, que lida com o movimento não linear
-  de colisões e giros. Comparamos OC-SORT @cao2023ocsort e ByteTrack
-  @zhang2022bytetrack. As detecções viram trajetórias contínuas.
++ *Rastreamento* que lida com o movimento não linear de colisões e giros. Comparamos
+  quatro rastreadores sobre as mesmas detecções: dois motion-only, OC-SORT
+  @cao2023ocsort e ByteTrack @zhang2022bytetrack, e dois com aparência via ReID,
+  DeepOCSORT @maggiolino2023deepocsort e BoT-SORT @aharon2022botsort. As detecções
+  viram trajetórias contínuas.
 + *Extração de métricas* no referencial do dohyo, em centímetros. Expressar cada
   robô relativo ao centro da arena cancela o movimento da câmera, pois o dohyo é
   fixo no mundo. Velocidade e aceleração vêm de um filtro de Savitzky-Golay, que
