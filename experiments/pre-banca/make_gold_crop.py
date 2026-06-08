@@ -48,7 +48,8 @@ def main() -> None:
         img = cv2.imread(str(img_path))
         h, w = img.shape[:2]
         boxes_px = _read_boxes_px(GOLD / "labels" / f"{img_path.stem}.txt", w, h)
-        lines = [f"0 {' '.join(f'{v:.6f}' for v in box_native_to_crop_yolo(b, roi))}" for b in boxes_px]
+        crop_boxes = [box_native_to_crop_yolo(b, roi) for b in boxes_px]
+        lines = [f"0 {' '.join(f'{v:.6f}' for v in box)}" for box in crop_boxes if box[2] > 0 and box[3] > 0]
         cv2.imwrite(str(GOLD_CROP / "images" / img_path.name), crop_frame(img, roi))
         (GOLD_CROP / "labels" / f"{img_path.stem}.txt").write_text("\n".join(lines) + "\n")
     print(f"wrote {len(images)} cropped gold frames to {GOLD_CROP}")

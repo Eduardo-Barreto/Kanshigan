@@ -59,9 +59,19 @@ def box_crop_to_native(box_xywh: tuple[float, float, float, float], roi: tuple[i
 
 
 def box_native_to_crop_yolo(box_xywh_px, roi: tuple[int, int, int, int]) -> tuple[float, float, float, float]:
-    """A native-pixel bbox to YOLO-normalized coords inside the crop."""
+    """A native-pixel bbox to YOLO-normalized coords inside the crop.
+
+    A box on a robot that sits partly past the dohyo edge would otherwise spill
+    outside the crop and produce negative coordinates, which YOLO rejects. Clamp the
+    box to the crop rectangle before normalizing, so the label stays within [0, 1].
+    """
     x, y, w, h = box_xywh_px
     x0, y0, cw, ch = roi
-    cx = (x + w / 2 - x0) / cw
-    cy = (y + h / 2 - y0) / ch
-    return (cx, cy, w / cw, h / ch)
+    left = max(0.0, x - x0)
+    top = max(0.0, y - y0)
+    right = min(float(cw), x - x0 + w)
+    bottom = min(float(ch), y - y0 + h)
+    bw, bh = right - left, bottom - top
+    cx = (left + bw / 2) / cw
+    cy = (top + bh / 2) / ch
+    return (cx, cy, bw / cw, bh / ch)
