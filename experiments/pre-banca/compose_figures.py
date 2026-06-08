@@ -39,6 +39,28 @@ def both_robots_frame(json_path: Path) -> int:
     return shared[len(shared) // 2] if shared else 0
 
 
+def tracking_loss_frame(json_path: Path, into: float = 0.3) -> int:
+    """A frame inside the longest run where no robot is tracked: the model's failure.
+
+    During the violent collision the motion blur drops every box, so the trajectories
+    have a contiguous gap. Landing `into` the way through the longest such gap shows
+    the robots still mid-arena and clearly present, with nothing detected: the honest
+    counterpart to `both_robots_frame`, which only ever picks moments that work.
+    """
+    payload = json.loads(json_path.read_text())
+    n = payload["n_frames"]
+    tracked = set().union(*(set(t["frames"]) for t in payload["trajectories"]))
+    best_start, best_len, run_start = 0, 0, None
+    for f in range(n):
+        if f not in tracked:
+            run_start = f if run_start is None else run_start
+            if f - run_start + 1 > best_len:
+                best_start, best_len = run_start, f - run_start + 1
+        else:
+            run_start = None
+    return best_start + int(best_len * into)
+
+
 def grab(video: Path, frame_idx: int) -> np.ndarray:
     cap = cv2.VideoCapture(str(video))
     cap.set(cv2.CAP_PROP_POS_FRAMES, max(0, frame_idx))
@@ -110,11 +132,12 @@ def cross_category_rc() -> None:
 
 def worlds_model_vs_sam() -> None:
     cell = 640
-    model_r1 = banner(fit_width(grab(WORLDS / "w_round1_overlay.mp4", both_robots_frame(WORLDS / "w_round1.json")), cell), "Round 1 - nosso modelo (YOLOv8s + OC-SORT)")
+    r1 = WORLDS / "w_round1.json"
+    model_start = banner(fit_width(grab(WORLDS / "w_round1_overlay.mp4", both_robots_frame(r1)), cell), "Round 1, início (movimento lento) - nosso modelo rastreia A e B")
+    model_clash = banner(fit_width(grab(WORLDS / "w_round1_overlay.mp4", tracking_loss_frame(r1)), cell), "Round 1, auge da colisão (movimento rápido) - nosso modelo perde os dois")
     sam_r1 = banner(fit_width(grab(WORLDS / "w_round1_SAM.mp4", 30), cell), "Round 1 - SAM 3 (recorte do dohyo)")
-    model_rp = banner(fit_width(grab(WORLDS / "w_replay_overlay.mp4", both_robots_frame(WORLDS / "w_replay.json")), cell), "Replay câmera lenta - nosso modelo")
     sam_rp = banner(fit_width(grab(WORLDS / "w_replay_SAM.mp4", 40), cell), "Replay câmera lenta - SAM 3")
-    grid = vstack([hstack([model_r1, sam_r1]), hstack([model_rp, sam_rp])])
+    grid = vstack([hstack([model_start, model_clash]), hstack([sam_r1, sam_rp])])
     cv2.imwrite(str(FIGURES / "worlds_model_vs_sam.png"), grid)
 
 
