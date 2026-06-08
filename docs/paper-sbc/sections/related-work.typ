@@ -1,6 +1,6 @@
 = Trabalhos Relacionados
 
-A visão computacional aplicada a esportes convergiu fortemente para o paradigma
+A visão computacional aplicada a esportes adota majoritariamente o
 *tracking-by-detection*: um detector localiza os alvos quadro a quadro e um
 rastreador associa as detecções ao longo do tempo. O par YOLO mais variantes de
 SORT tornou-se baseline padrão em rastreamento multiobjeto @zhang2022bytetrack, e
@@ -12,23 +12,24 @@ observation-centric @cao2023ocsort ou fusão de características profundas
 
 Quatro eixos são relevantes para o Kanshigan. No rastreamento de aparência
 uniforme, o DanceTrack @sun2022dancetrack estabeleceu que rastreadores baseados só
-em IoU falham quando os alvos são visualmente semelhantes, cenário análogo às
+em IoU falham quando os alvos são visualmente semelhantes, caso análogo às
 "caixas pretas" idênticas do Sumô. No movimento não linear, o OC-SORT
 @cao2023ocsort foi projetado para trajetórias que quebram o filtro de Kalman padrão
 e atinge estado da arte no DanceTrack. Em combate corpo a corpo, o scoring
 automático em jiu-jitsu @jiujitsu2022 resolve oclusão severa com estimativa de
 pose, inviável para chassis rígidos. Em robôs de competição, o SSL-Vision
 @zickler2010sslvision depende de marcadores fiduciais coloridos, indisponíveis em
-vídeo de torneio existente. Por fim, foundation models como Grounding DINO
-@liu2024groundingdino e SAM 2 @ravi2024sam2 são adotados como anotadores
-semiautomáticos, não como inferência final, por seu custo computacional ---
-decisão que adotamos.
+vídeo de torneio existente. Foundation models como Grounding DINO
+@liu2024groundingdino e SAM 3 @carion2025sam3 são adotados como anotadores
+semiautomáticos, fora da inferência final, por seu custo computacional. Adotamos
+a mesma divisão de papéis.
 
 == A interseção que define o problema
 
-O diferencial do Kanshigan não é o nicho "Sumô de Robôs", e sim a combinação de
-restrições que o problema impõe. A literatura cobre cada restrição isoladamente;
-nenhum trabalho cobre a interseção. Definimos seis características:
+O diferencial do Kanshigan está na combinação de restrições que o problema impõe,
+acima do nicho "Sumô de Robôs" em si. A literatura cobre cada restrição
+isoladamente, mas nenhum trabalho cobre a interseção. Definimos seis
+características:
 *C1* eventos sub-segundo com decisão crítica;
 *C2* aparência uniforme entre alvos, sem marcadores;
 *C3* vídeo de qualidade heterogênea (broadcast e câmera de mão);
@@ -55,9 +56,9 @@ nenhum trabalho cobre a interseção. Definimos seis características:
 ) <tab-matrix>
 
 Como mostra a @tab-matrix, os trabalhos mais próximos cobrem no máximo quatro das
-seis restrições, e cada um deixa restrições críticas de fora. O Kanshigan é a
-primeira pipeline a operar sob a interseção completa. Essa interseção caracteriza
-uma classe de problemas mais ampla --- drone racing sem fiduciais, outras
-categorias de combate de robôs, disputas rápidas entre alvos rígidos idênticos ---
-para a qual a contribuição é transferível, com o Sumô como veículo em que as
-restrições aparecem em estado puro.
+seis restrições, e cada um deixa restrições críticas de fora. O Kanshigan opera
+sob a interseção completa. Essa interseção caracteriza uma classe de problemas
+mais ampla (drone racing sem fiduciais, outras categorias de combate de robôs,
+disputas rápidas entre alvos rígidos idênticos) para a qual a contribuição é
+transferível, com o Sumô como veículo em que as restrições aparecem em estado
+puro.

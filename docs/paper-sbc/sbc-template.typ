@@ -17,15 +17,17 @@
   set par(justify: true, leading: 0.65em, first-line-indent: 1.25em)
 
   set heading(numbering: "1.1.")
-  show heading: it => {
+  // Emit the heading as a block so it breaks from the surrounding paragraph and
+  // gets its own spacing; returning inline content would glue it to the previous text.
+  show heading: it => block(above: 1.2em, below: 0.8em, {
     set text(size: 12pt, weight: "bold")
-    set block(above: 1.2em, below: 0.8em)
+    let number = counter(heading).display()
     if it.level == 1 {
-      counter(heading).display() + " " + smallcaps(it.body)
+      number + " " + smallcaps(it.body)
     } else {
-      counter(heading).display() + " " + it.body
+      number + " " + it.body
     }
-  }
+  })
 
   // Title block
   align(center)[
