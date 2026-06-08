@@ -42,10 +42,10 @@ def both_robots_frame(json_path: Path) -> int:
 def tracking_loss_frame(json_path: Path, into: float = 0.3) -> int:
     """A frame inside the longest run where no robot is tracked: the model's failure.
 
-    During the violent collision the motion blur drops every box, so the trajectories
-    have a contiguous gap. Landing `into` the way through the longest such gap shows
-    the robots still mid-arena and clearly present, with nothing detected: the honest
-    counterpart to `both_robots_frame`, which only ever picks moments that work.
+    Under fast motion the blur drops every box, so the trajectories have a contiguous
+    gap. Landing `into` the way through the longest such gap shows the robots still
+    clearly present with nothing detected: the honest counterpart to `both_robots_frame`,
+    which only ever picks moments that work.
     """
     payload = json.loads(json_path.read_text())
     n = payload["n_frames"]
@@ -150,8 +150,8 @@ def worlds_model_vs_sam() -> None:
     clash_f = snap(tracking_loss_frame(r1))
     model_start = banner(fit_width(grab(WORLDS / "w_round1_overlay.mp4", start_f), cell), "Início (movimento lento) - nosso modelo rastreia A e B")
     sam_start = banner(fit_width(grab(WORLDS / "w_round1_SAM.mp4", start_f // SAM_DECIMATION), cell), "Início (movimento lento) - SAM 3 no recorte do dohyo")
-    model_clash = banner(fit_width(grab(WORLDS / "w_round1_overlay.mp4", clash_f), cell), "Auge da colisão (movimento rápido) - nosso modelo perde os dois")
-    sam_clash = banner(fit_width(grab(WORLDS / "w_round1_SAM.mp4", clash_f // SAM_DECIMATION), cell), "Auge da colisão (movimento rápido) - SAM 3 no recorte do dohyo")
+    model_clash = banner(fit_width(grab(WORLDS / "w_round1_overlay.mp4", clash_f), cell), "Movimento rápido - nosso modelo perde os dois")
+    sam_clash = banner(fit_width(grab(WORLDS / "w_round1_SAM.mp4", clash_f // SAM_DECIMATION), cell), "Movimento rápido - SAM 3 no recorte do dohyo")
     grid = vstack([hstack([model_start, sam_start]), hstack([model_clash, sam_clash])])
     cv2.imwrite(str(FIGURES / "worlds_model_vs_sam.png"), grid)
 

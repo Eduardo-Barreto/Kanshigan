@@ -56,14 +56,14 @@ Testamos a pipeline na final do 84º All Japan Robot Sumo (3 kg autônomo), foot
 broadcast bem fora da distribuição de treino: arena azul-escura, overlay de placar,
 cortes frequentes entre dohyo e operadores, e colisões muito mais violentas, com blur
 extremo. A @fig-worlds compara o nosso detector e o SAM 3 nos mesmos dois instantes do
-Round 1: o início, com os robôs em movimento lento, e o auge da colisão, em movimento
-rápido. Cada linha é um instante; à esquerda, o nosso detector no quadro nativo; à
-direita, o SAM 3 no recorte do dohyo do mesmo quadro. No início, os dois métodos
-localizam os dois robôs, e a detecção do dohyo generaliza para a arena de cor nova. No
-auge da colisão, porém, o movimento rápido e o blur extremo derrubam o nosso detector,
-que perde as duas caixas no lance decisivo; da colisão em diante, a metade final do
-round fica majoritariamente sem detecção. É o modo de falha que importa registrar, e
-que um quadro do início, sozinho, esconderia. No mesmo instante, o SAM 3, sobre o
+Round 1: o início, com os robôs em movimento lento, e um momento de movimento rápido.
+Cada linha é um instante; à esquerda, o nosso detector no quadro nativo; à direita, o
+SAM 3 no recorte do dohyo do mesmo quadro. No início, os dois métodos localizam os dois
+robôs, e a detecção do dohyo generaliza para a arena de cor nova. No movimento rápido,
+porém, o blur extremo derruba o nosso detector, que perde as duas caixas; a partir daí,
+a metade final do round fica majoritariamente sem detecção. É o modo de falha que
+importa registrar, e que um quadro do início, sozinho, esconderia. No mesmo instante, o
+SAM 3, sobre o
 recorte mais limpo e com propagação temporal, ainda sustenta um dos robôs. O fator
 limitante não é a semelhança entre os robôs, que carregam bandeiras distintas, mas o
 blur do combate de elite. O SAM 3 é mais robusto nesse instante, mas é o anotador
@@ -73,7 +73,7 @@ exemplos da arena.
 
 #figure(
   image("/results/figures/worlds_model_vs_sam.png", width: 100%),
-  caption: [Nosso detector vs SAM 3 nos mesmos instantes do Round 1 da final de mundial (out-of-distribution). Cada linha é um instante; à esquerda, nosso detector no quadro nativo; à direita, SAM 3 no recorte do dohyo. Em cima, o início em movimento lento: ambos acham os dois robôs. Embaixo, o auge da colisão em movimento rápido: nosso modelo perde os dois, o SAM mantém um.],
+  caption: [Nosso detector vs SAM 3 nos mesmos instantes do Round 1 da final de mundial (out-of-distribution). Cada linha é um instante; à esquerda, nosso detector no quadro nativo; à direita, SAM 3 no recorte do dohyo. Em cima, o início em movimento lento: ambos acham os dois robôs. Embaixo, um momento de movimento rápido: nosso modelo perde os dois, o SAM mantém um.],
 ) <fig-worlds>
 
 == Trabalhos futuros
