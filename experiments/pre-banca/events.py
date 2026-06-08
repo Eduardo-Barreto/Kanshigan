@@ -27,6 +27,8 @@ class EventConfig:
     """
 
     v_min_start_cms: float = 15.0
+    start_sustain_frames: int = 3
+    start_edge_skip: int = 2
     dv_contact_cms: float = 40.0
     d_contact_cm: float = 30.0
     ringout_margin: float = 1.0
@@ -38,6 +40,21 @@ def _t_ms(frame: int, k: Kinematics) -> float:
     return float(k.t_s[idx] * 1000)
 
 
+def _first_sustained(moving: np.ndarray, sustain: int, edge_skip: int) -> int | None:
+    """First index that begins `sustain` consecutive moving frames, past the edge.
+
+    A single fast frame at the very start is a Savitzky-Golay boundary artifact, not
+    a charge, so we skip the first `edge_skip` frames and require the motion to hold
+    for a few frames before calling it the release."""
+    start = edge_skip
+    run = 0
+    for i in range(start, moving.size):
+        run = run + 1 if moving[i] else 0
+        if run >= sustain:
+            return i - sustain + 1
+    return None
+
+
 def _round_start(a: Kinematics, b: Kinematics, cfg: EventConfig) -> Event | None:
     """First frame either robot charges. Robots take turns, so requiring both to
     move at once would mark the final clash, not the release (hajime)."""
@@ -47,10 +64,10 @@ def _round_start(a: Kinematics, b: Kinematics, cfg: EventConfig) -> Event | None
     ia = np.searchsorted(a.frames, shared)
     ib = np.searchsorted(b.frames, shared)
     either_moving = np.maximum(a.speed_cms[ia], b.speed_cms[ib]) > cfg.v_min_start_cms
-    hits = np.flatnonzero(either_moving)
-    if hits.size == 0:
+    hit = _first_sustained(either_moving, cfg.start_sustain_frames, cfg.start_edge_skip)
+    if hit is None:
         return None
-    frame = int(shared[hits[0]])
+    frame = int(shared[hit])
     return Event(kind="round_start", t_ms=_t_ms(frame, a), frame=frame)
 
 
