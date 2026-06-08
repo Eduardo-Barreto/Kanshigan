@@ -68,6 +68,7 @@ def main() -> None:
     ap.add_argument("sam_input")
     ap.add_argument("out")
     ap.add_argument("--prompt", default="toy")
+    ap.add_argument("--score-thresh", type=float, default=None, help="lower SAM detection threshold")
     args = ap.parse_args()
 
     frames_bgr, fps = load(args.sam_input)
@@ -75,6 +76,10 @@ def main() -> None:
     h, w = frames_bgr[0].shape[:2]
 
     predictor = build_sam3_video_predictor(gpus_to_use=[torch.cuda.current_device()])
+    if args.score_thresh is not None:
+        from annotate_to_yolo import _set_detection_threshold
+
+        _set_detection_threshold(predictor, args.score_thresh)
     import tempfile
 
     masks_per_frame = {}

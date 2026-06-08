@@ -29,6 +29,25 @@ treino multi-fonte foi viabilizado, e um único detector atinge mAP acima de 0.9
 ambas as fontes, apesar das câmeras opostas. Essa robustez entre fontes é a entrega
 concreta da restrição C3.
 
+== Caso extremo: final de mundial (out-of-distribution)
+
+Testamos a pipeline na final do 84º All Japan Robot Sumo (3 kg autônomo), footage de
+broadcast bem fora da distribuição de treino: arena azul-escura, overlay de placar,
+cortes frequentes entre dohyo e operadores, e colisões muito mais violentas, com blur
+extremo. A @fig-worlds compara o nosso detector com o SAM 3 no Round 1 e em seu replay
+em câmera lenta. No Round 1, ambos localizam os dois robôs na maior parte dos quadros;
+no auge da colisão, o blur derruba os dois. O replay em câmera lenta, contra a
+intuição, é mais difícil para o SAM (o motion blur do replay desfoca cada quadro),
+enquanto o nosso detector mantém ao menos um robô de forma estável. A detecção do
+dohyo generaliza para a arena de cor nova. O gargalo não chega a ser a semelhança
+entre os robôs (que têm bandeiras): é o blur do combate de elite. Esse vídeo é o alvo
+máximo do projeto, e fechar esse caso exige dados de treino dessa distribuição.
+
+#figure(
+  image("/results/figures/worlds_model_vs_sam.png", width: 100%),
+  caption: [Pipeline vs SAM 3 na final de mundial (out-of-distribution). Esquerda: nosso detector na cena nativa; direita: SAM 3 no recorte do dohyo. Round 1 (cima) e replay em câmera lenta (baixo).],
+) <fig-worlds>
+
 == Trabalhos futuros
 
 Além da homografia e do rastreador com aparência, planejamos: ampliar a base japonesa

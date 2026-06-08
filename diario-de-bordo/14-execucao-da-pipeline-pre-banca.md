@@ -156,6 +156,25 @@ no gold JP, apesar das câmeras opostas (mão oblíqua vs cenital fixa): a restr
 deixou de ser projeção e virou resultado medido. Lição: antes de declarar uma
 ferramenta "incapaz", instrumentar e checar os parâmetros padrão dela.
 
+## Caso extremo: final de mundial (o alvo máximo)
+
+Testamos a pipeline e o SAM na final do 84º All Japan Robot Sumo (3 kg autônomo),
+baixada via yt-dlp. É broadcast bem fora da distribuição: arena azul-escura, overlay
+de placar, cortes frequentes (dohyo, operador, replay) e colisões com blur extremo.
+Achados:
+- A detecção do dohyo generaliza para a arena de cor nova.
+- No Round 1, nosso modelo e o SAM acham os dois robôs na maior parte dos quadros; no
+  auge da colisão o blur derruba ambos. O replay em câmera lenta é mais difícil pro
+  SAM (blur do replay), e o nosso modelo segura ao menos um robô.
+- O gargalo não é a semelhança/bandeira dos robôs: é o blur do combate de elite.
+
+Lição de método: comparando modelo×SAM, o vídeo do SAM "parecia" pior por causa de um
+recorte ruim no meu script de teste (amostrei os primeiros 12 quadros pra achar a ROI,
+em vez de espalhados como a pipeline faz). Corrigida a amostragem, o SAM no Round 1
+saltou de 18 para 45 de 61 quadros com os dois robôs. Ou seja: qualidade do recorte
+domina a anotação. A pipeline commitada já usa amostragem espalhada; foi erro do
+script avulso. Esse vídeo de mundial fica registrado como o alvo máximo do projeto.
+
 ## Status
 
 - Conjunto multi-fonte (423 BR + 202 JP no treino), com recorte no dohyo.
