@@ -73,6 +73,12 @@ def masks_to_bboxes(masks: np.ndarray, img_w: int, img_h: int) -> list[tuple[int
         area_ratio = (w * h) / img_area
         if area_ratio < MIN_BBOX_AREA_RATIO or area_ratio > MAX_BBOX_AREA_RATIO:
             continue
+        # Reject detections outside the dohyo: the clip is cropped to the arena, so
+        # a box centered in the frame corners (outside the inscribed ellipse) is a
+        # false positive on the surrounding mat/crowd, common at low thresholds.
+        cx, cy = x + w / 2, y + h / 2
+        if ((cx - img_w / 2) / (0.5 * img_w)) ** 2 + ((cy - img_h / 2) / (0.5 * img_h)) ** 2 > 1.0:
+            continue
         bboxes.append((x, y, w, h))
     return bboxes
 
@@ -125,7 +131,24 @@ def _run_session(predictor, video_path: Path, prompt: str) -> dict[int, np.ndarr
     return masks
 
 
-def run_sam(sam_frames: list[np.ndarray], sam_fps: float, prompt: str = PROMPT) -> dict[int, np.ndarray]:
+def _set_detection_threshold(predictor, thresh: float) -> None:
+    """Lower SAM 3's new-detection and detection-score thresholds.
+
+    Defaults (new_det_thresh=0.7, score_threshold_detection=0.5) are tuned for
+    salient objects; the plain black Robot Sumo robots, especially in the JP
+    overhead view, score lower for the text concept, so a lower threshold is needed
+    to detect both. Set on the in-process model (single-GPU predictor).
+    """
+    model = getattr(predictor, "model", None)
+    if model is None:
+        return
+    if hasattr(model, "new_det_thresh"):
+        model.new_det_thresh = thresh
+    if hasattr(model, "score_threshold_detection"):
+        model.score_threshold_detection = thresh
+
+
+def run_sam(sam_frames: list[np.ndarray], sam_fps: float, prompt: str = PROMPT, score_thresh: float | None = None) -> dict[int, np.ndarray]:
     """Masks per global frame index, processing in chunks to bound VRAM.
 
     SAM 3's video predictor keeps feature maps for every frame in a session, so a
@@ -134,6 +157,8 @@ def run_sam(sam_frames: list[np.ndarray], sam_fps: float, prompt: str = PROMPT) 
     only seconds long, so an 80-frame (8 s at 10 fps) window comfortably spans one.
     """
     predictor = build_sam3_video_predictor(gpus_to_use=[torch.cuda.current_device()])
+    if score_thresh is not None:
+        _set_detection_threshold(predictor, score_thresh)
     result: dict[int, np.ndarray] = {}
     with tempfile.TemporaryDirectory() as tmp:
         for start in range(0, len(sam_frames), CHUNK_FRAMES):
@@ -152,6 +177,7 @@ def main() -> None:
     ap.add_argument("clip_id")
     ap.add_argument("--split", default="train", help="output subdir under data/annotations (train|val|gold or scratch name)")
     ap.add_argument("--prompt", default=PROMPT, help="SAM 3 text prompt")
+    ap.add_argument("--score-thresh", type=float, default=None, help="lower SAM detection threshold (e.g. 0.15 for JP)")
     args = ap.parse_args()
 
     clip_id = args.clip_id
@@ -180,7 +206,7 @@ def main() -> None:
     native_count = int(native_cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
     print(f"[{clip_id}] running SAM 3 ({len(sam_frames)} frames @ {sam_fps:.1f}fps, {sam_w}x{sam_h})")
-    masks_per_frame = run_sam(sam_frames, sam_fps, args.prompt)
+    masks_per_frame = run_sam(sam_frames, sam_fps, args.prompt, args.score_thresh)
 
     stride = max(1, round(native_fps / sam_fps))
     written = 0
