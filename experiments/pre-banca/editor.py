@@ -205,7 +205,7 @@ def render(img, state: EditorState, info: str):
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--split", choices=("train", "val", "gold"), default="gold")
+    ap.add_argument("--split", default="gold", help="annotation subdir (train|val|gold|gold_jp|...)")
     ap.add_argument("--clip-id", help="filter by stem prefix")
     args = ap.parse_args()
 

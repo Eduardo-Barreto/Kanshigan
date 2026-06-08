@@ -61,7 +61,7 @@ def render(split: str, clip_id: str, stems: list[str]) -> Path:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--split", choices=("train", "val", "gold"), default="train")
+    ap.add_argument("--split", default="train", help="annotation subdir (train|val|gold|gold_jp|...)")
     ap.add_argument("--clip-id")
     args = ap.parse_args()
 
