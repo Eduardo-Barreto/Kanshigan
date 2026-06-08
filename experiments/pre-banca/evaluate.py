@@ -36,6 +36,70 @@ def evaluate_detector(weights: Path) -> dict:
     }
 
 
+def _load_yolo_boxes(label_file: Path) -> np.ndarray:
+    """Read a YOLO label file into xyxy boxes (normalized), ignoring class."""
+    boxes = []
+    if label_file.exists():
+        for line in label_file.read_text().splitlines():
+            if not line.strip():
+                continue
+            _, cx, cy, w, h = (float(v) for v in line.split()[:5])
+            boxes.append([cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2])
+    return np.array(boxes, dtype=np.float64).reshape(-1, 4)
+
+
+def _iou(a: np.ndarray, b: np.ndarray) -> float:
+    ix0, iy0 = max(a[0], b[0]), max(a[1], b[1])
+    ix1, iy1 = min(a[2], b[2]), min(a[3], b[3])
+    inter = max(0.0, ix1 - ix0) * max(0.0, iy1 - iy0)
+    area_a = (a[2] - a[0]) * (a[3] - a[1])
+    area_b = (b[2] - b[0]) * (b[3] - b[1])
+    union = area_a + area_b - inter
+    return inter / union if union > 0 else 0.0
+
+
+def evaluate_annotator(pred_labels: Path, gold_labels: Path, iou_thresh: float = 0.5) -> dict:
+    """Agreement of a proposed annotation (e.g. SAM 3) with the human-reviewed gold.
+
+    Greedy IoU matching per frame over the gold frames: a proposed box matches a gold
+    box at IoU >= iou_thresh. Reports precision, recall, F1 and the mean IoU of matched
+    pairs, which together say how much manual correction the annotator demands.
+    """
+    tp = fp = fn = 0
+    matched_ious: list[float] = []
+    gold_files = sorted(Path(gold_labels).glob("*.txt"))
+    for gold_file in gold_files:
+        gold = _load_yolo_boxes(gold_file)
+        pred = _load_yolo_boxes(Path(pred_labels) / gold_file.name)
+        taken = set()
+        for g in gold:
+            best_iou, best_j = 0.0, -1
+            for j, p in enumerate(pred):
+                if j in taken:
+                    continue
+                iou = _iou(g, p)
+                if iou > best_iou:
+                    best_iou, best_j = iou, j
+            if best_iou >= iou_thresh:
+                tp += 1
+                taken.add(best_j)
+                matched_ious.append(best_iou)
+            else:
+                fn += 1
+        fp += len(pred) - len(taken)
+    precision = tp / (tp + fp) if tp + fp else 0.0
+    recall = tp / (tp + fn) if tp + fn else 0.0
+    f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
+    return {
+        "precision": round(precision, 4),
+        "recall": round(recall, 4),
+        "f1": round(f1, 4),
+        "mean_iou_matched": round(float(np.mean(matched_ious)), 4) if matched_ious else 0.0,
+        "frames": len(gold_files),
+        "gold_boxes": tp + fn,
+    }
+
+
 def _load_mot(path: Path) -> dict[int, dict[int, np.ndarray]]:
     """Parse 'frame,id,x,y,w,h' rows into {frame: {id: [x, y, w, h]}}."""
     by_frame: dict[int, dict[int, np.ndarray]] = {}
@@ -106,11 +170,15 @@ def main() -> None:
     ap.add_argument("--pred-mot", type=Path, help="inference tracks in frame,id,x,y,w,h")
     ap.add_argument("--gold-mot", type=Path)
     ap.add_argument("--gold-events", type=Path)
+    ap.add_argument("--sam-labels", type=Path, help="proposed YOLO labels dir (e.g. SAM 3)")
+    ap.add_argument("--gold-labels", type=Path, help="human-reviewed YOLO labels dir")
     args = ap.parse_args()
 
     report: dict = {}
     if args.weights:
         report["detector"] = evaluate_detector(args.weights)
+    if args.sam_labels and args.gold_labels:
+        report["annotator"] = evaluate_annotator(args.sam_labels, args.gold_labels)
     if args.pred_mot and args.gold_mot:
         report["tracking"] = evaluate_tracking(args.pred_mot, args.gold_mot)
     if args.pred and args.gold_events:
