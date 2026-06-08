@@ -1,0 +1,41 @@
+{
+  "video": "gold_zb01.mp4",
+  "detector": "yolo26n_kanshigan",
+  "n_frames": 385,
+  "n_detections": 706,
+  "gold": "identity.txt",
+  "results": [
+    {
+      "tracker": "ocsort",
+      "kind": "motion",
+      "MOTA": 0.8814,
+      "IDF1": 0.9333,
+      "ID_switches": 1,
+      "tracker_fps": 3183.2
+    },
+    {
+      "tracker": "bytetrack",
+      "kind": "motion",
+      "MOTA": 0.8898,
+      "IDF1": 0.9381,
+      "ID_switches": 1,
+      "tracker_fps": 3447.7
+    },
+    {
+      "tracker": "deepocsort",
+      "kind": "appearance",
+      "MOTA": 0.8559,
+      "IDF1": 0.9189,
+      "ID_switches": 1,
+      "tracker_fps": 80.6
+    },
+    {
+      "tracker": "botsort",
+      "kind": "appearance",
+      "MOTA": 0.8898,
+      "IDF1": 0.9381,
+      "ID_switches": 1,
+      "tracker_fps": 93.9
+    }
+  ]
+}
