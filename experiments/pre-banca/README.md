@@ -110,6 +110,25 @@ uv run python evaluate.py --pred <id>.json --gold-events gold.json     # eventos
 
 Testes da lógica pura (sem GPU): `uv run --group dev pytest`.
 
+## Exemplos
+
+Saída da pipeline em footage real (detecção do dohyo + bbox + ID A/B), uma fonte por
+exemplo: `results/figures/qualitative_br_jp.png` (frame BR + JP lado a lado, versionado).
+
+Vídeos de overlay (não versionados; regenere com o comando abaixo) ficam em
+`results/examples/`:
+
+```bash
+# BR (câmera de mão) e JP (cenital fixa), round real cada
+ffmpeg -ss 7.8 -to 14.2 -i data/raw/br/ZB4dF1ub5QM.mp4 -c copy /tmp/demo_br.mp4
+uv run python infer.py /tmp/demo_br.mp4 \
+    --weights results/training/yolov8s_kanshigan/weights/best.pt \
+    --tracker ocsort --out results/examples
+```
+
+Cada execução gera `<id>_overlay.mp4` (vídeo anotado), `<id>.json` (métricas) e
+`<id>_tracks.txt` (MOT).
+
 ## Layout de dados
 
 ```

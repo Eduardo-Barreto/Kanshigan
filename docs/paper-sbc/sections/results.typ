@@ -57,6 +57,11 @@ gerava falso positivo no fundo); ampliar os robôs e remover o fundo levou ambos
   ),
 ) <tab-detector>
 
+#figure(
+  image("/results/figures/qualitative_br_jp.png", width: 100%),
+  caption: [Saída da pipeline em footage real das duas fontes: arena (amarelo) e robôs A (verde) e B (laranja) detectados e rastreados. À esquerda, amador BR (câmera de mão); à direita, torneio JP (câmera cenital fixa).],
+) <fig-qualitative>
+
 == Viabilidade
 
 A pipeline completa (decodificação, detecção do dohyo, YOLO, OC-SORT, métricas e
