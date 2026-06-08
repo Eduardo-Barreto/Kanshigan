@@ -128,9 +128,3 @@ def pairwise_distance_cm(a: Kinematics, b: Kinematics) -> tuple[np.ndarray, np.n
     ib = np.searchsorted(b.frames, shared)
     dist = np.hypot(a.x_cm[ia] - b.x_cm[ib], a.y_cm[ia] - b.y_cm[ib])
     return shared, dist
-
-
-def spatial_heatmap(k: Kinematics, radius_cm: float, bins: int = 24) -> np.ndarray:
-    edges = np.linspace(-radius_cm, radius_cm, bins + 1)
-    hist, _, _ = np.histogram2d(k.x_cm, k.y_cm, bins=[edges, edges])
-    return hist

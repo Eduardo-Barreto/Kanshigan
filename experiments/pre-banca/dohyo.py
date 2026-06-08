@@ -25,8 +25,6 @@ MORPH_KERNEL = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7))
 MIN_AREA_RATIO = 0.04
 MAX_AREA_RATIO = 0.85
 MAX_ASPECT = 5.0
-MATCH_MIN_SCORE = 0.30
-MATCH_MIN_AREA_RATIO = 0.10
 
 
 def _score_ellipse(ellipse, height: int, width: int) -> float:
@@ -94,16 +92,6 @@ def detect_calibration(frame_bgr: np.ndarray) -> tuple[Calibration, float] | Non
         ),
         best_score,
     )
-
-
-def has_match(frame_bgr: np.ndarray) -> bool:
-    """Whether a frame shows the dohyo (match footage), not an intro/sponsor card."""
-    found = detect_calibration(frame_bgr)
-    if found is None:
-        return False
-    cal, score = found
-    area_ratio = (math.pi * cal.axis_w_px * cal.axis_h_px / 4) / (frame_bgr.shape[0] * frame_bgr.shape[1])
-    return score >= MATCH_MIN_SCORE and area_ratio >= MATCH_MIN_AREA_RATIO
 
 
 def point_in_ellipse(x_px: float, y_px: float, cal: Calibration, margin: float = 1.0) -> bool:

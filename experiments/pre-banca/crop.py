@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import math
 
-import cv2
 import numpy as np
 
 from dohyo import stable_calibration
@@ -49,13 +48,6 @@ def clip_roi(frames_sample: list[np.ndarray], margin: float = DEFAULT_MARGIN) ->
 def crop_frame(frame: np.ndarray, roi: tuple[int, int, int, int]) -> np.ndarray:
     x0, y0, w, h = roi
     return frame[y0 : y0 + h, x0 : x0 + w]
-
-
-def box_crop_to_native(box_xywh: tuple[float, float, float, float], roi: tuple[int, int, int, int]) -> tuple[float, float, float, float]:
-    """A bbox measured in crop pixels to native pixels (offset only)."""
-    x, y, w, h = box_xywh
-    x0, y0, _, _ = roi
-    return (x + x0, y + y0, w, h)
 
 
 def box_native_to_crop_yolo(box_xywh_px, roi: tuple[int, int, int, int]) -> tuple[float, float, float, float]:

@@ -30,10 +30,6 @@ class Calibration:
     cm_per_px: float
 
     @property
-    def major_axis_px(self) -> float:
-        return max(self.axis_w_px, self.axis_h_px)
-
-    @property
     def radius_cm(self) -> float:
         return DOHYO_DIAMETER_CM / 2
 
