@@ -18,7 +18,7 @@ ByteTrack, mas um único round não decide entre eles. O passo seguinte é um ra
 com aparência, como o Deep HM-SORT @deephmsort2024, e mais rounds gold com identidade
 para uma comparação estatisticamente robusta.
 
-== Anotação heterogênea (C3)
+== Anotação heterogênea (C4)
 
 Treinar nas duas fontes exigiu adaptar a anotação semiautomática. Os robôs japoneses,
 em vista cenital, são caixas pretas pequenas que pontuam baixo para o conceito textual
@@ -26,7 +26,7 @@ do SAM 3, então o limiar de detecção padrão (0.5 a 0.7) os perdia por comple
 baixá-lo para 0.15, somado a uma resolução de entrada maior (960 px) e a um filtro
 geométrico que descarta caixas fora do dohyo, recuperou os dois robôs. Com isso o
 treino multi-fonte foi viabilizado, e um único detector atinge mAP acima de 0.96 em
-ambas as fontes, apesar das câmeras opostas, o que sustenta a restrição C3.
+ambas as fontes, apesar das câmeras opostas, o que sustenta a restrição C4.
 
 == Generalização cross-categoria (Sumô RC)
 
@@ -79,7 +79,8 @@ conjunto de dados são públicos para reprodução e extensão.
 Apresentamos o Kanshigan, a primeira pipeline aberta de detecção, rastreamento e
 extração de métricas para Sumô de Robôs autônomos. Caracterizamos o problema pela
 interseção de seis restrições não cobertas em conjunto pela literatura, e
-construímos a pipeline a partir de tracking-by-detection com YOLOv8s e OC-SORT,
-usando o SAM 3 como anotador. Os resultados parciais sobre footage real demonstram
+construímos a pipeline a partir de tracking-by-detection, comparando duas
+arquiteturas de detector (YOLOv8s e YOLO26n) e dois rastreadores (OC-SORT e
+ByteTrack), com o SAM 3 como anotador. Os resultados parciais sobre footage real demonstram
 viabilidade em hardware de consumo e estabelecem a base experimental para o trabalho
 final.

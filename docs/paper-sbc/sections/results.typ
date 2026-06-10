@@ -1,4 +1,4 @@
-= Resultados Parciais
+= Resultados Parciais <sec-resultados>
 
 Esta seção reporta os resultados medidos sobre footage real neste estado inicial do
 projeto. Todos os números são medidos, não projetados. O conjunto de avaliação é
@@ -9,9 +9,11 @@ limitações na @sec-discussao). As medições de hardware usaram uma RTX 4070 L
 
 == Conjunto de dados
 
-O conjunto é multi-fonte, atendendo à restrição de qualidade heterogênea (C3): footage
+O conjunto é multi-fonte, atendendo à restrição de qualidade heterogênea (C4): footage
 brasileiro da IRONCup 2025 (câmera de mão, ângulo oblíquo) e footage de torneio
-regional japonês (câmera fixa cenital). Os vídeos são recortados em rounds individuais
+regional japonês (câmera fixa cenital). Apenas essas duas fontes compõem treino,
+validação e gold; o footage de Sumô RC e a final de mundial aparecem somente como
+avaliação qualitativa out-of-distribution na @sec-discussao. Os vídeos são recortados em rounds individuais
 (rastreamento e eventos só fazem sentido dentro de um round). A divisão é por
 round/clip, não por quadro, para evitar vazamento entre quadros vizinhos quase
 idênticos. Para treino e validação mantemos apenas os quadros em que o anotador
@@ -42,14 +44,16 @@ Para responder à parte de detecção da pergunta de pesquisa, comparamos duas
 arquiteturas com fine-tuning no domínio, sobre o recorte do dohyo: o YOLOv8s
 (11,1 M de parâmetros, 28,4 GFLOPs) e o YOLO26n, compacto (2,4 M de parâmetros,
 5,2 GFLOPs). Ambos atingem mAP\@0.5 acima de 0.96 nas duas fontes (@tab-detector). O
-YOLO26n, com cerca de um quinto dos parâmetros, iguala o YOLOv8s no gold BR (0.968 vs
-0.965) e o supera no gold JP (0.993 vs 0.976), o que indica que a arquitetura compacta
-basta para o domínio e melhora a viabilidade sem custo de acurácia. O YOLOv8s
+YOLO26n, com cerca de um quinto dos parâmetros, fica em 0.968 contra 0.965 no gold BR
+e 0.993 contra 0.976 no gold JP; com um único round held-out por fonte, diferenças
+dessa ordem não são distinguíveis de ruído de amostragem, então o que o conjunto
+sustenta é equivalência prática: a arquitetura compacta basta para o domínio e melhora
+a viabilidade sem custo mensurável de acurácia. O YOLOv8s
 pré-treinado em COCO sem fine-tuning (E3) fica em 0.026, duas ordens de grandeza
 abaixo, o que confirma que o domínio exige treino específico.
 
 Um detector acima de 0.96 nas duas fontes, apesar das câmeras opostas (mão oblíqua e
-cenital fixa), sustenta a restrição de qualidade heterogênea (C3). O recorte no dohyo
+cenital fixa), sustenta a restrição de qualidade heterogênea (C4). O recorte no dohyo
 foi decisivo: sem ele, no quadro inteiro, o detector caía para recall 0.91 e precisão
 0.71 (perdia robôs em movimento e gerava falso positivo no fundo); ampliar os robôs e
 remover o fundo levou precisão a 0.99 e recall a 0.96.
@@ -147,9 +151,13 @@ que ambos sustentam identidade estável no caso típico.
 
 A partir das trajetórias rastreadas, o detector cinemático projeta posição e velocidade
 no referencial do dohyo. No round gold, a velocidade de pico medida é de 2,9 m/s
-(robô A) e 2,7 m/s (robô B), na arrancada final, coerente com a modalidade. As demais
+(robô A) e 2,7 m/s (robô B), na arrancada final. O valor é uma verificação de
+plausibilidade (a ordem de grandeza é a esperada para a categoria), não uma medição
+validada: não há ground-truth físico de velocidade. As demais
 métricas cinemáticas em centímetros e os eventos ficam parciais: o início de round
 dispara de forma confiável, mas ring-out e primeiro contato dependem de calibração de
-limiares com timestamps marcados no gold, e a projeção em centímetros sob câmera de mão
-oblíqua ainda é aproximada (@sec-discussao). A análise cinemática quantitativa completa
-fica para a versão final, com a base de eventos anotada.
+limiares sobre timestamps anotados; calibrar e medir no mesmo gold vazaria a avaliação,
+então a medição quantitativa de eventos exige um conjunto de calibração separado, que
+ainda não existe. Além disso, a projeção em centímetros sob câmera de mão oblíqua ainda
+é aproximada (@sec-discussao). A análise cinemática quantitativa completa fica para a
+versão final, com a base de eventos anotada.

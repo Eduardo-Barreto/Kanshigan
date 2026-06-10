@@ -41,3 +41,6 @@ __marimo__/
 # Misc
 .env
 *.log
+
+# OMC tool state
+.omc/

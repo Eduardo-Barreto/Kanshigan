@@ -22,11 +22,13 @@
     SAM 3. We compare two detector architectures (YOLOv8s and the compact YOLO26n) and
     two trackers (OC-SORT and ByteTrack) on held-out, manually-reviewed rounds from each
     source. Across two heterogeneous sources (handheld Brazilian and fixed-overhead
-    Japanese footage), both detectors exceed mAP\@0.5 of 0.96, with the 2.4M-parameter
-    YOLO26n matching the 11.1M-parameter YOLOv8s (versus 0.03 for COCO weights without
-    fine-tuning); SAM 3 agrees with the human gold at F1 0.96; tracking reaches IDF1 up
-    to 0.95; and the full pipeline runs at 133 FPS using 82 MB of GPU memory on a
-    consumer laptop GPU, confirming practical viability.
+    Japanese footage), both detectors exceed mAP\@0.5 of 0.96, with no practically
+    distinguishable difference between the 2.4M-parameter YOLO26n and the
+    11.1M-parameter YOLOv8s on this small evaluation set (versus 0.03 for COCO weights
+    without fine-tuning); SAM 3 agrees with the human gold at F1 0.96 on the Brazilian
+    source; tracking reaches
+    IDF1 up to 0.95; and the full pipeline runs at 133 FPS with 82 MB of GPU memory
+    allocated by the detector on a consumer laptop GPU, confirming practical viability.
   ],
   resumo: [
     Partidas de Sumô de Robôs são decididas em rounds que frequentemente duram
@@ -43,10 +45,13 @@
     dois rastreadores (OC-SORT e ByteTrack) em rounds held-out revisados manualmente de
     cada fonte. Entre duas fontes heterogêneas (footage brasileiro de câmera de mão e
     footage japonês de câmera cenital fixa), os dois detectores superam mAP\@0.5 de 0.96,
-    com o YOLO26n de 2,4 M de parâmetros igualando o YOLOv8s de 11,1 M (contra 0.03 dos
-    pesos COCO sem fine-tuning); o SAM 3 concorda com o gold humano em F1 0.96; o
-    rastreamento atinge IDF1 de até 0.95; e a pipeline completa roda a 133 FPS usando
-    82 MB de memória de GPU em uma GPU de notebook, confirmando viabilidade prática.
+    sem diferença praticamente distinguível entre o YOLO26n de 2,4 M de parâmetros e o
+    YOLOv8s de 11,1 M neste conjunto pequeno de avaliação (contra 0.03 dos
+    pesos COCO sem fine-tuning); o SAM 3 concorda com o gold humano em F1 0.96 na
+    fonte brasileira; o
+    rastreamento atinge IDF1 de até 0.95; e a pipeline completa roda a 133 FPS com
+    82 MB de memória de GPU alocados pelo detector em uma GPU de notebook, confirmando
+    viabilidade prática.
   ],
 )
 
