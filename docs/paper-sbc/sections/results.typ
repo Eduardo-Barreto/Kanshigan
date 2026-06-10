@@ -109,20 +109,27 @@ recupera os dois robôs na anotação de treino (@sec-discussao).
 == Viabilidade
 
 A pipeline completa (decodificação, detecção do dohyo, YOLO, OC-SORT, métricas e
-eventos) roda a 133 quadros por segundo em batch 1, com pico de 82 MB de memória de
-GPU alocada pelo detector. O SAM 3 usado como anotador roda a cerca de 2 quadros por
-segundo sobre entrada decimada de 480×270, com cerca de 7 GB de VRAM, o que confirma a
-decisão de usá-lo apenas como anotador (E1), fora da inferência final.
+eventos) roda acima de 100 quadros por segundo em batch 1 sobre o round gold de 385
+quadros (até cerca de 130 em estado aquecido; menos na partida fria, com o
+carregamento do modelo e a inicialização do contexto CUDA dentro da medição). O custo
+de memória é pequeno: medindo o pico do processo com `torch.cuda.max_memory_reserved`,
+o pico fica em cerca de 101 MB com o YOLOv8s e 90 MB com o YOLO26n compacto, longe dos
+8 GB da GPU (@tab-viability). A @tab-viability separa o tamanho dos pesos do detector,
+o pico de tensores alocados e o pico reservado pelo alocador, que é a estimativa mais
+fiel do que o processo ocupa na GPU. O SAM 3 usado como anotador roda a cerca de 2
+quadros por segundo sobre entrada decimada de 480×270, com cerca de 7 GB de VRAM, o que
+confirma a decisão de usá-lo apenas como anotador (E1), fora da inferência final.
 
 #figure(
-  caption: [Viabilidade em RTX 4070 Laptop 8 GB. Pipeline de inferência vs SAM 3 como anotador.],
+  caption: [Viabilidade em RTX 4070 Laptop 8 GB, no round gold. Pesos do detector, pico de VRAM alocada (tensores) e pico de VRAM reservada (processo). O pipeline de inferência ocupa cerca de 0,1 GB; o SAM 3, como anotador offline, cerca de 7 GB.],
   table(
-    columns: 3,
-    align: (left, center, center),
+    columns: 5,
+    align: (left, center, center, center, center),
     stroke: 0.4pt,
-    table.header([*Componente*], [*FPS*], [*VRAM*]),
-    [Pipeline E2 (inferência)], [133], [82 MB],
-    [SAM 3 (anotador, E1)], [~2], [~7 GB],
+    table.header([*Componente*], [*FPS*], [*Pesos*], [*VRAM alocada*], [*VRAM reservada*]),
+    [Pipeline E2 (YOLOv8s)], [>100], [44,5 MB], [82 MB], [101 MB],
+    [Pipeline E2 (YOLO26n)], [>100], [10 MB], [66 MB], [90 MB],
+    [SAM 3 (anotador, E1)], [~2], [---], [---], [~7 GB],
   ),
 ) <tab-viability>
 

@@ -28,8 +28,9 @@
     11.1M-parameter YOLOv8s on this small evaluation set (versus 0.03 for COCO weights
     without fine-tuning); SAM 3 agrees with the human gold at F1 0.96 on the Brazilian
     source; tracking reaches
-    IDF1 up to 0.94; and the full pipeline runs at 133 FPS with 82 MB of GPU memory
-    allocated by the detector on a consumer laptop GPU, confirming practical viability.
+    IDF1 up to 0.94; and the full pipeline runs above 100 FPS within a peak process
+    footprint of about 100 MB of GPU memory on a consumer laptop GPU, confirming
+    practical viability.
   ],
   resumo: [
     Partidas de Sumô de Robôs são decididas em rounds que frequentemente duram
@@ -51,9 +52,9 @@
     YOLOv8s de 11,1 M neste conjunto pequeno de avaliação (contra 0.03 dos
     pesos COCO sem fine-tuning); o SAM 3 concorda com o gold humano em F1 0.96 na
     fonte brasileira; o
-    rastreamento atinge IDF1 de até 0.94; e a pipeline completa roda a 133 FPS com
-    82 MB de memória de GPU alocados pelo detector em uma GPU de notebook, confirmando
-    viabilidade prática.
+    rastreamento atinge IDF1 de até 0.94; e a pipeline completa roda acima de 100 FPS
+    com pico de processo de cerca de 100 MB de memória de GPU em uma GPU de notebook,
+    confirmando viabilidade prática.
   ],
 )
 
