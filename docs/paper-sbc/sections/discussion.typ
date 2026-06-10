@@ -13,12 +13,13 @@ trabalho futuro.
 
 Rastreadores motion-only podem trocar identidades sob oclusão prolongada entre dois
 robôs idênticos, e testamos diretamente se a aparência corrige isso (@tab-tracking).
-Não corrige, e a causa é o próprio domínio: dois robôs pretos quase idênticos oferecem
-pouco sinal de aparência para o ReID explorar, então o movimento basta e o motion-only
-é a escolha viável. Um rastreador de aparência especializado em alvos pouco
-texturizados, como o Deep HM-SORT @deephmsort2024, e um gold maior e mais denso, com
-identidade em vários rounds, ainda podem refinar a comparação; a base de um round já
-indica que a aparência genérica não compensa aqui.
+Não corrige, ao menos neste round: a causa provável é o próprio domínio, dois robôs
+pretos quase idênticos oferecem pouco sinal de aparência para o ReID explorar. A
+vantagem robusta do motion-only é o throughput, que independe do número de rounds; o
+veredito de acurácia, com uma única troca de identidade nos quatro rastreadores, exige
+mais dados. Um rastreador de aparência especializado em alvos pouco texturizados, como
+o Deep HM-SORT @deephmsort2024, e um gold maior e mais denso, com identidade em vários
+rounds e anotação das passagens de cruzamento, ainda podem fechar a comparação.
 
 == Anotação heterogênea (C4)
 
@@ -43,7 +44,7 @@ categoria não vista é evidência a favor da classe de problemas mais ampla des
 circular, não a aparência de um campeonato específico.
 
 #figure(
-  image("/results/figures/cross_category_rc.png", width: 100%),
+  image("/results/figures/cross_category_rc.png", width: 82%),
   caption: [Generalização zero-shot para Sumô de rádio-controle (categoria fora do treino). O detector, treinado só em Sumô autônomo, mantém arena (amarelo) e robôs A (verde) e B (laranja) em duas partidas RC sobre arena metálica. Resultado qualitativo, sem gold rotulado.],
 ) <fig-rc>
 
@@ -66,17 +67,18 @@ treino dessa distribuição, com movimento rápido e blur, não apenas mais exem
 arena.
 
 #figure(
-  image("/results/figures/worlds_model_vs_sam.png", width: 100%),
+  image("/results/figures/worlds_model_vs_sam.png", width: 66%),
   caption: [Nosso detector vs SAM 3 nos mesmos instantes do Round 1 da final de mundial (out-of-distribution). Cada linha é um instante; à esquerda, nosso detector no quadro nativo; à direita, SAM 3 no recorte do dohyo. Em cima, o início em movimento lento: ambos acham os dois robôs. Embaixo, um momento de movimento rápido: nosso modelo perde os dois, o SAM mantém um.],
 ) <fig-worlds>
 
 == Trabalhos futuros
 
-Além da homografia, planejamos: ampliar a base japonesa
-e adicionar broadcast profissional; ablação do detector com RT-DETR
-@zhao2024rtdetr na arena controlada;
-detecção de contato por máscara em vez de bounding box; e a evolução para uma
-plataforma colaborativa aberta de análise de combate de robôs. A pipeline e o
+Além da homografia da arena, que deve estabilizar a trajetória sob câmera de mão e
+permitir validar a cinemática em centímetros, planejamos: um conjunto de calibração de
+limiares, separado do gold, para medir contato e ring-out; ampliar a base japonesa e
+adicionar broadcast profissional; ablação do detector com RT-DETR @zhao2024rtdetr;
+detecção de contato por máscara; e a evolução para uma plataforma colaborativa aberta
+de análise de combate de robôs. A pipeline e o
 conjunto de dados são públicos para reprodução e extensão.
 
 = Conclusão

@@ -102,23 +102,21 @@ recupera os dois robôs na anotação de treino (@sec-discussao).
 ) <tab-annotator>
 
 #figure(
-  image("/results/figures/qualitative_br_jp.png", width: 100%),
+  image("/results/figures/qualitative_br_jp.png", width: 82%),
   caption: [Saída da pipeline em footage real das duas fontes: arena (amarelo) e robôs A (verde) e B (laranja) detectados e rastreados. À esquerda, BR (câmera de mão); à direita, torneio JP (câmera cenital fixa).],
 ) <fig-qualitative>
 
 == Viabilidade
 
 A pipeline completa (decodificação, detecção do dohyo, YOLO, OC-SORT, métricas e
-eventos) roda acima de 100 quadros por segundo em batch 1 sobre o round gold de 385
-quadros (até cerca de 130 em estado aquecido; menos na partida fria, com o
-carregamento do modelo e a inicialização do contexto CUDA dentro da medição). O custo
-de memória é pequeno: medindo o pico do processo com `torch.cuda.max_memory_reserved`,
-o pico fica em cerca de 101 MB com o YOLOv8s e 90 MB com o YOLO26n compacto, longe dos
-8 GB da GPU (@tab-viability). A @tab-viability separa o tamanho dos pesos do detector,
-o pico de tensores alocados e o pico reservado pelo alocador, que é a estimativa mais
-fiel do que o processo ocupa na GPU. O SAM 3 usado como anotador roda a cerca de 2
-quadros por segundo sobre entrada decimada de 480×270, com cerca de 7 GB de VRAM, o que
-confirma a decisão de usá-lo apenas como anotador (E1), fora da inferência final.
+eventos) roda acima de 100 quadros por segundo em batch 1 sobre o round gold BR (até
+cerca de 130 aquecida; menos na partida fria, com o carregamento do modelo e a
+inicialização do contexto CUDA dentro da medição). O custo de memória é pequeno: o
+pico do processo (`torch.cuda.max_memory_reserved`) fica em cerca de 101 MB com o
+YOLOv8s e 90 MB com o YOLO26n, longe dos 8 GB da GPU (@tab-viability). O SAM 3 como
+anotador roda a cerca de 2 quadros por segundo sobre entrada decimada de 480×270, com
+cerca de 7 GB de VRAM, o que confirma usá-lo apenas como anotador (E1), fora da
+inferência.
 
 #figure(
   caption: [Viabilidade em RTX 4070 Laptop 8 GB, no round gold. Pesos do detector, pico de VRAM alocada (tensores) e pico de VRAM reservada (processo). O pipeline de inferência ocupa cerca de 0,1 GB; o SAM 3, como anotador offline, cerca de 7 GB.],
@@ -164,15 +162,10 @@ vencedor isolado; o que se sustenta é a dominância do motion-only sobre o de a
   ),
 ) <tab-tracking>
 
-A partir das trajetórias rastreadas, o detector cinemático projeta posição e velocidade
-no referencial do dohyo. No round gold, a velocidade de pico medida é de 2,9 m/s
-(robô A) e 2,7 m/s (robô B), na arrancada final. O valor é uma verificação de
-plausibilidade (a ordem de grandeza é a esperada para a categoria), não uma medição
-validada: não há ground-truth físico de velocidade. As demais
-métricas cinemáticas em centímetros e os eventos ficam parciais: o início de round
-dispara de forma confiável, mas ring-out e primeiro contato dependem de calibração de
-limiares sobre timestamps anotados; calibrar e medir no mesmo gold vazaria a avaliação,
-então a medição quantitativa de eventos exige um conjunto de calibração separado, que
-ainda não existe. Além disso, a projeção em centímetros sob câmera de mão oblíqua ainda
-é aproximada (@sec-discussao). A análise cinemática quantitativa completa fica para a
-versão final, com a base de eventos anotada.
+A pipeline também projeta posição e velocidade no referencial do dohyo e detecta
+eventos por regras determinísticas, mas a validação quantitativa dessas saídas é
+trabalho futuro, não resultado desta fase: das três classes de evento, só o início de
+round dispara de forma confiável; ring-out e primeiro contato exigem um conjunto de
+calibração de limiares separado do gold, que ainda não existe; e a velocidade em
+centímetros não tem ground-truth físico e sofre com o movimento da câmera de mão
+(@sec-discussao).

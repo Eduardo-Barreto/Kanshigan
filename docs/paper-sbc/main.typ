@@ -28,11 +28,10 @@
     Japanese footage), both detectors exceed mAP\@0.5 of 0.96, with no practically
     distinguishable difference between the 2.4M-parameter YOLO26n and the
     11.1M-parameter YOLOv8s on this small evaluation set (versus 0.03 for COCO weights
-    without fine-tuning); SAM 3 agrees with the human gold at F1 0.96 on the Brazilian
-    source; tracking reaches
-    IDF1 up to 0.94; and the full pipeline runs above 100 FPS within a peak process
-    footprint of about 100 MB of GPU memory on a consumer laptop GPU, confirming
-    practical viability.
+    without fine-tuning). SAM 3 agrees with the human gold at F1 0.96 on the Brazilian
+    source, and tracking reaches IDF1 up to 0.94. The full pipeline runs above 100 FPS
+    within a peak process footprint of about 100 MB of GPU memory on a consumer laptop
+    GPU, confirming practical viability.
   ],
   resumo: [
     Partidas de Sumô de Robôs são decididas em rounds que frequentemente duram
@@ -54,9 +53,8 @@
     footage japonês de câmera cenital fixa), os dois detectores superam mAP\@0.5 de 0.96,
     sem diferença praticamente distinguível entre o YOLO26n de 2,4 M de parâmetros e o
     YOLOv8s de 11,1 M neste conjunto pequeno de avaliação (contra 0.03 dos
-    pesos COCO sem fine-tuning); o SAM 3 concorda com o gold humano em F1 0.96 na
-    fonte brasileira; o
-    rastreamento atinge IDF1 de até 0.94; e a pipeline completa roda acima de 100 FPS
+    pesos COCO sem fine-tuning). O SAM 3 concorda com o gold humano em F1 0.96 na
+    fonte brasileira, e o rastreamento atinge IDF1 de até 0.94. A pipeline completa roda acima de 100 FPS
     com pico de processo de cerca de 100 MB de memória de GPU em uma GPU de notebook,
     confirmando viabilidade prática.
   ],

@@ -35,7 +35,7 @@ construída sobre premissas que não valem para o combate de robôs: atletas
 distinguíveis pela aparência, transmissões profissionais multicâmera e eventos
 em escala de segundos. Para o Sumô de Robôs, com alvos rígidos quase idênticos,
 vídeo heterogêneo de torneio e desfechos sub-segundo, não encontramos na
-literatura pipeline, dataset ou benchmark publicado.
+literatura pipeline, dataset ou benchmark publicado#footnote[Busca por "robot sumo" e "sumo robot" combinados com termos de visão, rastreamento, detecção e métricas, em bases acadêmicas e no arXiv (junho de 2026); o protocolo de busca está no repositório do projeto.].
 
 Medições objetivas dariam às equipes respostas que hoje faltam: se o robô reage
 antes do oponente, com que velocidade chega ao primeiro contato, por onde costuma
