@@ -25,6 +25,7 @@
   --radius-lg: 14px;
   --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'Geist Mono', 'SF Mono', Consolas, monospace;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -113,9 +114,11 @@ p { color: var(--text-secondary); line-height: 1.6; font-size: 15px; }
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
   padding: 24px 28px;
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  transition: border-color 0.2s ease, transform 0.2s var(--ease-out);
 }
-.card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+@media (hover: hover) and (pointer: fine) {
+  .card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+}
 
 .card-title { margin-bottom: 8px; color: var(--text-primary); }
 .card .num {
@@ -210,7 +213,9 @@ td.bad { color: #ef4444; }
   padding: 16px;
   transition: border-color 0.2s ease;
 }
-.flow-node:hover { border-color: var(--accent-blue); }
+@media (hover: hover) and (pointer: fine) {
+  .flow-node:hover { border-color: var(--accent-blue); }
+}
 .flow-node .step {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -240,6 +245,13 @@ td.bad { color: #ef4444; }
 }
 .img-card img { width: 100%; display: block; border-radius: 6px; }
 .img-card--dark { background: var(--bg-secondary); }
+.media-grid { align-items: stretch; }
+.media-grid .img-card img {
+  max-height: 200px;
+  width: 100%;
+  object-fit: contain;
+}
+.media-grid .video-placeholder { min-height: 0; }
 .img-caption {
   font-size: 12px;
   color: var(--text-tertiary);
@@ -262,7 +274,9 @@ td.bad { color: #ef4444; }
   text-align: center;
   transition: border-color 0.2s ease;
 }
-.video-placeholder:hover { border-color: var(--accent-blue); }
+@media (hover: hover) and (pointer: fine) {
+  .video-placeholder:hover { border-color: var(--accent-blue); }
+}
 .video-placeholder .vp-icon {
   width: 52px; height: 52px;
   border: 1px solid var(--border-hover);
@@ -341,9 +355,11 @@ td.bad { color: #ef4444; }
   top: 0; left: 0;
   height: 2px;
   background: var(--accent-blue);
-  width: 0;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left;
   z-index: 100;
-  transition: width 0.2s ease;
+  transition: transform 0.25s var(--ease-out);
 }
 
 .counter {
@@ -370,7 +386,7 @@ td.bad { color: #ef4444; }
 .slide { position: relative; }
 
 .anim { opacity: 0; }
-.anim.visible { animation: fadeUp 0.5s ease forwards; }
+.anim.visible { animation: fadeUp 0.5s var(--ease-out) forwards; }
 .anim.visible.d1 { animation-delay: 0.1s; }
 .anim.visible.d2 { animation-delay: 0.2s; }
 .anim.visible.d3 { animation-delay: 0.3s; }
@@ -381,6 +397,17 @@ td.bad { color: #ef4444; }
   to { opacity: 1; transform: translateY(0); }
 }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .anim.visible { animation: fadeOnly 0.2s ease forwards; }
+  .badge-dot { animation: none; }
+  .card, .progress { transition: none; }
+}
+@keyframes fadeOnly {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
 @media (max-width: 860px) {
   .slide { padding: 56px 24px; }
@@ -406,8 +433,8 @@ td.bad { color: #ef4444; }
   <p class="subtitle anim d2">Uma pipeline de visão computacional para extração automatizada de métricas em partidas de Sumô de Robôs autônomos</p>
   <div style="height: 40px"></div>
   <div class="anim d3">
-    <p style="font-size: 15px; color: var(--text-secondary);">Eduardo Barreto</p>
-    <p style="font-size: 13px; color: var(--text-tertiary); margin-top: 6px;">Pedro Henrique de Azeredo Coutinho Cruz · Luan Ramos de Mello · Rodrigo Mangoni Nicola</p>
+    <p style="font-size: 15px; color: var(--text-secondary);">Eduardo Barreto · Pedro Henrique de Azeredo Coutinho Cruz · Luan Ramos de Mello</p>
+    <p style="font-size: 13px; color: var(--text-tertiary); margin-top: 6px;">Orientador: Rodrigo Mangoni Nicola</p>
     <p style="font-size: 13px; color: var(--text-tertiary); margin-top: 6px;">Instituto de Tecnologia e Liderança (Inteli) — São Paulo</p>
   </div>
 </section>
@@ -624,29 +651,23 @@ td.bad { color: #ef4444; }
   <span class="timer-hint">7:50 – 8:40</span>
   <div class="label anim">O que a pipeline entrega</div>
   <h2 class="anim">Da caixa delimitadora à métrica de combate</h2>
-  <div class="cols">
-    <div>
-      <div class="img-card anim d1">
-        <img src="figures/qualitative_br_jp.png" alt="Saída da pipeline nas duas fontes">
-        <div class="img-caption">Arena (amarelo) e robôs A (verde) e B (laranja) nas duas fontes: câmera de mão BR e cenital JP</div>
-      </div>
-      <div style="height: 16px"></div>
-      <div class="img-card anim d2">
-        <img src="figures/gold_zb01_trajectories.png" alt="Trajetórias no referencial do dohyo">
-        <div class="img-caption">Trajetórias no referencial do dohyo, em cm — pico medido pela pipeline: 2,9 m/s (cinemática ainda sem validação por ground-truth físico)</div>
-      </div>
+  <div class="grid-2 media-grid">
+    <div class="img-card anim d1">
+      <img src="figures/qualitative_br_jp.png" alt="Saída da pipeline nas duas fontes">
+      <div class="img-caption">Arena (amarelo) e robôs A (verde) e B (laranja) nas duas fontes: câmera de mão BR e cenital JP</div>
     </div>
-    <div>
-      <div class="video-placeholder anim d2" style="min-height: 200px;">
-        <div class="vp-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-        <span class="vp-label">Espaço para vídeo</span>
-        <span class="vp-desc">Saída da pipeline com overlay: detecção, rastreamento e eventos sobre um round real</span>
-      </div>
-      <div style="height: 16px"></div>
-      <div class="img-card anim d3">
-        <img src="figures/cross_category_rc.png" alt="Generalização zero-shot para Sumô RC">
-        <div class="img-caption">Bônus qualitativo: zero-shot em Sumô RC — categoria e arena fora do treino</div>
-      </div>
+    <div class="video-placeholder anim d2">
+      <div class="vp-icon"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      <span class="vp-label">Espaço para vídeo</span>
+      <span class="vp-desc">Saída da pipeline com overlay: detecção, rastreamento e eventos sobre um round real</span>
+    </div>
+    <div class="img-card anim d2">
+      <img src="figures/gold_zb01_trajectories.png" alt="Trajetórias no referencial do dohyo">
+      <div class="img-caption">Trajetórias em cm no referencial do dohyo — pico medido pela pipeline: 2,9 m/s (sem validação por ground-truth físico ainda)</div>
+    </div>
+    <div class="img-card anim d3">
+      <img src="figures/cross_category_rc.png" alt="Generalização zero-shot para Sumô RC">
+      <div class="img-caption">Bônus qualitativo: zero-shot em Sumô RC — categoria e arena fora do treino</div>
     </div>
   </div>
 </section>
@@ -711,7 +732,7 @@ function currentIndex() {
 function update() {
   const idx = currentIndex();
   counter.textContent = (idx + 1) + ' / ' + slides.length;
-  progress.style.width = ((idx + 1) / slides.length * 100) + '%';
+  progress.style.transform = 'scaleX(' + ((idx + 1) / slides.length) + ')';
 }
 
 deck.addEventListener('scroll', update, { passive: true });
