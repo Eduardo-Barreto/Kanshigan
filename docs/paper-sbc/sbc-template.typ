@@ -29,8 +29,11 @@
     }
   })
 
-  // Title block
+  // Title block. Reset paragraph justification and indent here: the global
+  // `justify: true` would stretch a wrapped title's first line with ragged gaps,
+  // and `first-line-indent` would shove it right, which reads as a broken title.
   align(center)[
+    #set par(justify: false, first-line-indent: 0pt)
     #block(text(size: 16pt, weight: "bold")[#title])
     #v(0.6em)
     #block(text(size: 12pt)[#authors.map(a => a.name).join(", ", last: " and ")])
