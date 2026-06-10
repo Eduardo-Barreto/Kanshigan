@@ -13,7 +13,7 @@
 ) = {
   set document(title: title, author: authors.map(a => a.name))
   set page(paper: "a4", margin: (left: 3cm, right: 3cm, top: 3.5cm, bottom: 2.5cm))
-  set text(font: ("Times New Roman", "Liberation Serif", "Libertinus Serif"), size: 12pt, lang: "pt")
+  set text(font: ("Liberation Serif", "Libertinus Serif"), size: 12pt, lang: "pt")
   set par(justify: true, leading: 0.65em, first-line-indent: 1.25em)
 
   set heading(numbering: "1.1.")
