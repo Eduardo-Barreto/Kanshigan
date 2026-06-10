@@ -117,10 +117,13 @@ def run(video: Path, weights: Path, tracker_name: str, out_dir: Path, cfg: Event
     frames, fps = load_frames(video)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    if torch.cuda.is_available():
+    on_cuda = torch.cuda.is_available()
+    if on_cuda:
+        torch.cuda.empty_cache()
         torch.cuda.reset_peak_memory_stats()
     started = time.perf_counter()
     model = YOLO(str(weights))
+    weights_mb = round(sum(p.numel() * p.element_size() for p in model.model.parameters()) / 1e6, 1)
     calibrations = per_frame_calibrations(frames)
     roi = clip_roi(frames[:: max(1, len(frames) // 12)])
 
@@ -148,7 +151,9 @@ def run(video: Path, weights: Path, tracker_name: str, out_dir: Path, cfg: Event
         "viability": {
             "end_to_end_fps": round(len(frames) / elapsed, 2),
             "wall_time_s": round(elapsed, 2),
-            "peak_vram_mb": round(torch.cuda.max_memory_allocated() / 1e6, 1) if torch.cuda.is_available() else None,
+            "model_weights_mb": weights_mb,
+            "peak_vram_allocated_mb": round(torch.cuda.max_memory_allocated() / 1e6, 1) if on_cuda else None,
+            "peak_vram_reserved_mb": round(torch.cuda.max_memory_reserved() / 1e6, 1) if on_cuda else None,
         },
     }
     out_json = out_dir / f"{video.stem}.json"
