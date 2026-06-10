@@ -15,9 +15,14 @@ Mouse:
 Keys:
     right / space / 'n'  next frame  (auto-saves current)
     left  / 'p'          prev frame  (auto-saves current)
+    'y'                  copy this frame's boxes to the clipboard
+    'v'                  paste the clipboard onto this frame (replaces its boxes)
     'g'                  jump to first unsaved-no-boxes frame
     's'                  force save
     'q' / ESC            quit  (auto-saves current)
+
+The clipboard survives frame changes, so on slow motion or a clinch you copy a
+good frame, advance, paste, and nudge the boxes instead of redrawing them.
 
 Usage:
     uv run python editor.py --split gold [--clip-id <prefix>]
@@ -118,6 +123,7 @@ class EditorState:
         self.drag_start = (0, 0)
         self.box_start: Box | None = None
         self.new_box: Box | None = None
+        self.clipboard: list[Box] = []
 
     def reset_drag(self):
         self.dragging = False
@@ -247,7 +253,7 @@ def main() -> None:
     img = load_frame(idx)
     while True:
         mode = "DRAW" if state.draw_new else "EDIT"
-        info = f"[{idx + 1}/{len(images)}] {current_path.stem}  boxes={len(state.boxes)}  sel={state.selected}  mode={mode}"
+        info = f"[{idx + 1}/{len(images)}] {current_path.stem}  boxes={len(state.boxes)}  sel={state.selected}  clip={len(state.clipboard)}  mode={mode}"
         cv2.imshow("editor", render(img, state, info))
         key = cv2.waitKey(20) & 0xFF
 
@@ -272,6 +278,13 @@ def main() -> None:
             continue
         if key == ord("n"):
             state.draw_new = True
+            continue
+        if key == ord("y"):
+            state.clipboard = [Box(b.x, b.y, b.w, b.h) for b in state.boxes]
+            continue
+        if key == ord("v"):
+            state.boxes = [Box(b.x, b.y, b.w, b.h) for b in state.clipboard]
+            state.selected = None
             continue
         if key in (ord("p"), 81):  # left arrow
             save_current()
