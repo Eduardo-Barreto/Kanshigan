@@ -3,22 +3,28 @@
 The galena clips hold a whole match (2-3 rounds) with camera cuts between rounds.
 Identity and tracking are per round (robots reset between them), so each round
 needs explicit [start, end] frames. Auto-segmentation is too rough, so this lets a
-human scrub the native video and mark boundaries by hand. Gold boxes are overlaid
-when present (native frame = sam_idx * STRIDE), so the annotated robots and the
-cuts between rounds are visible while marking.
+human scrub the match and mark boundaries by hand.
+
+Navigation is by GOLD frame, not native frame: the gold is annotated at 10 fps but
+the video is 60 fps, so this steps in units of one gold frame (STRIDE native
+frames) and shows the gold box at each step. Marks and the saved rounds are in gold
+frame indices (the sam_idx in the label filenames), which is what the identity and
+tracker steps consume.
 
 Output: data/annotations/round_marks/<clip>.json
-    {"clip", "fps", "n_frames", "rounds": [[start, end], ...]}  (native frame indices)
+    {"clip", "fps", "stride", "max_idx", "rounds": [[start_idx, end_idx], ...]}
 
-Navigation:
-    right / '.'   +1 frame        left / ','    -1 frame
-    ']'           +10 frames      '['           -10 frames
-    '='           +60 frames      '-'           -60 frames
-    '0'           jump to frame 0
+Navigation (steps are in gold frames):
+    right / '.'   +1        left / ','    -1
+    ']'           +10       '['           -10
+    '='           +50       '-'           -50
+    'm'           next gold frame that has a box
+    'n'           prev gold frame that has a box
+    '0'           jump to first frame
 
 Marking:
-    's'   set round START at current frame
-    'e'   set round END at current frame
+    's'   set round START at current gold frame
+    'e'   set round END at current gold frame
     'u'   undo the last mark
     'w'   write marks to disk
     'q' / ESC   write and quit
@@ -57,11 +63,12 @@ def find_clip(clip_id: str) -> Path:
     raise SystemExit(f"clip not found: {clip_id}")
 
 
-def gold_boxes(clip_id: str, native_frame: int, w: int, h: int) -> list[tuple[int, int, int, int]]:
-    if native_frame % STRIDE != 0:
-        return []
-    sam_idx = native_frame // STRIDE
-    label = ANN_DIR / GOLD_SPLIT / "labels" / f"{clip_id}_{sam_idx:04d}.txt"
+def label_path(clip_id: str, idx: int) -> Path:
+    return ANN_DIR / GOLD_SPLIT / "labels" / f"{clip_id}_{idx:04d}.txt"
+
+
+def gold_boxes(clip_id: str, idx: int, w: int, h: int) -> list[tuple[int, int, int, int]]:
+    label = label_path(clip_id, idx)
     if not label.exists():
         return []
     boxes = []
@@ -74,17 +81,17 @@ def gold_boxes(clip_id: str, native_frame: int, w: int, h: int) -> list[tuple[in
 
 
 def compute_rounds(marks: list[tuple[int, str]]) -> list[list[int]]:
-    """Pair START/END marks in frame order into [start, end] rounds."""
+    """Pair START/END marks in index order into [start, end] rounds."""
     rounds = []
     open_start = None
-    for frame, kind in sorted(marks):
+    for idx, kind in sorted(marks):
         if kind == "S":
-            open_start = frame
+            open_start = idx
         elif kind == "E" and open_start is not None:
-            rounds.append([open_start, frame])
+            rounds.append([open_start, idx])
             open_start = None
     if open_start is not None:
-        rounds.append([open_start, -1])  # unterminated; flagged with -1
+        rounds.append([open_start, -1])
     return rounds
 
 
@@ -98,6 +105,13 @@ def main() -> None:
     cap = cv2.VideoCapture(str(video))
     fps = cap.get(cv2.CAP_PROP_FPS)
     n_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    max_idx = (n_frames - 1) // STRIDE
+
+    labeled = sorted(
+        int(p.stem.rsplit("_", 1)[1])
+        for p in (ANN_DIR / GOLD_SPLIT / "labels").glob(f"{clip_id}_*.txt")
+    )
+    labeled_set = set(labeled)
 
     MARKS_DIR.mkdir(parents=True, exist_ok=True)
     marks_path = MARKS_DIR / f"{clip_id}.json"
@@ -110,43 +124,50 @@ def main() -> None:
                 marks.append((e, "E"))
 
     cv2.namedWindow("mark_rounds", cv2.WINDOW_NORMAL)
-    pos = -1
+    pos = -1  # last native frame read
     frame = None
 
-    def get_frame(target: int):
+    def show(idx: int):
         nonlocal pos, frame
-        target = max(0, min(n_frames - 1, target))
-        if target != pos + 1:
-            cap.set(cv2.CAP_PROP_POS_FRAMES, target)
+        idx = max(0, min(max_idx, idx))
+        native = idx * STRIDE
+        if native != pos + 1:
+            cap.set(cv2.CAP_PROP_POS_FRAMES, native)
         ok, img = cap.read()
         if ok:
-            frame, pos = img, target
-        return frame
+            frame, pos = img, native
+        return idx
+
+    def next_labeled(idx: int, step: int) -> int:
+        cands = [i for i in labeled if (i > idx if step > 0 else i < idx)]
+        return (min(cands) if step > 0 else max(cands)) if cands else idx
 
     def save():
         rounds = compute_rounds(marks)
-        marks_path.write_text(json.dumps({"clip": clip_id, "fps": fps, "n_frames": n_frames, "rounds": rounds}, indent=2))
+        marks_path.write_text(json.dumps(
+            {"clip": clip_id, "fps": fps, "stride": STRIDE, "max_idx": max_idx, "rounds": rounds}, indent=2))
         return rounds
 
-    get_frame(0)
+    idx = 0
+    show(idx)
     while True:
         h, w = frame.shape[:2]
         view = frame.copy()
-        for x, y, bw, bh in gold_boxes(clip_id, pos, w, h):
+        boxes = gold_boxes(clip_id, idx, w, h)
+        for x, y, bw, bh in boxes:
             cv2.rectangle(view, (x, y), (x + bw, y + bh), COLOR_BOX, 2)
         for f, kind in marks:
-            if f == pos:
-                col = COLOR_START if kind == "S" else COLOR_END
-                cv2.rectangle(view, (0, 0), (w - 1, h - 1), col, 6)
+            if f == idx:
+                cv2.rectangle(view, (0, 0), (w - 1, h - 1), COLOR_START if kind == "S" else COLOR_END, 6)
 
         rounds = compute_rounds(marks)
         starts = sorted(f for f, k in marks if k == "S")
         ends = sorted(f for f, k in marks if k == "E")
+        tag = f"{len(boxes)} box" if boxes else "no box"
         cv2.rectangle(view, (0, 0), (w, 56), TXT_BG, -1)
-        cv2.putText(view, f"frame {pos}/{n_frames - 1}  t={pos / fps:5.2f}s  rounds={len(rounds)}",
+        cv2.putText(view, f"gold {idx}/{max_idx}  t={idx / 10:5.2f}s  {tag}  labeled={len(labeled)}  rounds={len(rounds)}",
                     (8, 22), cv2.FONT_HERSHEY_SIMPLEX, 0.6, TXT_FG, 1, cv2.LINE_AA)
-        cv2.putText(view, f"S={starts}  E={ends}",
-                    (8, 46), cv2.FONT_HERSHEY_SIMPLEX, 0.5, TXT_FG, 1, cv2.LINE_AA)
+        cv2.putText(view, f"S={starts}  E={ends}", (8, 46), cv2.FONT_HERSHEY_SIMPLEX, 0.5, TXT_FG, 1, cv2.LINE_AA)
         cv2.imshow("mark_rounds", view)
         key = cv2.waitKey(20) & 0xFF
 
@@ -156,25 +177,29 @@ def main() -> None:
             save()
             break
         if key in (ord("."), 83):
-            get_frame(pos + 1)
+            idx = show(idx + 1)
         elif key in (ord(","), 81):
-            get_frame(pos - 1)
+            idx = show(idx - 1)
         elif key == ord("]"):
-            get_frame(pos + 10)
+            idx = show(idx + 10)
         elif key == ord("["):
-            get_frame(pos - 10)
+            idx = show(idx - 10)
         elif key == ord("="):
-            get_frame(pos + 60)
+            idx = show(idx + 50)
         elif key == ord("-"):
-            get_frame(pos - 60)
+            idx = show(idx - 50)
+        elif key == ord("m"):
+            idx = show(next_labeled(idx, +1))
+        elif key == ord("n"):
+            idx = show(next_labeled(idx, -1))
         elif key == ord("0"):
-            get_frame(0)
+            idx = show(0)
         elif key == ord("s"):
-            marks = [(f, k) for f, k in marks if f != pos]
-            marks.append((pos, "S"))
+            marks = [(f, k) for f, k in marks if f != idx]
+            marks.append((idx, "S"))
         elif key == ord("e"):
-            marks = [(f, k) for f, k in marks if f != pos]
-            marks.append((pos, "E"))
+            marks = [(f, k) for f, k in marks if f != idx]
+            marks.append((idx, "E"))
         elif key == ord("u") and marks:
             marks.pop()
         elif key == ord("w"):
@@ -185,8 +210,7 @@ def main() -> None:
     rounds = save()
     print(f"wrote {marks_path}")
     for k, (s, e) in enumerate(rounds, 1):
-        dur = (e - s) / fps if e >= 0 else -1
-        print(f"  round {k}: {s}..{e}  ({dur:.1f}s)" if e >= 0 else f"  round {k}: {s}..UNTERMINATED")
+        print(f"  round {k}: gold {s}..{e}  ({(e - s) / 10:.1f}s)" if e >= 0 else f"  round {k}: gold {s}..UNTERMINATED")
 
 
 if __name__ == "__main__":
