@@ -22,10 +22,9 @@ decisões de vitória, momento do primeiro contato e trajetórias acontecem em
 poucas dezenas de quadros de vídeo, rápido demais para observação a olho nu.
 Ainda assim, toda a análise de desempenho na modalidade é feita por observação
 humana, sem ferramentas automatizadas, bases de dados estruturadas ou métricas
-padronizadas, lacuna que a revisão da @sec-related confirma; equipes ajustam
-estratégia e hardware com base em memória e repetição manual de vídeo, sem
-medições objetivas de velocidade, aceleração, tempo de reação ou padrões
-espaciais de movimento.
+padronizadas; equipes ajustam estratégia e hardware com base em memória e
+repetição manual de vídeo, sem medições objetivas de velocidade, aceleração,
+tempo de reação ou padrões espaciais de movimento.
 
 Esse vazio contrasta com o estado da análise esportiva para atletas humanos. A
 visão computacional transformou a análise de desempenho em esportes como
@@ -38,39 +37,37 @@ em escala de segundos. Para o Sumô de Robôs, com alvos rígidos quase idêntic
 vídeo heterogêneo de torneio e desfechos sub-segundo, não encontramos na
 literatura pipeline, dataset ou benchmark publicado.
 
-Medições objetivas beneficiariam diretamente as equipes, que hoje não conseguem
-responder com dados perguntas básicas de projeto: se o robô reage antes do
-oponente, com que velocidade chega ao primeiro contato, por onde costuma ser
-empurrado para fora. Para a comunidade de visão computacional, a modalidade
-oferece um domínio de teste com restrições que raramente aparecem em conjunto,
-como eventos críticos sub-segundo, alvos sem marcadores e visualmente uniformes
-e vídeo de qualidade variável.
+Medições objetivas dariam às equipes respostas que hoje faltam: se o robô reage
+antes do oponente, com que velocidade chega ao primeiro contato, por onde costuma
+ser empurrado para fora. Para a visão computacional, a modalidade é um domínio de
+teste com condições que raramente aparecem juntas: eventos críticos sub-segundo,
+alvos sem marcadores e visualmente uniformes, vídeo de qualidade variável.
 
 Este trabalho apresenta o Kanshigan, uma pipeline de visão computacional de
 código aberto para extração automatizada de métricas de desempenho a partir do
-vídeo de partidas de Sumô de Robôs autônomos de 3 kg. A pergunta que orienta a
-pesquisa é: que combinação de arquitetura de detecção e de algoritmo de
-rastreamento é suficiente, em acurácia e em viabilidade prática, para extrair
-métricas de desempenho no domínio do Sumô de Robôs? A pergunta é de
-suficiência, não de superioridade: com o conjunto de avaliação desta fase,
-diferenças finas entre métodos não são distinguíveis de ruído, mas é possível
-estabelecer se cada componente atende ao domínio. Para
-respondê-la, comparamos arquiteturas de detector e algoritmos de rastreamento
-sobre footage real de torneios, contra um conjunto de avaliação revisado por
-humanos. Nesta entrega de meio de percurso, a componente de detecção da pergunta
-é respondida nas duas fontes; a de rastreamento, medida em um único round com
-identidades anotadas, é resultado preliminar por desenho e será fechada na
-versão final, com mais rounds gold.
+vídeo de partidas de Sumô de Robôs autônomos de 3 kg. O domínio instancia, em
+estado concentrado, um problema de rastreamento mais geral, e é sobre ele que a
+pesquisa se orienta: quais combinações de detector e rastreador melhor equilibram
+acurácia e viabilidade prática para rastrear múltiplos alvos visualmente
+semelhantes, em movimento rápido e não linear, a partir de vídeo não calibrado e
+sem marcadores? Por
+viabilidade prática entendemos rodar em hardware de consumo, com throughput e
+memória medidos e sem instrumentação especial: a análise só serve às equipes se
+rodar no computador que elas têm.
 
-As contribuições deste artigo são: (i) a formulação do problema do Sumô de
-Robôs pela interseção de seis restrições que a literatura cobre apenas
-isoladamente; (ii) a primeira pipeline
-aberta de detecção, rastreamento e extração de métricas para a modalidade,
-reprodutível em hardware de consumo; e (iii) um conjunto de dados anotado,
-representativo da categoria competitiva atual, derivado de torneios reais.
+A pergunta busca a combinação superior em acurácia e viabilidade, e a respondemos
+comparando arquiteturas de detector e algoritmos de rastreamento sobre footage
+real de torneios, contra um conjunto de avaliação revisado por humanos. Esta é
+uma entrega de meio de percurso, e a reportamos como tal: a componente de
+detecção é respondida nas duas fontes; a de rastreamento, medida em um round com
+identidades anotadas, é preliminar e será fechada na versão final, com mais
+rounds gold.
 
-O restante do artigo se organiza assim: a @sec-related analisa os trabalhos
-relacionados e deriva as seis restrições que definem o problema; a
-@sec-metodologia descreve a pipeline e o protocolo experimental; a
-@sec-resultados reporta os resultados parciais; e a @sec-discussao discute
-limitações e trabalhos futuros.
+As contribuições deste artigo são: (i) a caracterização do Sumô de Robôs por
+seis condições que a literatura enfrenta apenas em separado, e o recorte da
+questão científica ao subconjunto de fato em aberto, rastrear alvos de aparência
+uniforme sob movimento não linear no equilíbrio entre acurácia e viabilidade;
+(ii) a primeira pipeline aberta de detecção, rastreamento e extração de métricas
+para a modalidade, reprodutível em hardware de consumo; e (iii) um conjunto de
+dados anotado, representativo da categoria competitiva atual, derivado de
+torneios reais.

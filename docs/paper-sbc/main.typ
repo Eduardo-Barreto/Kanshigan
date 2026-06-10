@@ -16,8 +16,10 @@
     Kanshigan, an open-source computer vision pipeline that detects the dohyo
     arena, tracks both robots and extracts quantitative performance metrics
     (position, velocity, acceleration) and events (round start, contact, ring-out)
-    from match video. We frame the problem by the intersection of six constraints
-    that no prior work covers jointly, and we build the pipeline from
+    from match video. Robot Sumo concentrates a more general tracking problem,
+    near-identical targets in fast, non-linear motion on uncalibrated, markerless
+    video, and we ask which detector and tracker combinations best balance accuracy
+    and practical viability in that regime. We build the pipeline from
     tracking-by-detection on a multi-source dataset semi-automatically annotated with
     SAM 3. We compare two detector architectures (YOLOv8s and the compact YOLO26n) and
     four trackers, two motion-only (OC-SORT, ByteTrack) and two appearance-based
@@ -40,10 +42,12 @@
     visão computacional de código aberto que detecta a arena (dohyo), rastreia os
     dois robôs e extrai métricas quantitativas de desempenho (posição, velocidade,
     aceleração) e eventos (início do round, contato, ring-out) a partir do vídeo da
-    partida. Caracterizamos o problema pela interseção de seis restrições que
-    nenhum trabalho anterior cobre em conjunto, e construímos a pipeline a partir do
-    tracking-by-detection sobre uma base multi-fonte anotada de forma semiautomática com
-    o SAM 3. Comparamos duas arquiteturas de detector (YOLOv8s e o compacto YOLO26n) e
+    partida. O Sumô concentra um problema de rastreamento mais geral, alvos quase
+    idênticos em movimento rápido e não linear sobre vídeo não calibrado e sem
+    marcadores, e perguntamos quais combinações de detector e rastreador melhor
+    equilibram acurácia e viabilidade prática nesse regime. Construímos a pipeline a
+    partir do tracking-by-detection sobre uma base multi-fonte anotada de forma
+    semiautomática com o SAM 3. Comparamos duas arquiteturas de detector (YOLOv8s e o compacto YOLO26n) e
     quatro rastreadores, dois motion-only (OC-SORT, ByteTrack) e dois com aparência
     (DeepOCSORT, BoT-SORT), em rounds held-out revisados manualmente de
     cada fonte. Entre duas fontes heterogêneas (footage brasileiro de câmera de mão e

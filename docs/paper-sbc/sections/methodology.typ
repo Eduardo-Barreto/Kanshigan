@@ -55,7 +55,7 @@ duas arquiteturas, o YOLOv8s @jocher2023yolo e o YOLO26n compacto
 == Rastreamento e identidade
 
 As detecções viram trajetórias contínuas por um rastreador que associa caixas
-entre quadros. A restrição C2 (dois robôs visualmente quase idênticos) sugere que
+entre quadros. A condição C2 (dois robôs visualmente quase idênticos) sugere que
 a aparência teria pouco a oferecer, mas tratamos isso como hipótese a testar, não
 como premissa. Comparamos quatro rastreadores sobre as mesmas detecções: dois
 motion-only, OC-SORT @cao2023ocsort e ByteTrack @zhang2022bytetrack, e dois com

@@ -9,7 +9,7 @@ limitações na @sec-discussao). As medições de hardware usaram uma RTX 4070 L
 
 == Conjunto de dados
 
-O conjunto é multi-fonte, atendendo à restrição de qualidade heterogênea (C4): footage
+O conjunto é multi-fonte, atendendo à condição de qualidade heterogênea (C4): footage
 brasileiro da IRONCup 2025 (câmera de mão, ângulo oblíquo) e footage de torneio
 regional japonês (câmera fixa cenital). Apenas essas duas fontes compõem treino,
 validação e gold; o footage de Sumô RC e a final de mundial aparecem somente como
@@ -53,7 +53,7 @@ pré-treinado em COCO sem fine-tuning (E3) fica em 0.026, duas ordens de grandez
 abaixo, o que confirma que o domínio exige treino específico.
 
 Um detector acima de 0.96 nas duas fontes, apesar das câmeras opostas (mão oblíqua e
-cenital fixa), sustenta a restrição de qualidade heterogênea (C4). O recorte no dohyo
+cenital fixa), sustenta a condição de qualidade heterogênea (C4). O recorte no dohyo
 foi decisivo: sem ele, no quadro inteiro, o detector caía para recall 0.91 e precisão
 0.71 (perdia robôs em movimento e gerava falso positivo no fundo); ampliar os robôs e
 remover o fundo levou precisão a 0.99 e recall a 0.96.
@@ -148,7 +148,7 @@ dois motion-only. O custo, porém, é grande: o passo de ReID derruba o throughp
 rastreador de mais de 3000 quadros por segundo para menos de 100, cerca de 35 a 40
 vezes mais lento, sem retorno em acurácia (o porquê estrutural está na @sec-discussao).
 A um único round held-out, a diferença entre os quatro é pequena demais para eleger um
-vencedor isolado; o resultado robusto é a dominância do motion-only sobre o de aparência.
+vencedor isolado; o que se sustenta é a dominância do motion-only sobre o de aparência.
 
 #figure(
   caption: [Quatro rastreadores sobre detecções idênticas (detector fixo), contra o gold com identidades no round held-out. FPS medido só no estágio de rastreamento, isolando o custo próprio do rastreador.],

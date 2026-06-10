@@ -6,9 +6,9 @@ próximos do problema: o rastreamento multiobjeto genérico, que fornece os
 algoritmos de base; o rastreamento em esportes, que enfrenta alvos parecidos e
 movimento rápido; a visão aplicada a combate e a robôs de competição, os
 domínios mais análogos ao nosso; e os foundation models de segmentação, que
-mudaram o custo de construir um dataset. Dessa análise emergem seis
-características (C1 a C6) que, juntas, definem o problema; a @tab-matrix as
-consolida ao final.
+mudaram o custo de construir um dataset. Dessa análise emergem seis condições
+(C1 a C6) que caracterizam o domínio; a @tab-matrix as consolida e situa o
+recorte científico deste trabalho.
 
 == Rastreamento multiobjeto por tracking-by-detection
 
@@ -112,53 +112,57 @@ papéis: o foundation model anota, e um modelo compacto treinado nessas anotaç�
 roda a inferência. Adotamos essa divisão, com a validação do anotador contra
 revisão humana descrita na metodologia.
 
-== A interseção que define o problema
+== O recorte científico em aberto
 
-As seis características derivadas acima, numeradas na ordem em que emergiram da
-análise, definem o problema: *C1* movimento não linear (da hipótese de
+As seis condições derivadas acima, numeradas na ordem em que emergiram da
+análise, caracterizam o domínio: *C1* movimento não linear (da hipótese de
 velocidade constante que colisões quebram); *C2* aparência uniforme entre alvos
 (do resultado do DanceTrack); *C3* eventos sub-segundo com decisão crítica (da
 escala temporal que nenhum benchmark esportivo força); *C4* vídeo de qualidade
 heterogênea (do contraste com as condições de broadcast); *C5* análise
 post-match (do regime de uso, como no scoring de jiu-jitsu); e *C6* ausência de
-marcadores fiduciais (da premissa que o SSL-Vision exige e o Sumô nega). A
-literatura cobre cada característica isoladamente; a @tab-matrix mostra que
-nenhum trabalho cobre a interseção.
+marcadores fiduciais (da premissa que o SSL-Vision exige e o Sumô nega).
+
+Nem todas pesam igual para a ciência. *C5* é uma relaxação, não uma dificuldade:
+por ser post-match, dispensa inferência embarcada em tempo real, o que permite
+usar um anotador pesado offline. *C6* também não mede dificuldade: satisfeita por
+quase todos, é o critério que exclui as soluções instrumentadas, como o
+SSL-Vision. *C3* e *C4* descrevem a instância. O que permanece em aberto, com
+valor científico transferível, é o par *C1+C2*: rastrear alvos de aparência
+uniforme sob movimento não linear. O DanceTrack isola esse par e mostra a queda dos
+melhores rastreadores, mas em captura controlada; sob vídeo não calibrado e sem
+marcadores, e julgado pela acurácia e pelo custo de rodar em hardware
+de consumo, o melhor equilíbrio segue sem resposta. É esse o recorte que a
+pergunta deste trabalho ataca.
 
 #figure(
-  caption: [Cobertura das seis restrições do problema por trabalho ("S" cobre, "p" parcial, "n" não força a restrição). C1 movimento não linear; C2 aparência uniforme; C3 eventos sub-segundo; C4 vídeo heterogêneo; C5 análise post-match; C6 ausência de fiduciais.],
+  caption: [Cobertura das seis condições do domínio (#sym.circle.filled cobre, #sym.circle.filled.tiny parcial, #sym.circle não força). C1 movimento não linear; C2 aparência uniforme; C3 eventos sub-segundo; C4 vídeo heterogêneo; C5 análise post-match; C6 ausência de fiduciais. Mapa de condições, não placar de desempenho: o par C1+C2 sob o regime não controlado (C4, C6) é a célula em aberto.],
   table(
-    columns: 7,
+    columns: (auto, 2.4em, 2.4em, 2.4em, 2.4em, 2.4em, 2.4em),
     align: (left, center, center, center, center, center, center),
     stroke: 0.4pt,
-    table.header([*Trabalho*], [*C1*], [*C2*], [*C3*], [*C4*], [*C5*], [*C6*]),
-    [ByteTrack @zhang2022bytetrack], [p], [p], [n], [n], [n], [S],
-    [OC-SORT @cao2023ocsort], [S], [p], [n], [n], [n], [S],
-    [DanceTrack @sun2022dancetrack], [S], [S], [n], [n], [n], [S],
-    [SportsMOT @cui2023sportsmot], [p], [S], [n], [n], [n], [S],
-    [SoccerNet-Tracking @cioppa2022soccernet], [p], [S], [p], [n], [p], [S],
-    [Jiu-jitsu scoring @hudovernik2022jiujitsu], [S], [p], [p], [n], [S], [S],
-    [SSL-Vision @zickler2010sslvision], [S], [S], [S], [n], [n], [n],
-    [*Kanshigan*], [*S*], [*S*], [*S*], [*S*], [*S*], [*S*],
+    table.header(
+      table.cell(rowspan: 2)[*Trabalho*],
+      table.cell(colspan: 3, align: center)[*Desafio de rastreamento*],
+      table.cell(colspan: 3, align: center)[*Regime de dados e uso*],
+      [*C1*], [*C2*], [*C3*], [*C4*], [*C5*], [*C6*],
+    ),
+    [ByteTrack @zhang2022bytetrack], [#sym.circle.filled.tiny], [#sym.circle.filled.tiny], [#sym.circle], [#sym.circle], [#sym.circle], [#sym.circle.filled],
+    [OC-SORT @cao2023ocsort], [#sym.circle.filled], [#sym.circle.filled.tiny], [#sym.circle], [#sym.circle], [#sym.circle], [#sym.circle.filled],
+    [DanceTrack @sun2022dancetrack], [#sym.circle.filled], [#sym.circle.filled], [#sym.circle], [#sym.circle], [#sym.circle], [#sym.circle.filled],
+    [SportsMOT @cui2023sportsmot], [#sym.circle.filled.tiny], [#sym.circle.filled], [#sym.circle], [#sym.circle], [#sym.circle], [#sym.circle.filled],
+    [SoccerNet-Tracking @cioppa2022soccernet], [#sym.circle.filled.tiny], [#sym.circle.filled], [#sym.circle.filled.tiny], [#sym.circle], [#sym.circle.filled.tiny], [#sym.circle.filled],
+    [Jiu-jitsu scoring @hudovernik2022jiujitsu], [#sym.circle.filled], [#sym.circle.filled.tiny], [#sym.circle.filled.tiny], [#sym.circle], [#sym.circle.filled], [#sym.circle.filled],
+    [SSL-Vision @zickler2010sslvision], [#sym.circle.filled], [#sym.circle.filled], [#sym.circle.filled], [#sym.circle], [#sym.circle], [#sym.circle],
+    [*Sumô de Robôs (este trabalho)*], [#sym.circle.filled], [#sym.circle.filled], [#sym.circle.filled], [#sym.circle.filled], [#sym.circle.filled], [#sym.circle.filled],
   ),
 ) <tab-matrix>
 
-Os trabalhos mais próximos cobrem plenamente no máximo três das seis restrições,
-e cada um deixa de fora restrições críticas: os rastreadores genéricos não enfrentam a
-escala temporal nem o vídeo heterogêneo; os benchmarks esportivos não cobrem
-footage de torneio sem broadcast; o SSL-Vision depende da instrumentação que o
-Sumô não tem. O Kanshigan opera sob a interseção completa. A tabela deve ser
-lida como mapa de cobertura do problema, não como placar de desempenho: o "S" na
-linha do Kanshigan registra que a pipeline é projetada e avaliada sob a
-restrição correspondente, não que supere os demais trabalhos nos benchmarks
-deles. As três primeiras colunas (C1 a C3) descrevem dificuldades técnicas; as
-três últimas (C4 a C6), o regime de dados e de uso. C4 exige operar sobre o
-vídeo de torneio que de fato existe, heterogêneo por natureza, e nenhum
-benchmark anterior a força porque todos controlam a fonte de captura. C6,
-satisfeita por quase todos os trabalhos, não mede dificuldade: é o critério que
-exclui a família de soluções instrumentadas, da qual o SSL-Vision é o
-representante. Essa interseção
-caracteriza uma classe de problemas mais ampla (drone racing sem fiduciais,
-outras categorias de combate de robôs, disputas rápidas entre alvos rígidos
-idênticos) para a qual a contribuição é transferível, com o Sumô como veículo em
-que as restrições aparecem em estado puro.
+Os trabalhos mais próximos cobrem plenamente no máximo três das seis condições, e
+nenhum reúne o par C1+C2 ao regime não controlado do Sumô: os rastreadores
+genéricos e os benchmarks esportivos operam sobre captura controlada, e o
+SSL-Vision depende da instrumentação que o Sumô não tem. Essa lacuna define uma
+classe de problemas mais ampla (drone racing sem fiduciais, outras categorias de
+combate de robôs, disputas rápidas entre alvos rígidos idênticos) para a qual a
+contribuição é transferível, com o Sumô como veículo em que as condições aparecem
+em estado puro.

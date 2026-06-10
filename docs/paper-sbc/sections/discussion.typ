@@ -3,7 +3,7 @@
 == Limitações assumidas
 
 O conjunto gold é pequeno, o que impede intervalos de confiança e testes de
-significância robustos. Reportamos os números como ordem de grandeza e demonstração
+significância confiáveis. Reportamos os números como ordem de grandeza e demonstração
 de viabilidade, não como modelo definitivo. A footage brasileira é capturada com câmera de mão e ângulo
 oblíquo, então a calibração centímetro-por-pixel por escala isotrópica é uma
 aproximação: a perspectiva introduz erro de foreshortening que as métricas de
@@ -30,8 +30,8 @@ em vista cenital, são caixas pretas pequenas que pontuam baixo para o conceito 
 do SAM 3, então o limiar de detecção padrão (0.5 a 0.7) os perdia por completo;
 baixá-lo para 0.15, somado a uma resolução de entrada maior (960 px) e a um filtro
 geométrico que descarta caixas fora do dohyo, recuperou os dois robôs. Com isso o
-treino multi-fonte foi viabilizado, e um único detector atinge mAP acima de 0.96 em
-ambas as fontes, apesar das câmeras opostas, o que sustenta a restrição C4.
+treino multi-fonte funcionou, e um único detector atinge mAP acima de 0.96 em
+ambas as fontes, apesar das câmeras opostas, o que sustenta a condição C4.
 
 == Generalização cross-categoria (Sumô RC)
 
@@ -86,10 +86,12 @@ conjunto de dados são públicos para reprodução e extensão.
 = Conclusão
 
 Apresentamos o Kanshigan, a primeira pipeline aberta de detecção, rastreamento e
-extração de métricas para Sumô de Robôs autônomos. Caracterizamos o problema pela
-interseção de seis restrições não cobertas em conjunto pela literatura, e
-construímos a pipeline a partir de tracking-by-detection, comparando duas
-arquiteturas de detector (YOLOv8s e YOLO26n) e quatro rastreadores (motion-only e
-com aparência), com o SAM 3 como anotador. Os resultados parciais sobre footage real demonstram
+extração de métricas para Sumô de Robôs autônomos. Caracterizamos o domínio por
+seis condições e recortamos a questão científica ao subconjunto em aberto:
+rastrear alvos de aparência uniforme sob movimento não linear, no equilíbrio
+entre acurácia e viabilidade. Construímos a pipeline a partir de
+tracking-by-detection, comparando duas arquiteturas de detector (YOLOv8s e
+YOLO26n) e quatro rastreadores (motion-only e com aparência), com o SAM 3 como
+anotador. Os resultados parciais sobre footage real demonstram
 viabilidade em hardware de consumo e estabelecem a base experimental para o trabalho
 final.
