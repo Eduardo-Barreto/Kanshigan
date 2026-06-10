@@ -119,6 +119,6 @@ anotador, por IoU) e o modelo treinado contra o gold (generalização).
 == Protocolo de treino
 
 Cada detector parte dos pesos COCO da sua arquitetura e treina com a mesma divisão,
-`imgsz=640`, aumento padrão do Ultralytics (versão 8.3), semente fixa em 42 e parada antecipada no
+`imgsz=640`, aumento padrão do Ultralytics (versão 8.4.55), semente fixa em 42 e parada antecipada no
 platô da validação, para que a comparação entre arquiteturas isole o efeito do modelo.
 Os hiperparâmetros são versionados no repositório, para reprodutibilidade.
