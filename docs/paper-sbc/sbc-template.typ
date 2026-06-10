@@ -17,6 +17,14 @@
   set par(justify: true, leading: 0.65em, first-line-indent: 1.25em)
 
   set heading(numbering: "1.1.")
+  // Figure and table captions: smaller than body, centered, not justified, so they
+  // read as captions ("Tabela 1: ...") instead of blending into the running text.
+  show figure.caption: it => block(width: 100%, {
+    set text(size: 10pt)
+    set par(justify: false, first-line-indent: 0pt, leading: 0.55em)
+    align(center, it)
+  })
+  show figure: set block(breakable: false)
   // Emit the heading as a block so it breaks from the surrounding paragraph and
   // gets its own spacing; returning inline content would glue it to the previous text.
   show heading: it => block(above: 1.2em, below: 0.8em, {
