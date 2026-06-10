@@ -12,16 +12,13 @@ cinemáticas em centímetros. A retificação por homografia da arena fica como
 trabalho futuro.
 
 Rastreadores motion-only podem trocar identidades sob oclusão prolongada entre dois
-robôs idênticos. Testamos diretamente se a aparência corrige isso: além de OC-SORT e
-ByteTrack, avaliamos DeepOCSORT e BoT-SORT, ambos com ReID, sobre as mesmas detecções
-(@tab-tracking). A aparência não ajudou. Os quatro mantêm no máximo uma troca no round
-gold, mas o passo de ReID custa de 35 a 40 vezes em throughput sem ganho de acurácia.
-A causa é o próprio domínio: dois robôs pretos quase idênticos oferecem pouco sinal de
-aparência para o ReID explorar, então o movimento basta, e o motion-only é a escolha
-viável. Um rastreador de aparência especializado em alvos pouco texturizados, como o
-Deep HM-SORT @deephmsort2024, e mais rounds gold com identidade ainda podem refinar a
-comparação com significância estatística; a base de um round já indica que a aparência
-genérica não compensa aqui.
+robôs idênticos, e testamos diretamente se a aparência corrige isso (@tab-tracking).
+Não corrige, e a causa é o próprio domínio: dois robôs pretos quase idênticos oferecem
+pouco sinal de aparência para o ReID explorar, então o movimento basta e o motion-only
+é a escolha viável. Um rastreador de aparência especializado em alvos pouco
+texturizados, como o Deep HM-SORT @deephmsort2024, e um gold maior e mais denso, com
+identidade em vários rounds, ainda podem refinar a comparação; a base de um round já
+indica que a aparência genérica não compensa aqui.
 
 == Anotação heterogênea (C4)
 
@@ -76,8 +73,7 @@ arena.
 == Trabalhos futuros
 
 Além da homografia, planejamos: ampliar a base japonesa
-e adicionar broadcast profissional; ampliar os rounds gold com identidade para dar
-poder estatístico à comparação de rastreadores; ablação do detector com RT-DETR
+e adicionar broadcast profissional; ablação do detector com RT-DETR
 @zhao2024rtdetr na arena controlada;
 detecção de contato por máscara em vez de bounding box; e a evolução para uma
 plataforma colaborativa aberta de análise de combate de robôs. A pipeline e o

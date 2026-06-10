@@ -83,9 +83,10 @@ automático de jiu-jitsu de Hudovernik e Skočaj @hudovernik2022jiujitsu detecta
 posições de luta a partir de vídeo de câmera fixa e pontua o combate por regras
 da modalidade, combinando estimativa de pose dos atletas com pistas visuais para
 resolver o contato corpo a corpo e a oclusão severa. O trabalho confirma que a
-análise post-match de combate por vídeo é viável (*C5, análise post-match*, sem
-restrição de tempo real embarcado), mas a técnica central não transfere: robôs
-de Sumô são chassis rígidos sem articulações, e não existe pose a estimar.
+análise post-match de combate por vídeo é viável (*C5, análise post-match*: a
+avaliação roda sobre o vídeo gravado, depois da luta, como no nosso caso), mas a
+técnica central não transfere: robôs de Sumô são chassis rígidos sem
+articulações, e não existe pose a estimar.
 
 Nos robôs de competição, o SSL-Vision @zickler2010sslvision é o sistema de visão
 compartilhado da RoboCup Small Size League: câmeras fixas sobre o campo e
@@ -123,12 +124,11 @@ heterogênea (do contraste com as condições de broadcast); *C5* análise
 post-match (do regime de uso, como no scoring de jiu-jitsu); e *C6* ausência de
 marcadores fiduciais (da premissa que o SSL-Vision exige e o Sumô nega).
 
-Nem todas pesam igual para a ciência. *C5* é uma relaxação, não uma dificuldade:
-por ser post-match, dispensa inferência embarcada em tempo real, o que permite
-usar um anotador pesado offline. *C6* também não mede dificuldade: satisfeita por
-quase todos, é o critério que exclui as soluções instrumentadas, como o
-SSL-Vision. *C3* e *C4* descrevem a instância. O que permanece em aberto, com
-valor científico transferível, é o par *C1+C2*: rastrear alvos de aparência
+Nem todas pesam igual para a ciência. *C5* descreve o regime de uso, não uma
+dificuldade técnica: a análise é post-match, sobre vídeo gravado, como no scoring
+de jiu-jitsu. *C6* também não mede dificuldade: satisfeita por quase todos, é o
+critério que exclui as soluções instrumentadas, como o SSL-Vision. *C3* e *C4* descrevem a instância. O que permanece em aberto, com
+maior valor científico transferível, é o par *C1+C2*: rastrear alvos de aparência
 uniforme sob movimento não linear. O DanceTrack isola esse par e mostra a queda dos
 melhores rastreadores, mas em captura controlada; sob vídeo não calibrado e sem
 marcadores, e julgado pela acurácia e pelo custo de rodar em hardware
@@ -138,12 +138,12 @@ pergunta deste trabalho ataca.
 #figure(
   caption: [Cobertura das seis condições do domínio (#sym.circle.filled cobre, #sym.circle.filled.tiny parcial, #sym.circle não força). C1 movimento não linear; C2 aparência uniforme; C3 eventos sub-segundo; C4 vídeo heterogêneo; C5 análise post-match; C6 ausência de fiduciais. Mapa de condições, não placar de desempenho: o par C1+C2 sob o regime não controlado (C4, C6) é a célula em aberto.],
   table(
-    columns: (auto, 2.4em, 2.4em, 2.4em, 2.4em, 2.4em, 2.4em),
+    columns: (auto, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr),
     align: (left, center, center, center, center, center, center),
     stroke: 0.4pt,
     table.header(
       table.cell(rowspan: 2)[*Trabalho*],
-      table.cell(colspan: 3, align: center)[*Desafio de rastreamento*],
+      table.cell(colspan: 3, align: center)[*Desafio técnico*],
       table.cell(colspan: 3, align: center)[*Regime de dados e uso*],
       [*C1*], [*C2*], [*C3*], [*C4*], [*C5*], [*C6*],
     ),
