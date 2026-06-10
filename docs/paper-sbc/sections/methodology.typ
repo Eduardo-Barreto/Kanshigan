@@ -33,10 +33,15 @@ ajuste falha.
 
 A elipse alimenta a calibração espacial. Um círculo visto em perspectiva oblíqua
 projeta-se como elipse, e o eixo maior dessa elipse corresponde ao diâmetro do
-círculo, conhecido por regulamento (154 cm na categoria de 3 kg). A razão entre
-os dois fixa a escala centímetro-por-pixel de cada quadro, convertendo todas as
-medições posteriores do espaço de pixels para o referencial físico da arena, sem
-exigir calibração prévia da câmera nem marcadores externos.
+círculo, conhecido por regulamento (154 cm na categoria de 3 kg, @fig-dohyo). A
+razão entre os dois fixa a escala centímetro-por-pixel de cada quadro, convertendo
+todas as medições posteriores do espaço de pixels para o referencial físico da
+arena, sem exigir calibração prévia da câmera nem marcadores externos.
+
+#figure(
+  image("/docs/paper-sbc/figures/dohyo_3kg.png", width: 52%),
+  caption: [Geometria do dohyo de 3 kg fixada por regulamento @fujisoft2024rules: disco de 154 cm de diâmetro com borda branca de 5 cm (a tawara, 区画線) e as linhas de largada ao centro (仕切り線). O diâmetro conhecido é o que ancora a calibração centímetro-por-pixel a partir do eixo maior da elipse detectada.],
+) <fig-dohyo>
 
 == Recorte e detecção dos robôs
 
