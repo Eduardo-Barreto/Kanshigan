@@ -150,8 +150,10 @@ eficiente dada a ausência de dataset; não estamos comparando SAM com YOLO.
 **Frase-síntese:** da caixa delimitadora à métrica de combate: trajetórias em centímetros, velocidade de pico de 2,9 m/s, e generalização qualitativa fora do treino.
 
 > O que sai no final: detecção e rastreamento nas duas fontes, e as trajetórias
-> projetadas no referencial do dohyo, em centímetros — velocidade de pico medida de
-> 2,9 metros por segundo no round gold. Dois bônus qualitativos, reportados como
+> projetadas no referencial do dohyo, em centímetros — velocidade de pico medida pela
+> pipeline de 2,9 metros por segundo no round gold; digo "medida pela pipeline" porque
+> a cinemática ainda não tem validação por ground-truth físico, ressalva que está
+> explícita no paper. Dois bônus qualitativos, reportados como
 > qualitativos: a pipeline transfere zero-shot para Sumô de rádio-controle, categoria
 > e arena que não existem no treino; e no caso extremo, a final do mundial japonês, o
 > blur do combate de elite derruba o detector — sabemos exatamente onde está o limite
@@ -194,6 +196,7 @@ trajetória sobre um round real.
 | Por que não comparar SAM 3 com YOLO? | Pergunta errada: viabilidade já conhecida (7 GB / 2 FPS); SAM é meio metodológico. |
 | Um round gold basta? | Não, e o paper diz isso: detecção respondida, rastreamento preliminar; issue aberta para mais golds. |
 | E se os robôs fossem distinguíveis? | O ReID voltaria a ter sinal; nosso recorte é exatamente o regime C2 (DanceTrack mostra a queda). |
+| E o OC-SORT no DanceTrack? | HOTA 55.1, líder motion-only (ByteTrack cai a 47.7) — por isso ele é o ponto de partida natural. |
 | Velocidade em cm é confiável? | Ainda não validada: foreshortening da câmera oblíqua; homografia é o trabalho futuro nomeado. |
 | Por que regras e não classificador de eventos? | Conjunto pequeno: classificador decoraria; regras são auditáveis e os limiares são versionados. |
 | Reprodutibilidade? | Semente fixa, versões pinadas (torch 2.12, Ultralytics 8.4.55, boxmot 19), DVC, seção no README. |
