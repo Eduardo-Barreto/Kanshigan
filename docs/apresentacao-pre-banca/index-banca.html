@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kanshigan: Pré-banca</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #141414;
+  --bg-tertiary: #1a1a1a;
+  --text-primary: #fafafa;
+  --text-secondary: #adadad;
+  --text-tertiary: #7a7a7a;
+  --border-default: #2a2a2a;
+  --border-hover: #404040;
+  --accent-blue: #3b82f6;
+  --accent-green: #22c55e;
+  --accent-amber: #f59e0b;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Geist Mono', 'SF Mono', Consolas, monospace;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg-primary); color: var(--text-primary); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+.dot-grid { position: fixed; inset: 0; background-image: radial-gradient(circle at center, rgba(255,255,255,0.12) 1px, transparent 1px); background-size: 34px 34px; mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%); -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%); pointer-events: none; z-index: 0; }
+.deck { height: 100vh; overflow-y: auto; scroll-snap-type: y mandatory; position: relative; z-index: 1; }
+.slide { position: relative; min-height: 100vh; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: center; padding: 76px 88px; max-width: 1440px; margin: 0 auto; }
+
+.label { font-family: var(--font-mono); font-size: 18px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-tertiary); margin-bottom: 22px; }
+.label--accent { color: var(--accent-blue); }
+
+h1 { font-size: clamp(48px, 6.5vw, 84px); font-weight: 600; letter-spacing: -0.03em; line-height: 1.04; }
+h2 { font-size: clamp(36px, 4vw, 56px); font-weight: 600; letter-spacing: -0.02em; line-height: 1.08; margin-bottom: 40px; }
+h3 { font-size: clamp(24px, 2.2vw, 30px); font-weight: 500; letter-spacing: -0.01em; }
+.subtitle { font-size: clamp(25px, 2.5vw, 34px); color: var(--text-secondary); line-height: 1.45; max-width: 1000px; }
+p { color: var(--text-secondary); line-height: 1.6; font-size: 24px; }
+
+.card { background: var(--bg-secondary); border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: 32px 36px; }
+.card-title { margin-bottom: 12px; color: var(--text-primary); }
+.card .num { font-family: var(--font-mono); font-size: 17px; color: var(--accent-blue); display: block; margin-bottom: 14px; }
+.card .q { font-family: var(--font-mono); font-size: 16px; color: var(--text-tertiary); display: block; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+.cols--video { grid-template-columns: 0.82fr 1.18fr; }
+.cols--paper { grid-template-columns: 0.95fr 1.05fr; gap: 56px; }
+.cols--top { align-items: start; }
+
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font-family: var(--font-mono); font-size: 17px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); padding: 15px 18px; border-bottom: 1px solid var(--border-default); }
+td { padding: 15px 18px; font-size: 23px; border-bottom: 1px solid var(--border-default); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+tr:last-child td { border-bottom: none; }
+td:first-child { color: var(--text-primary); font-weight: 500; }
+.table-card { background: var(--bg-secondary); border: 1px solid var(--border-default); border-radius: var(--radius-lg); overflow: hidden; }
+td.hl { color: var(--accent-green); font-weight: 600; }
+td.bad { color: #ef4444; }
+
+.badge { display: inline-flex; align-items: center; gap: 10px; padding: 10px 20px; border: 1px solid var(--border-default); border-radius: 100px; font-size: 19px; font-weight: 500; color: var(--text-secondary); }
+.badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-green); animation: pulse 2s infinite; }
+
+.flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.flow-node { background: var(--bg-secondary); border: 1px solid var(--border-default); border-radius: var(--radius-md); padding: 22px; }
+.flow-node .step { font-family: var(--font-mono); font-size: 16px; color: var(--accent-blue); display: block; margin-bottom: 8px; }
+.flow-node strong { display: block; font-size: 21px; font-weight: 500; margin-bottom: 7px; }
+.flow-node span.desc { font-size: 18px; color: var(--text-tertiary); line-height: 1.4; display: block; }
+.flow-row-label { font-family: var(--font-mono); font-size: 17px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-tertiary); margin: 24px 0 14px; }
+
+.img-card { background: #fff; border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: 12px; overflow: hidden; }
+.img-card img { width: 100%; display: block; border-radius: 6px; }
+.video-card { background: #000; border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: 8px; overflow: hidden; }
+.video-card video { width: 100%; display: block; border-radius: 8px; }
+.strip { background: #fff; border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: 10px; overflow: hidden; }
+.strip img { width: 100%; display: block; border-radius: 6px; }
+.hero-video { background: #000; border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: 8px; max-width: 720px; }
+.hero-video video { width: 100%; display: block; border-radius: 8px; }
+.img-caption { font-size: 19px; color: var(--text-tertiary); margin-top: 14px; text-align: center; line-height: 1.5; }
+
+.video-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.video-gallery .video-card { padding: 8px; }
+.video-gallery .video-card video { max-height: 268px; width: 100%; object-fit: contain; background: #000; }
+.video-gallery .img-caption { margin-top: 8px; font-size: 18px; }
+
+.quote { font-size: clamp(27px, 3vw, 40px); font-weight: 500; letter-spacing: -0.01em; line-height: 1.38; padding-left: 34px; border-left: 3px solid var(--accent-blue); max-width: 1120px; }
+.quote em { color: var(--accent-blue); font-style: normal; }
+
+.cond-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.cond { background: var(--bg-secondary); border: 1px solid var(--border-default); border-radius: var(--radius-md); padding: 22px 24px; }
+.cond .cid { font-family: var(--font-mono); font-size: 17px; color: var(--text-tertiary); display: block; margin-bottom: 8px; }
+.cond strong { font-size: 22px; font-weight: 500; }
+.cond p { font-size: 18px; line-height: 1.4; margin-top: 7px; color: var(--text-secondary); }
+.cond--open { border-color: rgba(34, 197, 94, 0.45); background: rgba(34, 197, 94, 0.06); }
+.cond--open .cid { color: var(--accent-green); }
+
+.metric { display: flex; flex-direction: column; gap: 6px; }
+.metric .v { font-family: var(--font-mono); font-size: clamp(44px, 4.4vw, 58px); font-weight: 600; letter-spacing: -0.02em; color: var(--accent-green); }
+.metric .v .unit { font-size: 0.46em; color: var(--text-tertiary); }
+.metric .k { font-size: 19px; color: var(--text-tertiary); line-height: 1.4; }
+
+.list { list-style: none; display: flex; flex-direction: column; gap: 18px; }
+.list li { position: relative; padding-left: 32px; color: var(--text-secondary); font-size: 23px; line-height: 1.5; }
+.list li::before { content: ""; position: absolute; left: 0; top: 11px; width: 9px; height: 9px; border-radius: 2px; background: var(--accent-blue); }
+.list--green li::before { background: var(--accent-green); }
+.list--amber li::before { background: var(--accent-amber); }
+.list strong { color: var(--text-primary); font-weight: 500; }
+
+.toc { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+.toc li { display: flex; align-items: center; gap: 16px; font-size: 24px; color: var(--text-primary); }
+.toc .n { font-family: var(--font-mono); font-size: 18px; color: var(--accent-green); }
+.toc .meta { color: var(--text-tertiary); font-size: 20px; }
+
+.paper-spread { display: flex; gap: 16px; }
+.paper-spread .img-card { flex: 1; padding: 8px; }
+.paper-spread .img-card:nth-child(2) { transform: translateY(-14px); }
+.paper-spread .img-card:nth-child(3) { transform: translateY(-28px); }
+
+.chip-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 8px; }
+.chip { border: 1px solid var(--border-default); border-radius: 100px; padding: 11px 20px; font-size: 20px; color: var(--text-secondary); }
+.chip strong { color: var(--text-primary); }
+
+.footer-note { margin-top: 32px; font-size: 19px; color: var(--text-tertiary); font-family: var(--font-mono); line-height: 1.5; }
+.repo-link { margin-top: 36px; font-size: 23px; font-family: var(--font-mono); color: var(--text-secondary); }
+.repo-link a { color: var(--accent-blue); text-decoration: none; border-bottom: 1px solid rgba(59,130,246,0.4); padding-bottom: 2px; }
+
+.progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent-blue); width: 100%; transform: scaleX(0); transform-origin: left; z-index: 100; transition: transform 0.25s var(--ease-out); }
+.counter { position: fixed; bottom: 20px; right: 24px; font-family: var(--font-mono); font-size: 13px; color: var(--text-tertiary); z-index: 100; background: rgba(10,10,10,0.7); padding: 7px 12px; border-radius: 6px; border: 1px solid var(--border-default); }
+.timer-hint { position: absolute; top: 30px; right: 0; font-family: var(--font-mono); font-size: 12px; color: #4a4a4a; letter-spacing: 0.08em; }
+
+.anim { opacity: 0; }
+.anim.visible { animation: fadeUp 0.5s var(--ease-out) forwards; }
+.anim.visible.d1 { animation-delay: 0.08s; }
+.anim.visible.d2 { animation-delay: 0.16s; }
+.anim.visible.d3 { animation-delay: 0.24s; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .anim.visible { animation: fadeOnly 0.2s ease forwards; } .badge-dot { animation: none; } }
+@keyframes fadeOnly { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 900px) { .slide { padding: 56px 24px; } .cols, .grid-2, .grid-3, .cond-grid, .flow, .cols--video, .cols--paper { grid-template-columns: 1fr; } .paper-spread .img-card { transform: none !important; } .timer-hint { display: none; } }
+</style>
+</head>
+<body>
+<div class="dot-grid"></div>
+<div class="progress" id="progress"></div>
+<div class="counter" id="counter">1 / 15</div>
+
+<main class="deck" id="deck">
+
+<!-- 1. Título -->
+<section class="slide" id="s1">
+  <span class="timer-hint">0:00 – 0:35</span>
+  <div class="anim"><span class="badge"><span class="badge-dot"></span>Entrega de meio de percurso · resultados parciais medidos</span></div>
+  <div style="height: 40px"></div>
+  <h1 class="anim d1">Kanshigan</h1>
+  <div style="height: 24px"></div>
+  <p class="subtitle anim d2">Pipeline de visão computacional para medir partidas de Sumô de Robôs autônomos</p>
+  <div style="height: 42px"></div>
+  <div class="anim d3">
+    <p style="font-size: 21px; color: var(--text-secondary);">Eduardo Barreto · Pedro Henrique de Azeredo Coutinho Cruz · Luan Ramos de Mello</p>
+    <p style="font-size: 18px; color: var(--text-tertiary); margin-top: 12px;">Orientador: Rodrigo Mangoni Nicola · Instituto de Tecnologia e Liderança (Inteli), São Paulo</p>
+  </div>
+</section>
+
+<!-- 2. Agenda -->
+<section class="slide" id="s2">
+  <span class="timer-hint">0:35 – 1:05</span>
+  <div class="label anim">O percurso</div>
+  <h2 class="anim">Da modalidade até onde a pesquisa está hoje</h2>
+  <div class="grid-2 anim d1">
+    <div class="card"><span class="num">01</span><h3 class="card-title">O domínio e o problema</h3><p>O que é Sumô de Robôs, e por que medir uma partida é difícil.</p></div>
+    <div class="card"><span class="num">02</span><h3 class="card-title">Metodologia e resultados</h3><p>A pipeline de visão, e o que já roda sobre footage real.</p></div>
+    <div class="card"><span class="num">03</span><h3 class="card-title">O artigo</h3><p>O que já está escrito e documentado.</p></div>
+    <div class="card"><span class="num">04</span><h3 class="card-title">Próximos passos e publicação</h3><p>O que falta, e para onde o trabalho vai.</p></div>
+  </div>
+</section>
+
+<!-- 3. O domínio -->
+<section class="slide" id="s3">
+  <span class="timer-hint">1:05 – 1:50</span>
+  <div class="label anim">Contexto</div>
+  <h2 class="anim">O round acaba em menos de um segundo</h2>
+  <div class="cols cols--video">
+    <div>
+      <ul class="list anim d1">
+        <li>Dois robôs autônomos de até <strong>3 kg</strong></li>
+        <li>Arena circular (dohyo) de <strong>154 cm</strong></li>
+        <li>Aceleração altíssima, desfecho em <strong>poucos quadros</strong></li>
+      </ul>
+      <div style="height: 30px"></div>
+      <div class="img-card anim d2" style="max-width: 340px;">
+        <img src="figures/dohyo_3kg.png" alt="Geometria do dohyo de 3 kg">
+        <div class="img-caption">Dohyo regulamentar: 154 cm de diâmetro, borda (tawara) de 5 cm</div>
+      </div>
+    </div>
+    <div class="video-card anim d2">
+      <video src="videos/round_raw_br.mp4" autoplay muted loop playsinline controls></video>
+      <div class="img-caption">Um round inteiro de Sumô autônomo 3 kg</div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. O problema -->
+<section class="slide" id="s4">
+  <span class="timer-hint">1:50 – 2:30</span>
+  <div class="label anim label--accent">Problema</div>
+  <h2 class="anim">Rápido demais para o olho, e ninguém mede</h2>
+  <div class="grid-2 anim d1">
+    <div class="card">
+      <h3 class="card-title">Hoje</h3>
+      <p>A análise da modalidade é observação humana: estratégia e hardware ajustados por memória e replay manual. Sem ferramenta, dataset ou métrica padronizada.</p>
+    </div>
+    <div class="card">
+      <h3 class="card-title">Nos esportes humanos</h3>
+      <p>Visão computacional já alimenta estatística e arbitragem, mas sobre premissas que aqui não valem: atletas distinguíveis, broadcast multicâmera, eventos em segundos.</p>
+    </div>
+  </div>
+  <div style="height: 30px"></div>
+  <blockquote class="quote anim d2">Para Sumô de Robôs, <em>nenhuma pipeline, dataset ou benchmark publicado</em>. Confirmado por busca sistemática, registrada no repositório.</blockquote>
+</section>
+
+<!-- 5. As seis condições do domínio -->
+<section class="slide" id="s5">
+  <span class="timer-hint">2:30 – 3:20</span>
+  <div class="label anim label--accent">O que torna o problema difícil</div>
+  <h2 class="anim">Seis condições caracterizam o domínio</h2>
+  <div class="cond-grid anim d1">
+    <div class="cond cond--open"><span class="cid">C1 · em aberto</span><strong>Movimento não linear</strong><p>Colisões e giros quebram a hipótese de velocidade constante</p></div>
+    <div class="cond cond--open"><span class="cid">C2 · em aberto</span><strong>Aparência uniforme</strong><p>Dois robôs quase idênticos: a identidade vem do movimento, não do visual</p></div>
+    <div class="cond"><span class="cid">C3</span><strong>Eventos sub-segundo</strong><p>O round decide-se em poucos quadros; perder dez custa a partida</p></div>
+    <div class="cond"><span class="cid">C4</span><strong>Vídeo heterogêneo</strong><p>Da câmera de mão oblíqua à cenital fixa, sem padrão de captura</p></div>
+    <div class="cond"><span class="cid">C5</span><strong>Análise post-match</strong><p>Sobre vídeo gravado, depois da luta, e não necessariamente em tempo real</p></div>
+    <div class="cond"><span class="cid">C6</span><strong>Sem marcadores</strong><p>O regulamento e o acervo de vídeo não têm fiduciais</p></div>
+  </div>
+  <div class="footer-note anim d2">As duas em verde, C1 e C2, formam o par cientificamente em aberto: rastrear alvos idênticos sob movimento não linear.</div>
+</section>
+
+<!-- 6. Trabalhos relacionados -->
+<section class="slide" id="s6">
+  <span class="timer-hint">3:20 – 4:10</span>
+  <div class="label anim label--accent">Trabalhos relacionados</div>
+  <h2 class="anim">Cada vizinho cobre parte; nenhum o regime inteiro</h2>
+  <div class="table-card anim d1">
+    <table>
+      <thead><tr><th>Trabalho</th><th>C1</th><th>C2</th><th>C3</th><th>C4</th><th>C5</th><th>C6</th></tr></thead>
+      <tbody>
+        <tr><td>ByteTrack / OC-SORT</td><td>parcial</td><td>parcial</td><td>—</td><td>—</td><td>—</td><td>cobre</td></tr>
+        <tr><td>DanceTrack</td><td>cobre</td><td>cobre</td><td>—</td><td>—</td><td>—</td><td>cobre</td></tr>
+        <tr><td>SportsMOT</td><td>parcial</td><td>cobre</td><td>parcial</td><td>—</td><td>—</td><td>cobre</td></tr>
+        <tr><td>SSL-Vision (RoboCup)</td><td>cobre</td><td>cobre</td><td>cobre</td><td>—</td><td>—</td><td class="bad">não</td></tr>
+        <tr><td>Kanshigan (este trabalho)</td><td class="hl">cobre</td><td class="hl">cobre</td><td class="hl">cobre</td><td class="hl">cobre</td><td class="hl">cobre</td><td class="hl">cobre</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="height: 22px"></div>
+  <blockquote class="quote anim d2" style="font-size: clamp(22px,2.3vw,30px);">Qual combinação de <em>detector</em> e <em>rastreador</em> equilibra acurácia e viabilidade para alvos quase idênticos, em movimento rápido, sobre vídeo não calibrado e sem marcadores?</blockquote>
+  <div class="footer-note anim d3" style="margin-top: 16px;">O DanceTrack isola o par C1+C2 e os melhores rastreadores caem (ByteTrack: HOTA 63 → 48), mas em captura controlada. A célula em aberto é esse par no regime não controlado.</div>
+</section>
+
+<!-- 7. Metodologia -->
+<section class="slide" id="s7">
+  <span class="timer-hint">4:10 – 4:55</span>
+  <div class="label anim label--accent">Metodologia</div>
+  <h2 class="anim">Oito estágios, cada saída avaliável contra o gold</h2>
+  <div class="flow-row-label anim d1">Abordagem: pesquisa experimental e quantitativa, com avaliação comparativa controlada</div>
+  <div class="flow anim d1">
+    <div class="flow-node"><span class="step">01</span><strong>Decodificação</strong><span class="desc">resolução e taxa nativas</span></div>
+    <div class="flow-node"><span class="step">02</span><strong>Detecção do dohyo</strong><span class="desc">visão clássica, sem treino</span></div>
+    <div class="flow-node"><span class="step">03</span><strong>Calibração</strong><span class="desc">154 cm fixam a escala</span></div>
+    <div class="flow-node"><span class="step">04</span><strong>Recorte</strong><span class="desc">amplia os robôs</span></div>
+  </div>
+  <div class="flow anim d2" style="margin-top: 18px;">
+    <div class="flow-node"><span class="step">05</span><strong>Detecção dos robôs</strong><span class="desc">YOLO com fine-tuning</span></div>
+    <div class="flow-node"><span class="step">06</span><strong>Rastreamento</strong><span class="desc">identidades A e B</span></div>
+    <div class="flow-node"><span class="step">07</span><strong>Cinemática</strong><span class="desc">no referencial do dohyo</span></div>
+    <div class="flow-node"><span class="step">08</span><strong>Eventos</strong><span class="desc">por regras determinísticas</span></div>
+  </div>
+  <div class="footer-note anim d3">Arena por visão clássica, sem modelo treinado · métricas no referencial do dohyo, que cancela a câmera de mão · eventos por regras auditáveis. SAM 3 como anotador validado.</div>
+</section>
+
+<!-- 8. Dataset e SAM 3 -->
+<section class="slide" id="s8">
+  <span class="timer-hint">4:55 – 5:35</span>
+  <div class="label anim label--accent">Dados e anotação</div>
+  <h2 class="anim">SAM 3 virou anotador validado, não pipeline</h2>
+  <div class="cols cols--top">
+    <div>
+      <ul class="list anim d1">
+        <li>Inviável na inferência (<strong>2 FPS, 7 GB</strong>): viramos a peça, ele anota offline o treino.</li>
+        <li>Multi-fonte: câmera de mão <strong>BR</strong> e cenital fixa <strong>JP</strong>, os dois extremos.</li>
+        <li>Divisão <strong>por round</strong>, nunca por quadro; gold revisado à mão.</li>
+      </ul>
+      <div class="footer-note anim d2">Anotador validado contra gold humano (BR): <span style="color: var(--accent-green);">F1 0.96 · IoU 0.91</span></div>
+    </div>
+    <div class="table-card anim d2">
+      <table>
+        <thead><tr><th>Subconjunto</th><th>Clips</th><th>BR</th><th>JP</th></tr></thead>
+        <tbody>
+          <tr><td>Treino</td><td>14</td><td>423</td><td>202</td></tr>
+          <tr><td>Validação</td><td>2</td><td>59</td><td>15</td></tr>
+          <tr><td>Gold (teste)</td><td>2</td><td>59</td><td>57</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 9. Resultados parciais -->
+<section class="slide" id="s9">
+  <span class="timer-hint">5:35 – 6:20</span>
+  <div class="label anim label--accent">Resultados parciais</div>
+  <h2 class="anim">O que já roda sobre footage real</h2>
+  <div class="grid-3 anim d1">
+    <div class="card">
+      <span class="num">Detecção</span>
+      <div class="metric"><span class="v">&gt;0.96<span class="unit"> mAP</span></span><span class="k">nas duas fontes; o detector compacto basta, com 1/5 dos parâmetros</span></div>
+    </div>
+    <div class="card">
+      <span class="num">Rastreamento</span>
+      <div class="metric"><span class="v">0.94<span class="unit"> IDF1</span></span><span class="k">quatro rastreadores; aparência não ganha e custa 35–40× em FPS</span></div>
+    </div>
+    <div class="card">
+      <span class="num">Viabilidade</span>
+      <div class="metric"><span class="v">&gt;100<span class="unit"> FPS</span></span><span class="k">~100 MB de VRAM, em RTX 4070 de notebook</span></div>
+    </div>
+  </div>
+  <div class="footer-note anim d2">Comparação controlada: detector e rastreador fixos, avaliados contra um gold revisado quadro a quadro. O SAM 3 anotador, em contraste, ocupa 7 GB a 2 FPS, fora da inferência.</div>
+</section>
+
+<!-- 10. A pipeline em vários contextos -->
+<section class="slide" id="s10">
+  <span class="timer-hint">6:20 – 7:10</span>
+  <div class="label anim label--accent">Saída da pipeline</div>
+  <h2 class="anim">A mesma pipeline, em contextos diferentes</h2>
+  <div class="video-gallery anim d1">
+    <div class="video-card">
+      <video src="videos/round_longo_br.mp4" autoplay muted loop playsinline></video>
+      <div class="img-caption">Brasil · câmera de mão, round completo</div>
+    </div>
+    <div class="video-card">
+      <video src="videos/demo_jp.mp4" autoplay muted loop playsinline></video>
+      <div class="img-caption">Japão · câmera cenital fixa</div>
+    </div>
+    <div class="video-card">
+      <video src="videos/atena_br.mp4" autoplay muted loop playsinline></video>
+      <div class="img-caption">Brasil · outra arena e robôs</div>
+    </div>
+    <div class="video-card">
+      <video src="videos/rc_sumo.mp4" autoplay muted loop playsinline></video>
+      <div class="img-caption">Sumô RC · categoria fora do treino (zero-shot)</div>
+    </div>
+  </div>
+  <div class="footer-note anim d2">Arena (amarelo) e robôs A (verde) e B (laranja) detectados e rastreados. O mesmo detector, sem retreino, generaliza da câmera de mão à cenital fixa e até a uma categoria que não viu no treino.</div>
+</section>
+
+<!-- 11. O artigo -->
+<section class="slide" id="s11">
+  <span class="timer-hint">7:10 – 7:50</span>
+  <div class="label anim label--accent">O artigo</div>
+  <h2 class="anim">Um artigo completo, com versões em paralelo</h2>
+  <div class="cols cols--paper cols--top">
+    <div>
+      <ul class="toc anim d1">
+        <li><span class="n">✓</span> Introdução <span class="meta">problema, lacuna, pergunta</span></li>
+        <li><span class="n">✓</span> Trabalhos relacionados <span class="meta">+ matriz de condições</span></li>
+        <li><span class="n">✓</span> Metodologia <span class="meta">pipeline de 8 estágios</span></li>
+        <li><span class="n">✓</span> Resultados parciais <span class="meta">detecção, rastreamento, viabilidade</span></li>
+        <li><span class="n">✓</span> Discussão e conclusão</li>
+      </ul>
+      <div class="chip-row anim d2">
+        <span class="chip">Artigo <strong>SBC</strong> · 16 págs</span>
+        <span class="chip">Versão <strong>IEEE</strong> (inglês)</span>
+        <span class="chip">Projeto de pesquisa <strong>ABNT</strong></span>
+        <span class="chip">Diário de bordo · <strong>19 entradas</strong></span>
+      </div>
+      <div class="footer-note anim d3">Tudo público e reprodutível no repositório, com versões pinadas e dados sob DVC.</div>
+    </div>
+    <div class="paper-spread anim d2">
+      <div class="img-card"><img src="figures/paper_p01.png" alt="Página 1 do artigo"></div>
+      <div class="img-card"><img src="figures/paper_p02.png" alt="Página 2 do artigo"></div>
+      <div class="img-card"><img src="figures/paper_p03.png" alt="Página 3 do artigo"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12. Publicação -->
+<section class="slide" id="s12">
+  <span class="timer-hint">7:50 – 8:25</span>
+  <div class="label anim label--accent">Publicação</div>
+  <h2 class="anim">Onde o artigo vai, e por quê</h2>
+  <div class="grid-3 anim d1">
+    <div class="card"><span class="num">Alvo primário</span><h3 class="card-title">WVC</h3><p>Workshop de Visão Computacional (SBC). Escopo direto: detecção e rastreamento aplicados, em português.</p></div>
+    <div class="card"><span class="num">Garantia</span><h3 class="card-title">Preprint no arXiv</h3><p>URL citável já na banca, independente da janela do evento.</p></div>
+    <div class="card"><span class="num">Reserva</span><h3 class="card-title">Versão internacional</h3><p>Versão em inglês (IEEE) mantida em paralelo, para um venue internacional.</p></div>
+  </div>
+  <div class="footer-note anim d2">A escolha segue o escopo: um paper de visão computacional aplicada, com avaliação quantitativa e dataset, alinhado ao perfil do WVC.</div>
+</section>
+
+<!-- 13. Limitações e próximos passos -->
+<section class="slide" id="s13">
+  <span class="timer-hint">8:25 – 8:55</span>
+  <div class="label anim">Limitações e próximos passos</div>
+  <h2 class="anim">O que fecha na versão final</h2>
+  <div class="cols cols--top">
+    <div>
+      <h3 style="margin-bottom: 18px; color: var(--accent-amber);">Assumido no paper</h3>
+      <ul class="list list--amber anim d1">
+        <li>Gold pequeno: números de ordem de grandeza, sem intervalo de confiança.</li>
+        <li>Calibração cm/pixel é aproximação sob perspectiva oblíqua.</li>
+        <li>Dos eventos, só o início de round dispara confiável.</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="margin-bottom: 18px; color: var(--accent-green);">Próximos passos</h3>
+      <ul class="list list--green anim d2">
+        <li>Mais rounds gold com identidade, para fechar o rastreamento.</li>
+        <li>Retificação por homografia, para validar a cinemática.</li>
+        <li>Conjunto de calibração próprio para contato e ring-out.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 14. O alvo final: o mundial -->
+<section class="slide" id="s14">
+  <span class="timer-hint">8:55 – 9:25</span>
+  <div class="label anim label--accent">O alvo</div>
+  <h2 class="anim" style="margin-bottom: 28px;">O nível mundial é o teste mais duro</h2>
+  <div class="hero-video anim d1" style="max-width: 1140px; margin: 0 auto;">
+    <video src="videos/worlds_final.mp4" autoplay muted loop playsinline></video>
+    <div class="img-caption">Final do 84º All Japan Robot-Sumo: broadcast fora da distribuição de treino, com blur extremo do combate de elite. No movimento rápido, o detector ainda perde as duas caixas. Sabemos o limite, e o que falta: treino com footage dessa distribuição.</div>
+  </div>
+</section>
+
+<!-- 15. Conclusão -->
+<section class="slide" id="s15">
+  <span class="timer-hint">9:25 – 10:00</span>
+  <div class="label anim">Onde a pesquisa está</div>
+  <h2 class="anim">Três contribuições, todas medidas e públicas</h2>
+  <div class="grid-3 anim d1">
+    <div class="card"><span class="num">i</span><h3 class="card-title">Domínio caracterizado</h3><p>Seis condições, com o recorte científico no par em aberto: aparência uniforme e movimento não linear.</p></div>
+    <div class="card"><span class="num">ii</span><h3 class="card-title">Primeira pipeline aberta</h3><p>mAP &gt; 0.96, IDF1 até 0.94, &gt;100 FPS em ~100 MB, reprodutível em hardware de consumo.</p></div>
+    <div class="card"><span class="num">iii</span><h3 class="card-title">Dataset anotado</h3><p>Multi-fonte, de torneios reais, com anotador validado (F1 0.96) e divisão sem vazamento.</p></div>
+  </div>
+  <div style="height: 28px"></div>
+  <blockquote class="quote anim d2" style="font-size: clamp(22px,2.4vw,30px);">Detecção respondida nas duas fontes; rastreamento preliminar. Fecha na versão final com mais rounds gold.</blockquote>
+  <div class="repo-link anim d3">Código, dados e protocolo públicos: <a href="https://git.inteli.edu.br/graduacao/2026-1a/t07/g088/interno">git.inteli.edu.br/graduacao/2026-1a/t07/g088/interno</a></div>
+</section>
+
+</main>
+
+<script>
+const deck = document.getElementById('deck');
+const slides = Array.from(document.querySelectorAll('.slide'));
+const progress = document.getElementById('progress');
+const counter = document.getElementById('counter');
+function currentIndex() {
+  const pos = deck.scrollTop + window.innerHeight / 2;
+  let idx = 0;
+  slides.forEach((s, i) => { if (s.offsetTop <= pos) idx = i; });
+  return idx;
+}
+function update() {
+  const idx = currentIndex();
+  counter.textContent = (idx + 1) + ' / ' + slides.length;
+  progress.style.transform = 'scaleX(' + ((idx + 1) / slides.length) + ')';
+}
+deck.addEventListener('scroll', update, { passive: true });
+function goTo(idx) { idx = Math.max(0, Math.min(slides.length - 1, idx)); slides[idx].scrollIntoView({ behavior: 'smooth' }); }
+document.addEventListener('keydown', (e) => {
+  const idx = currentIndex();
+  if (['ArrowDown', 'ArrowRight', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); goTo(idx + 1); }
+  else if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); goTo(idx - 1); }
+  else if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+  else if (e.key === 'End') { e.preventDefault(); goTo(slides.length - 1); }
+});
+let touchY = null;
+deck.addEventListener('touchstart', (e) => { touchY = e.touches[0].clientY; }, { passive: true });
+deck.addEventListener('touchend', (e) => {
+  if (touchY === null) return;
+  const dy = touchY - e.changedTouches[0].clientY;
+  if (Math.abs(dy) > 60) goTo(currentIndex() + (dy > 0 ? 1 : -1));
+  touchY = null;
+}, { passive: true });
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.querySelectorAll('.anim').forEach((el) => el.classList.add('visible')); } });
+}, { threshold: 0.2 });
+slides.forEach((s) => observer.observe(s));
+update();
+</script>
+</body>
+</html>
