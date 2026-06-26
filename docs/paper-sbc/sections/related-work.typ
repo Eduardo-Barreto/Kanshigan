@@ -1,7 +1,10 @@
 = Trabalhos Relacionados <sec-related>
 
-Nenhum trabalho publicado trata da análise automatizada de partidas de Sumô de
-Robôs, então a revisão se organiza pelos quatro corpos de literatura mais
+A visão computacional já aparece no Sumô de Robôs, porém no sentido oposto ao deste
+trabalho: percepção embarcada, em que o próprio robô detecta o oponente por
+infravermelho, ultrassom ou visão onboard durante a luta. A análise post-match, de um
+observador externo que mede a partida a partir de vídeo de terceira pessoa, não tem,
+até onde nossa busca alcança, pipeline, dataset ou benchmark publicado#footnote[Busca de junho de 2026, em busca web indexada e no arXiv, com quatro strings booleanas combinando "robot sumo", "sumo robot" e "combat robot" a termos de visão, detecção, rastreamento, métricas e arbitragem; strings, achados e categorização ficam versionados no repositório.]. Os trabalhos ao redor confirmam o recorte por contraste: datasets de detecção de robôs de hobby, sem identidade, cinemática nem eventos, e a análise por visão de combate humano. A revisão se organiza, então, pelos quatro corpos de literatura mais
 próximos do problema: o rastreamento multiobjeto genérico, que fornece os
 algoritmos de base; o rastreamento em esportes, que enfrenta alvos parecidos e
 movimento rápido; a visão aplicada a combate e a robôs de competição, os

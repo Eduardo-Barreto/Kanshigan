@@ -16,7 +16,40 @@ nativas, detecção da arena, calibração espacial e recorte. Os quatro último
 extraem a informação: detecção dos robôs, rastreamento, métricas cinemáticas e
 eventos. Separar a pipeline em estágios com saídas inspecionáveis permite avaliar
 cada componente isoladamente contra o conjunto gold, como a seção de resultados
-faz. As subseções a seguir detalham cada etapa e o porquê de cada decisão.
+faz. As subseções a seguir fixam o desenho do estudo e então detalham cada etapa
+e o porquê de cada decisão.
+
+== Classificação e desenho do estudo
+
+Quanto à natureza, a pesquisa é *aplicada*: combina técnicas estabelecidas de visão
+computacional para um problema de domínio, sem propor arquitetura nova. Quanto à
+abordagem, é *quantitativa*: cada configuração é julgada por métrica objetiva, não
+por inspeção subjetiva. Quanto aos objetivos, é *exploratória*, pois não há pipeline
+consolidada para o domínio (@sec-related). Quanto aos procedimentos, é *experimental*:
+variamos fatores controlados e medimos seu efeito sobre as métricas. O método não é
+propor um detector ou rastreador novo, e sim comparar componentes existentes sobre
+footage real, contra um conjunto de avaliação revisado por humano.
+
+A pergunta de pesquisa se decompõe em dois fatores manipulados, cada um isolado por
+controle do restante. O primeiro é a arquitetura do detector, YOLOv8s contra o
+compacto YOLO26n, comparada sob divisão, semente (42) e protocolo de treino
+idênticos, de modo que a diferença meça o efeito do modelo. O segundo é o algoritmo
+de rastreamento, quatro variantes avaliadas sobre as mesmas detecções (detector único
+e fixo), de modo que a diferença seja do rastreador, não do detector. As variáveis
+dependentes são a acurácia (mAP na detecção; MOTA, IDF1 e ID switches no rastreamento)
+e a viabilidade (FPS e pico de VRAM), porque a pergunta busca o equilíbrio entre as
+duas.
+
+A comparação se ancora em três pontos experimentais, referenciados na seção de
+resultados: *E1*, o SAM 3 avaliado contra o gold, que afere o anotador; *E2*, o
+detector com fine-tuning no domínio, a configuração que responde à pergunta; e *E3*,
+o mesmo detector com pesos COCO sem fine-tuning, baseline negativo que isola o ganho
+do treino no domínio. O protocolo é fixado antes de medir: o modelo treinado é
+congelado, sem ajuste de hiperparâmetro olhando o teste; a inferência roda na taxa de
+quadros nativa de cada clip; e as métricas são reportadas por fonte (BR e JP) e sempre
+medidas, nunca projetadas. O gold é pequeno e revisado quadro a quadro, então os
+números indicam ordem de grandeza e viabilidade, com a incerteza de amostra declarada
+como limitação (@sec-discussao).
 
 == Detecção da arena e calibração espacial
 

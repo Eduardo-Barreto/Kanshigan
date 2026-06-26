@@ -34,8 +34,9 @@ alimentam estatísticas, decisões de arbitragem e treinamento
 construída sobre premissas que não valem para o combate de robôs: atletas
 distinguíveis pela aparência, transmissões profissionais multicâmera e eventos
 em escala de segundos. Para o Sumô de Robôs, com alvos rígidos quase idênticos,
-vídeo heterogêneo de torneio e desfechos sub-segundo, não encontramos na
-literatura pipeline, dataset ou benchmark publicado#footnote[Busca por "robot sumo" e "sumo robot" combinados com termos de visão, rastreamento, detecção e métricas, em bases acadêmicas e no arXiv (junho de 2026); o protocolo de busca está no repositório do projeto.].
+vídeo heterogêneo de torneio e desfechos sub-segundo, e até onde nossa busca
+alcança, não há pipeline, dataset ou benchmark publicado de análise post-match da
+partida a partir de vídeo de terceira pessoa#footnote[A alegação é específica: ausência de análise post-match (detecção da arena, rastreamento dos dois robôs, cinemática e eventos) por um observador externo. Não nega a percepção embarcada no robô, os datasets de detecção de robôs de hobby nem a análise de Sumô humano, que existem e delimitam a lacuna por contraste. O protocolo de busca é descrito na @sec-related.].
 
 Medições objetivas dariam às equipes respostas que hoje faltam: se o robô reage
 antes do oponente, com que velocidade chega ao primeiro contato, por onde costuma
