@@ -1,0 +1,20 @@
+Candidatos de vídeo da pipeline (overlay: detecção do dohyo + caixas + ID A/B).
+Abrir e avaliar qual entra no slide 11. O atual no deck é o "demo_br".
+
+NOVO_round_longo_BR.mp4  jtSCvt3Oh8I 9-21s. NOVO, gerado agora. 12s, 1080p.
+                         Round longo e dinâmico, vista cenital BR, robôs menores.
+demo_br_BR_camera_mao    EM USO no deck. 6s, 1080p. Vista lateral, robôs grandes e nítidos.
+demo_jp_JP_cenital       4s, 1080p. Fonte japonesa, cenital fixa. Curto.
+atena_BR                 10s, mas BAIXA RESOLUÇÃO (848x478). Vai borrar no projetor.
+gold_zb01                6s. Round do gold (o usado na avaliação de rastreamento).
+worlds_final_OOD         6s. Final de mundial: caso de falha (blur derruba o detector).
+rc1591_RC_1080p          12s. Sumô RC (categoria bônus). Detecção esparsa em trechos.
+
+
+videos q sao bons de mostrar:
+atena_br
+demo_jp_jp
+novo_round_longo
+rc_1591
+
+e pra falar do futuro e do alvo, mostrar worlds_Final
