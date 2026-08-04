@@ -1,0 +1,5 @@
+.venv/
+output/
+uv.lock
+*.jpg
+*.png
