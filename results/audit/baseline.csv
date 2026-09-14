@@ -1,0 +1,7 @@
+clip,fps,n_frames,round_start,round_end,round_frames,both_present_rate,one_present_rate,none_present_rate,cardinality_violation_rate,longest_gap_frames,longest_gap_ms,max_step_cm,n_teleports,implausible_speed_rate,max_speed_cms,ring_out_detected,round_end_note
+demo_jp,60.0,253,55,177,123,1.0,0.0,0.0,0.0,0,0.0,4.87,0,0.0,284.6,True,ring_out
+rc1591,59.96,732,195,669,475,0.9916,0.0084,0.0,0.0084,4,66.7,3.65,0,0.0,128.8,False,timeout_manual_review
+gold_zb01,60.0,385,1,334,334,0.9401,0.0599,0.0,0.0599,20,333.3,5.96,0,0.0,290.8,False,timeout_manual_review
+atena,59.6,598,323,597,275,0.5564,0.4436,0.0,0.4436,122,2047.0,6.81,0,0.0,345.7,False,timeout_manual_review
+w_replay,30.0,242,120,241,122,0.459,0.541,0.0,0.541,66,2200.0,5.21,0,0.0,96.4,False,timeout_manual_review
+worlds_jE4E-XhiyjU_12401,30.0,2700,0,2021,2022,0.0,0.2646,0.7354,1.0,2022,67400.0,29.79,0,0.0037,558.2,False,timeout_manual_review
