@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kanshigan · Pitch</title>
+<link href="fonts/fonts.css" rel="stylesheet">
+<style>
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f4f4f2;
+  --bg-tertiary: #ebebe8;
+  --text-primary: #111111;
+  --text-secondary: #3f3f3f;
+  --text-tertiary: #6b6b6b;
+  --border-default: #d9d9d5;
+  --border-hover: #b5b5b0;
+  --accent-blue: #1d4ed8;
+  --accent-green: #15803d;
+  --accent-amber: #c2410c;
+  --accent-gold: #a16207;
+  --accent-red: #b91c1c;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Geist Mono', 'SF Mono', Consolas, monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+.dot-grid {
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle at center, rgba(0,0,0,0.10) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+#progress {
+  position: fixed; top: 0; left: 0; height: 3px; width: 0;
+  background: var(--accent-blue); z-index: 100; transition: width .2s ease;
+}
+
+#counter {
+  position: fixed; bottom: 22px; right: 28px; z-index: 100;
+  font-family: var(--font-mono); font-size: 15px; color: var(--text-tertiary);
+}
+
+.slide {
+  min-height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 6vh 5.5vw;
+  position: relative;
+  z-index: 1;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: clamp(8px, 1.15vw, 24px);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-tertiary);
+  margin-bottom: 22px;
+  display: flex; align-items: center; gap: 12px;
+}
+.label::before {
+  content: ''; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent-blue); flex-shrink: 0;
+}
+.label--green::before { background: var(--accent-green); }
+.label--amber::before { background: var(--accent-amber); }
+
+h1 {
+  font-size: clamp(8px, 9vw, 150px);
+  font-weight: 700; letter-spacing: -0.035em; line-height: 1.02;
+}
+h2.title {
+  font-size: clamp(8px, 3.4vw, 58px);
+  font-weight: 600; letter-spacing: -0.025em; line-height: 1.1;
+  max-width: 26ch;
+}
+h2.title .hl { color: var(--accent-green); }
+.sub {
+  font-size: clamp(8px, 1.9vw, 31px);
+  color: var(--text-secondary); line-height: 1.45; margin-top: 22px;
+  max-width: 46ch;
+}
+.sub strong { color: var(--text-primary); font-weight: 600; }
+
+.media-frame {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+}
+.media-frame img, .media-frame video { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.media-caption {
+  position: absolute; left: 14px; bottom: 14px;
+  font-family: var(--font-mono); font-size: clamp(8px, 1.1vw, 24px);
+  color: #eee; background: rgba(10,10,10,.78);
+  padding: 8px 14px; border-radius: var(--radius-sm);
+  letter-spacing: .06em; text-transform: uppercase;
+}
+
+/* ---- hero ---- */
+.hero { align-items: flex-start; }
+.hero-meta { margin-top: 7vh; display: flex; gap: 64px; flex-wrap: wrap; }
+.hero-meta .group .k {
+  font-family: var(--font-mono); font-size: clamp(8px, 1vw, 20px); text-transform: uppercase;
+  letter-spacing: .12em; color: var(--text-tertiary); margin-bottom: 10px;
+}
+.hero-meta .group .v { font-size: clamp(8px, 1.45vw, 30px); color: var(--text-secondary); line-height: 1.6; }
+
+.hero-grid { display: grid; grid-template-columns: minmax(0, 44fr) minmax(0, 56fr); gap: 4vw; align-items: center; width: 100%; }
+.hero-grid h1 { font-size: clamp(8px, 7vw, 124px); }
+.hero-grid .hero-meta { margin-top: 5vh; gap: 22px 44px; }
+.hero-video { height: 70vh; }
+
+/* ---- layout ---- */
+.split { display: grid; grid-template-columns: minmax(0, 52fr) minmax(0, 48fr); gap: 4vw; align-items: center; margin-top: 26px; }
+.split .media-frame { height: 58vh; }
+.bullets { display: flex; flex-direction: column; gap: 22px; }
+.bullet {
+  border-left: 3px solid var(--accent-blue); padding-left: 22px;
+  font-size: clamp(8px, 1.6vw, 27px); line-height: 1.4; color: var(--text-secondary);
+}
+.bullet b { color: var(--text-primary); font-weight: 600; }
+.bullet--green { border-color: var(--accent-green); }
+.bullet--amber { border-color: var(--accent-amber); }
+
+/* ---- problema ---- */
+.rq {
+  margin-top: 8px; border: 1px solid rgba(21,128,61,.5); background: rgba(21,128,61,.07);
+  border-radius: var(--radius-lg); padding: 22px 26px;
+  font-size: clamp(8px, 1.6vw, 27px); font-weight: 500; line-height: 1.4;
+}
+.rq .k {
+  display: block; font-family: var(--font-mono); font-size: clamp(8px, .95vw, 15px);
+  text-transform: uppercase; letter-spacing: .12em; color: var(--accent-green);
+  margin-bottom: 10px; font-weight: 500;
+}
+.rq .pair { color: var(--accent-green); font-weight: 600; }
+
+/* ---- matrix slide ---- */
+.matrix-wrap { margin-top: 8px; }
+table.matrix { width: 100%; border-collapse: collapse; }
+.matrix th {
+  font-family: var(--font-mono); font-size: clamp(8px, 1.35vw, 28px); font-weight: 600;
+  text-transform: uppercase; letter-spacing: .08em; color: var(--text-secondary);
+  padding: 14px 10px; border-bottom: 1px solid var(--border-hover); text-align: center;
+}
+.matrix th:first-child { text-align: left; }
+.matrix th .cname {
+  display: block; font-size: clamp(8px, 1.05vw, 22px); font-weight: 400; line-height: 1.2;
+  color: var(--text-tertiary); text-transform: none; letter-spacing: 0; margin-top: 4px;
+}
+.matrix td {
+  padding: clamp(8px, 1.1vh, 14px) 10px; text-align: center;
+  font-size: clamp(8px, 1.5vw, 26px);
+  border-bottom: 1px solid var(--border-default); color: var(--text-secondary);
+}
+.matrix td:first-child {
+  text-align: left; color: var(--text-primary); font-weight: 500;
+  font-size: clamp(8px, 1.4vw, 24px);
+}
+.matrix tr:last-child td {
+  border-bottom: none; background: var(--bg-secondary);
+}
+.matrix tr:last-child td:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+.matrix tr:last-child td:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.sym-full { color: var(--text-primary); }
+.sym-part { color: var(--text-tertiary); }
+.sym-none { color: #c4c4c0; }
+tr:last-child .sym-full { color: var(--accent-green); }
+
+.matrix-wrap.focus :is(td,th).dim { opacity: .22; transition: opacity .5s ease; }
+.matrix-wrap.focus :is(td,th).keep { transition: color .5s ease; }
+.matrix-wrap.focus th.keep { color: var(--accent-green); }
+.matrix-wrap.focus td.keep.sym-full { color: var(--accent-green); }
+.matrix-wrap :is(td,th) { transition: opacity .5s ease; }
+
+.matrix :is(td,th).why {
+  text-align: right; font-family: var(--font-mono);
+  font-size: clamp(8px, 1.2vw, 24px); white-space: nowrap;
+  color: var(--accent-amber);
+}
+.matrix th.why { color: var(--text-tertiary); }
+.matrix tr:last-child td.why { color: var(--accent-green); }
+.matrix :is(td,th).why > span { opacity: 0; transition: opacity .6s ease .15s; }
+.matrix-wrap.focus :is(td,th).why > span { opacity: 1; }
+
+.takeaway {
+  margin-top: 22px; border: 1px solid rgba(21,128,61,.5); background: rgba(21,128,61,.07);
+  border-radius: var(--radius-lg); padding: 24px 30px;
+  display: flex; align-items: center; gap: 26px; flex-wrap: wrap;
+}
+.takeaway .big {
+  font-size: clamp(8px, 2vw, 33px); font-weight: 600; letter-spacing: -0.01em; line-height: 1.3;
+}
+.takeaway .transfer {
+  font-family: var(--font-mono); font-size: clamp(8px, 1.1vw, 18px);
+  color: var(--text-secondary); letter-spacing: .03em;
+}
+
+.build { opacity: 0; transform: translateY(18px); transition: opacity .5s ease, transform .5s ease; }
+.build.on { opacity: 1; transform: none; }
+.takeaway .rq-inline { font-size: clamp(8px, 1.4vw, 24px); color: var(--text-secondary); line-height: 1.45; flex-basis: 100%; }
+.takeaway .rq-inline b { color: var(--text-primary); font-weight: 600; }
+.takeaway .rq-inline .k {
+  font-family: var(--font-mono); font-size: .75em; text-transform: uppercase; letter-spacing: .12em;
+  color: var(--accent-green); margin-right: 12px;
+}
+
+/* ---- método ---- */
+.pipeline-frame {
+  background: #ffffff; border-radius: var(--radius-lg); border: 1px solid var(--border-default);
+  padding: clamp(16px, 2.4vh, 32px); margin-top: 26px;
+}
+.pipeline-frame img { width: 100%; height: auto; max-height: 42vh; object-fit: contain; display: block; }
+.method-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 24px; }
+.mcard {
+  border: 1px solid var(--border-default); border-radius: var(--radius-md);
+  background: var(--bg-secondary); padding: 18px 20px;
+}
+.mcard .k {
+  font-family: var(--font-mono); font-size: clamp(8px, .95vw, 15px); text-transform: uppercase;
+  letter-spacing: .1em; color: var(--accent-blue); margin-bottom: 8px;
+}
+.mcard .t { font-size: clamp(8px, 1.3vw, 22px); color: var(--text-secondary); line-height: 1.4; }
+.mcard .t b { color: var(--text-primary); font-weight: 600; }
+.mcard--gold { border-color: rgba(161,98,7,.5); }
+.mcard--gold .k { color: var(--accent-gold); }
+
+/* ---- resultados ---- */
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 6vh; }
+.stat { text-align: center; border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: 5vh 24px; background: var(--bg-secondary); }
+.stat-value {
+  font-family: var(--font-mono); font-size: clamp(8px, 6vw, 104px);
+  font-weight: 600; letter-spacing: -0.04em; line-height: 1;
+}
+.stat-value .unit { font-size: .42em; color: var(--text-tertiary); font-weight: 500; }
+.stat-name { font-size: clamp(8px, 1.5vw, 26px); color: var(--text-primary); margin-top: 18px; font-weight: 500; }
+.stat-note { font-size: clamp(8px, 1.2vw, 21px); color: var(--text-tertiary); margin-top: 10px; line-height: 1.4; }
+.stat--green .stat-value { color: var(--accent-green); }
+.stat--blue .stat-value { color: var(--accent-blue); }
+.stat--amber .stat-value { color: var(--accent-amber); }
+.measured {
+  margin-top: 5vh; text-align: center; font-family: var(--font-mono);
+  font-size: clamp(8px, 1.3vw, 21px); color: var(--text-tertiary); letter-spacing: .08em; text-transform: uppercase;
+}
+
+.video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 26px; }
+.video-grid .media-frame { height: 33vh; }
+.slide--media { justify-content: flex-start; padding-top: 7vh; }
+.slide--media .media-frame { margin-top: 26px; height: 62vh; }
+.slide--media .sub { margin-top: 14px; max-width: 60ch; }
+
+h2.title.title--compact { font-size: clamp(8px, 2.6vw, 50px); max-width: 60ch; }
+#matrix-slide .matrix td { padding-top: clamp(5px, .8vh, 10px); padding-bottom: clamp(5px, .8vh, 10px); }
+#matrix-slide .matrix-wrap { margin-top: 14px; }
+#matrix-slide { padding-top: 4vh; padding-bottom: 4vh; }
+#matrix-slide .matrix td:first-child { white-space: nowrap; }
+#matrix-slide .takeaway { margin-top: 1.6vh; padding: 1.7vh 1.4vw; gap: 1.2vh 1.4vw; }
+#matrix-slide .takeaway .big { font-size: clamp(8px, 1.8vw, 36px); }
+.slide--results { padding-top: 5vh; padding-bottom: 5vh; }
+.stats-grid--compact { margin-top: 2vh; gap: 22px; }
+.stats-grid--compact .stat { padding: 2.6vh 22px; }
+.stats-grid--compact .stat-value { font-size: clamp(8px, 3.8vw, 80px); }
+.stats-grid--compact .stat-name { font-size: clamp(8px, 1.6vw, 32px); }
+.stats-grid--compact .stat-note { font-size: clamp(8px, 1.35vw, 28px); color: var(--text-secondary); }
+.stats-grid--compact .stat-name { margin-top: 10px; }
+.stats-grid--compact .stat-note { margin-top: 6px; }
+.gloss {
+  margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border-hover);
+  font-size: clamp(8px, 1.3vw, 27px); color: var(--text-primary); line-height: 1.35; text-align: left;
+}
+.video-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 2vh; }
+.video-row .media-frame { aspect-ratio: 16 / 9; }
+.video-row .media-caption { font-size: clamp(8px, 1.1vw, 24px); padding: 6px 12px; left: 10px; bottom: 10px; }
+.media-frame--fail { border-color: rgba(194,65,12,.7); }
+.media-frame--fail .media-caption { color: #fdba74; }
+
+.pipeline-frame--compact { margin-top: 20px; padding: clamp(10px, 1.6vh, 22px); }
+.pipeline-frame--compact img { max-height: 34vh; }
+.design { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 4vh; }
+.flow { display: flex; flex-direction: column; gap: 16px; margin-top: 4vh; }
+.flow-row { display: flex; align-items: center; gap: 12px; }
+.flow-k {
+  font-family: var(--font-mono); font-size: clamp(8px, 1.05vw, 22px); text-transform: uppercase;
+  letter-spacing: .08em; color: var(--text-tertiary); width: 12.5vw; flex-shrink: 0;
+}
+.stage {
+  flex: 1; text-align: center; border: 1px solid var(--border-hover); border-radius: var(--radius-md);
+  background: var(--bg-primary); padding: 1.6vh 10px; font-size: clamp(8px, 1.5vw, 30px); font-weight: 500;
+}
+.stage--cmp { border: 2px solid var(--accent-blue); color: var(--accent-blue); font-weight: 600; }
+.flow-row .arr { color: var(--text-tertiary); font-size: clamp(8px, 1.4vw, 28px); }
+.dcol {
+  border: 1px solid var(--border-default); border-radius: var(--radius-md);
+  background: var(--bg-secondary); padding: 18px 22px; display: flex; flex-direction: column; gap: 10px;
+}
+.dcol .k {
+  font-family: var(--font-mono); font-size: clamp(8px, 1.15vw, 24px); text-transform: uppercase;
+  letter-spacing: .1em; color: var(--accent-blue);
+}
+.dcol .t { font-size: clamp(8px, 1.55vw, 32px); color: var(--text-secondary); line-height: 1.4; }
+.dcol .t b { color: var(--text-primary); font-weight: 600; }
+.dcol--gold { border-color: rgba(161,98,7,.5); }
+.dcol--gold .k { color: var(--accent-gold); }
+
+.answer {
+  margin-top: 16px; border: 1px solid rgba(21,128,61,.5); background: rgba(21,128,61,.07);
+  border-radius: var(--radius-md); padding: 14px 22px;
+  font-size: clamp(8px, 1.5vw, 30px); color: var(--text-secondary); line-height: 1.35;
+}
+.answer b { color: var(--text-primary); font-weight: 600; }
+.answer .k {
+  font-family: var(--font-mono); font-size: .72em; text-transform: uppercase; letter-spacing: .12em;
+  color: var(--accent-green); margin-right: 12px;
+}
+
+/* ---- limitações ---- */
+.limits { display: flex; flex-direction: column; gap: 18px; margin-top: 30px; }
+.limit {
+  display: grid; grid-template-columns: 1.15fr auto 1fr; gap: 20px; align-items: center;
+  border: 1px solid var(--border-default); border-radius: var(--radius-md);
+  background: var(--bg-secondary); padding: 20px 24px;
+}
+.limit .l { font-size: clamp(8px, 1.45vw, 25px); color: var(--text-secondary); line-height: 1.4; }
+.limit .l b { color: var(--accent-amber); font-weight: 600; }
+.limit .a { font-size: clamp(8px, 1.45vw, 25px); color: var(--text-primary); font-weight: 500; }
+.limit .arr { color: var(--text-tertiary); font-size: clamp(8px, 1.7vw, 28px); }
+.closing {
+  margin-top: 5vh; border: 1px solid rgba(21,128,61,.5); background: rgba(21,128,61,.07);
+  border-radius: var(--radius-lg); padding: 24px 30px;
+  display: flex; align-items: center; justify-content: space-between; gap: 30px;
+}
+.closing .msg {
+  font-size: clamp(8px, 1.9vw, 32px); font-weight: 500; letter-spacing: -0.01em;
+  line-height: 1.35; max-width: 40ch;
+}
+.closing .msg b { color: var(--accent-green); font-weight: 600; }
+.repo {
+  font-family: var(--font-mono); font-size: clamp(8px, 1.3vw, 26px);
+  border: 1px solid var(--border-default); border-radius: 100px; padding: 14px 26px;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 900px) {
+  .design, .hero-grid, .split, .stats-grid, .video-grid, .video-row, .method-row { grid-template-columns: 1fr; }
+  .limit { grid-template-columns: 1fr; }
+  .limit .arr { display: none; }
+  .slide { padding: 8vh 6vw; }
+}
+</style>
+</head>
+<body>
+
+<div class="dot-grid"></div>
+<div id="progress"></div>
+<div id="counter"></div>
+
+<!-- ============ 1 · TÍTULO ============ -->
+<section class="slide hero">
+  <div class="hero-grid">
+    <div>
+      <div class="label">Pitch · Setembro 2026</div>
+      <h1>Kanshigan</h1>
+      <p class="sub">Uma pipeline de visão computacional que <strong>mede</strong> partidas de Sumô de Robôs a partir do vídeo da luta.</p>
+      <div class="hero-meta">
+        <div class="group">
+          <div class="k">Autores</div>
+          <div class="v">Eduardo Barreto · Luan Ramos · Pedro Cruz</div>
+        </div>
+        <div class="group">
+          <div class="k">Orientador</div>
+          <div class="v">Rodrigo Mangoni Nicola</div>
+        </div>
+        <div class="group">
+          <div class="k">Instituição</div>
+          <div class="v">Instituto de Tecnologia e Liderança</div>
+        </div>
+      </div>
+    </div>
+    <div class="media-frame hero-video">
+      <video src="videos/worlds_raw.mp4" muted loop playsinline preload="metadata"></video>
+      <div class="media-caption">Final · All Japan Robot Sumo · 3 kg autônomo</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2 · PROBLEMA E LACUNA ============ -->
+<section class="slide" id="matrix-slide">
+  <div class="label label--amber">Problema</div>
+  <h2 class="title title--compact">Um round dura menos de 1 s e é analisado <span style="color: var(--accent-amber)">no olho</span>.</h2>
+  <div class="matrix-wrap" id="matrix">
+    <table class="matrix">
+      <thead>
+        <tr>
+          <th>Trabalho</th>
+          <th class="keep">C1<span class="cname">mov. não linear</span></th>
+          <th class="keep">C2<span class="cname">aparência uniforme</span></th>
+          <th class="dim">C3<span class="cname">sub-segundo</span></th>
+          <th class="dim">C4<span class="cname">vídeo heterogêneo</span></th>
+          <th class="dim">C5<span class="cname">post-match</span></th>
+          <th class="dim">C6<span class="cname">sem fiduciais</span></th>
+          <th class="why"><span>regime de captura</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="dim">ByteTrack</td><td class="keep sym-part">◐</td><td class="keep sym-part">◐</td><td class="dim sym-none">○</td><td class="dim sym-none">○</td><td class="dim sym-none">○</td><td class="dim sym-full">●</td><td class="why"><span>pedestres, câmera profissional</span></td></tr>
+        <tr><td class="dim">OC-SORT</td><td class="keep sym-full">●</td><td class="keep sym-part">◐</td><td class="dim sym-none">○</td><td class="dim sym-none">○</td><td class="dim sym-none">○</td><td class="dim sym-full">●</td><td class="why"><span>pedestres, câmera profissional</span></td></tr>
+        <tr><td class="dim">DanceTrack</td><td class="keep sym-full">●</td><td class="keep sym-full">●</td><td class="dim sym-none">○</td><td class="dim sym-none">○</td><td class="dim sym-none">○</td><td class="dim sym-full">●</td><td class="why"><span>estúdio, captura controlada</span></td></tr>
+        <tr><td class="dim">SportsMOT</td><td class="keep sym-part">◐</td><td class="keep sym-full">●</td><td class="dim sym-none">○</td><td class="dim sym-none">○</td><td class="dim sym-none">○</td><td class="dim sym-full">●</td><td class="why"><span>broadcast estabilizado</span></td></tr>
+        <tr><td class="dim">SoccerNet-Tracking</td><td class="keep sym-part">◐</td><td class="keep sym-full">●</td><td class="dim sym-part">◐</td><td class="dim sym-none">○</td><td class="dim sym-part">◐</td><td class="dim sym-full">●</td><td class="why"><span>broadcast profissional</span></td></tr>
+        <tr><td class="dim">Jiu-jitsu scoring</td><td class="keep sym-full">●</td><td class="keep sym-part">◐</td><td class="dim sym-part">◐</td><td class="dim sym-none">○</td><td class="dim sym-full">●</td><td class="dim sym-full">●</td><td class="why"><span>câmera fixa, pose humana</span></td></tr>
+        <tr><td class="dim">SSL-Vision</td><td class="keep sym-full">●</td><td class="keep sym-full">●</td><td class="dim sym-full">●</td><td class="dim sym-none">○</td><td class="dim sym-none">○</td><td class="dim sym-none">○</td><td class="why"><span>marcador + câmera calibrada</span></td></tr>
+        <tr><td class="dim"><b>Sumô de Robôs</b></td><td class="keep sym-full">●</td><td class="keep sym-full">●</td><td class="dim sym-full">●</td><td class="dim sym-full">●</td><td class="dim sym-full">●</td><td class="dim sym-full">●</td><td class="why"><span>vídeo real, sem marcador</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="takeaway build" data-action="focus-matrix">
+    <div class="big">Quem acerta C1 + C2 acerta em estúdio, broadcast ou com marcador. Em vídeo real: <span style="color: var(--accent-green)">em aberto</span>.</div>
+    <div class="rq-inline"><span class="k">Pergunta</span>Que detector e rastreador equilibram <b>acurácia</b> e <b>custo</b> nesse cenário?</div>
+  </div>
+</section>
+
+
+<!-- ============ 3 · MÉTODO ============ -->
+<section class="slide">
+  <div class="label">Método · pesquisa experimental</div>
+  <h2 class="title title--compact">Troca-se uma peça por vez e mede-se contra um <span style="color: var(--accent-gold)">gold</span>.</h2>
+  <div class="flow">
+    <div class="flow-row"><span class="flow-k">prepara o quadro</span>
+      <span class="stage">Vídeo</span><span class="arr">→</span><span class="stage">Arena</span><span class="arr">→</span><span class="stage">Escala em cm</span><span class="arr">→</span><span class="stage">Recorte</span>
+    </div>
+    <div class="flow-row"><span class="flow-k">extrai a informação</span>
+      <span class="stage stage--cmp">Detecção</span><span class="arr">→</span><span class="stage stage--cmp">Rastreamento</span><span class="arr">→</span><span class="stage">Métricas</span><span class="arr">→</span><span class="stage">Eventos</span>
+    </div>
+  </div>
+  <div class="design">
+    <div class="dcol">
+      <div class="k">O que comparamos</div>
+      <div class="t"><b>2 detectores:</b> YOLO padrão × YOLO 5× menor</div>
+      <div class="t"><b>4 rastreadores:</b> só movimento × movimento + aparência</div>
+    </div>
+    <div class="dcol">
+      <div class="k">O que fica fixo</div>
+      <div class="t">Mesmo dataset pros <b>2 detectores</b></div>
+      <div class="t"><b>Mesmas detecções</b> pros 4 rastreadores</div>
+    </div>
+    <div class="dcol dcol--gold">
+      <div class="k">Contra o quê</div>
+      <div class="t"><b>Gold</b> revisado à mão, fora do treino</div>
+      <div class="t">Acurácia e custo, no mesmo notebook</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4 · RESULTADOS ============ -->
+<section class="slide slide--results">
+  <div class="label label--green">Resultados · contra o gold</div>
+    <div class="answer"><span class="k">Resposta</span>detector <b>compacto</b> + rastreador <b>só de movimento</b>: mesma acurácia, muito mais barato.</div>
+  <div class="stats-grid stats-grid--compact">
+    <div class="stat stat--green">
+      <div class="stat-value">0.96<span class="unit">+</span></div>
+      <div class="stat-name">mAP@0.5 · detecção</div>
+      <div class="stat-note">o modelo 5× menor empata</div>
+      <div class="gloss">acha os robôs sem inventar robô (0 a 1)</div>
+    </div>
+    <div class="stat stat--blue">
+      <div class="stat-value">0.94</div>
+      <div class="stat-name">IDF1 · rastreamento</div>
+      <div class="stat-note">aparência: igual, <span style="white-space: nowrap">35-40×</span> mais lenta</div>
+      <div class="gloss">o robô A continua sendo o A (0 a 1)</div>
+    </div>
+    <div class="stat stat--amber">
+      <div class="stat-value">100<span class="unit">+ fps</span></div>
+      <div class="stat-name">pipeline completa</div>
+      <div class="stat-note">num notebook comum</div>
+      <div class="gloss">quadros por segundo; o vídeo tem 30 a 60</div>
+    </div>
+  </div>
+  <div class="video-row">
+    <div class="media-frame">
+      <video src="videos/pipeline_overlay_br.mp4" muted loop playsinline preload="metadata"></video>
+      <div class="media-caption">BR · câmera de mão</div>
+    </div>
+    <div class="media-frame">
+      <video src="videos/demo_jp.mp4" muted loop playsinline preload="metadata"></video>
+      <div class="media-caption">JP · câmera fixa</div>
+    </div>
+    <div class="media-frame">
+      <video src="videos/rc_sumo.mp4" muted loop playsinline preload="metadata"></video>
+      <div class="media-caption">RC · fora do treino</div>
+    </div>
+    <div class="media-frame media-frame--fail">
+      <video src="videos/worlds_final.mp4" muted loop playsinline preload="metadata"></video>
+      <div class="media-caption">mundial · falha</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5 · LIMITAÇÕES ============ -->
+<section class="slide">
+  <div class="label label--amber">Limitações e próximos passos</div>
+  <h2 class="title title--compact">Sabemos onde quebra, e o que vem em seguida.</h2>
+  <div class="limits">
+    <div class="limit"><span class="l"><b>escala em cm instável</b>: oscila 18% dentro de uma luta no vídeo de celular, contra 0,1% na câmera fixa</span><span class="arr">→</span><span class="a">retificação por homografia da arena</span></div>
+    <div class="limit"><span class="l"><b>gold pequeno</b>: dois rounds revisados, então os números são ordem de grandeza</span><span class="arr">→</span><span class="a">anotar mais rounds, começando pelo RC</span></div>
+    <div class="limit"><span class="l"><b>blur de transmissão</b>: na final do mundial, o detector perde os dois robôs</span><span class="arr">→</span><span class="a">treinar com vídeo dessa distribuição</span></div>
+  </div>
+  <div class="closing">
+    <div class="msg">A primeira pipeline aberta para a modalidade, com dataset validado, <b>rodando num notebook</b>.</div>
+    <div class="repo">github.com/Eduardo-Barreto/Kanshigan</div>
+  </div>
+</section>
+
+<script>
+const slides = Array.from(document.querySelectorAll('.slide'));
+const counter = document.getElementById('counter');
+const progress = document.getElementById('progress');
+let current = 0;
+
+const pad = n => String(n).padStart(2, '0');
+
+const slideObserver = new IntersectionObserver(entries => {
+  for (const entry of entries) {
+    if (entry.intersectionRatio < 0.55) continue;
+    current = slides.indexOf(entry.target);
+    counter.textContent = current === 0 ? '' : `${pad(current)} / ${pad(slides.length - 1)}`;
+  }
+}, { threshold: 0.55 });
+slides.forEach(s => slideObserver.observe(s));
+
+const videoObserver = new IntersectionObserver(entries => {
+  for (const entry of entries) {
+    if (entry.intersectionRatio >= 0.5) entry.target.play().catch(() => {});
+    else entry.target.pause();
+  }
+}, { threshold: 0.5 });
+document.querySelectorAll('video').forEach(video => videoObserver.observe(video));
+
+window.addEventListener('scroll', () => {
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  progress.style.width = `${(window.scrollY / max) * 100}%`;
+}, { passive: true });
+
+function revealNextBuild() {
+  const build = slides[current].querySelector('.build:not(.on)');
+  if (!build) return false;
+  build.classList.add('on');
+  if (build.dataset.action === 'focus-matrix') document.getElementById('matrix').classList.add('focus');
+  return true;
+}
+
+function goTo(index) {
+  const clamped = Math.max(0, Math.min(slides.length - 1, index));
+  slides[clamped].scrollIntoView({ behavior: 'smooth' });
+}
+
+window.addEventListener('keydown', event => {
+  const forward = ['ArrowRight', 'ArrowDown', ' ', 'PageDown'];
+  const backward = ['ArrowLeft', 'ArrowUp', 'PageUp'];
+  if (forward.includes(event.key)) { event.preventDefault(); if (!revealNextBuild()) goTo(current + 1); return; }
+  if (backward.includes(event.key)) { event.preventDefault(); goTo(current - 1); return; }
+  if (event.key === 'Home') { event.preventDefault(); goTo(0); }
+  if (event.key === 'End') { event.preventDefault(); goTo(slides.length - 1); }
+});
+
+let touchStartY = null;
+window.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
+window.addEventListener('touchend', e => {
+  if (touchStartY === null) return;
+  const delta = touchStartY - e.changedTouches[0].clientY;
+  if (Math.abs(delta) > 60) delta > 0 ? (revealNextBuild() || goTo(current + 1)) : goTo(current - 1);
+  touchStartY = null;
+}, { passive: true });
+</script>
+</body>
+</html>
