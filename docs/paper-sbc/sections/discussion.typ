@@ -75,8 +75,9 @@ arena.
 
 Além da homografia da arena, que deve estabilizar a trajetória sob câmera de mão e
 permitir validar a cinemática em centímetros, planejamos: um conjunto de calibração de
-limiares, separado do gold, para medir contato e ring-out; ampliar a base japonesa e
-adicionar broadcast profissional; ablação do detector com RT-DETR @zhao2024rtdetr;
+limiares, separado do gold, para medir contato e ring-out; ampliar a base brasileira
+para reequilibrar as fontes e unificar a convenção de rótulo do robô já ejetado
+(@sec-escala-jp); adicionar broadcast profissional; ablação do detector com RT-DETR @zhao2024rtdetr;
 detecção de contato por máscara; e a evolução para uma plataforma colaborativa aberta
 de análise de combate de robôs. A pipeline e o
 conjunto de dados são públicos para reprodução e extensão.

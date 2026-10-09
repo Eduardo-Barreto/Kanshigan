@@ -75,6 +75,71 @@ remover o fundo levou precisão a 0.99 e recall a 0.96.
   ),
 ) <tab-detector>
 
+== Escala do treino JP: mais dado muda o erro, não o mAP <sec-escala-jp>
+
+O treino JP usa 8 dos 26 trechos que a segmentação encontra no vídeo de origem. Para
+medir se a quantidade de anotação é o gargalo, anotamos com o SAM 3 e revisamos
+manualmente, quadro a quadro, outros 14 rounds do mesmo vídeo (448 quadros), o que
+leva o treino JP de 202 para 650 quadros, e retreinamos o YOLOv8s com os mesmos
+hiperparâmetros. O gold não muda. Como uma diferença de um ponto de mAP num gold de um
+round não se distingue de ruído, repetimos as duas configurações com três sementes
+(@tab-escala).
+
+#figure(
+  caption: [YOLOv8s treinado sem e com os 14 rounds JP adicionais, três sementes
+  (42, 0 e 1) por configuração, nos golds que não mudam. mAP como média ± desvio
+  padrão; as contagens são por semente, com confiança mínima 0.25 e casamento por
+  IoU ≥ 0.5 contra o gold (112 robôs no BR, 82 no JP). "FP fora" são detecções fora
+  da arena que não casam com nenhuma caixa do gold.],
+  table(
+    columns: 5,
+    align: (left, center, center, center, center),
+    stroke: 0.4pt,
+    table.header([*Gold / treino*], [*mAP\@.5*], [*mAP\@.5:.95*], [*Robôs perdidos*], [*FP fora*]),
+    [BR / original], [0.968 ± 0.006], [0.786 ± 0.018], [4, 4, 4], [0, 0, 0],
+    [BR / + 14 rounds JP], [0.957 ± 0.032], [0.728 ± 0.047], [3, 4, 3], [0, 1, 1],
+    [JP / original], [0.963 ± 0.019], [0.669 ± 0.023], [5, 5, 10], [17, 20, 9],
+    [JP / + 14 rounds JP], [0.978 ± 0.009], [0.717 ± 0.020], [0, 2, 1], [54, 37, 47],
+  ),
+) <tab-escala>
+
+O mAP\@.5 não separa as configurações em nenhum dos golds: os intervalos se sobrepõem.
+O que muda é a anatomia do erro. No gold JP, o detector com mais dado perde menos
+robôs nas três sementes (de 5 a 10 perdidos para 0 a 2, em 82) e ajusta melhor as
+caixas: o mAP\@.5:.95 das três sementes novas (0.703 a 0.740) fica acima das três
+originais (0.652 a 0.695). Entre os robôs recuperados estão casos na borda do quadro
+e borrados pelo movimento (@fig-escala).
+
+O ganho tem custo na outra fonte. No gold BR, o mAP\@.5:.95 cai nas três sementes
+(0.674 a 0.757 contra 0.767 a 0.804), e uma delas degrada de forma visível (mAP\@.5
+0.920, recall 0.79), fragmentando um robô em caixas parciais. Os quadros novos são
+todos JP e invertem a proporção do treino (423 BR para 650 JP); o desbalanceamento
+entre fontes é a explicação provável, mas não a testamos isoladamente.
+
+As detecções fora da arena triplicam no gold JP. Nos quadros inspecionados não são
+alucinações: são o robô já ejetado (@fig-escala). O treino JP o rotula, tanto no conjunto original quanto nos rounds novos (cerca
+de 17% das caixas ficam fora da elipse da arena nos dois), e o gold JP não (1 de 82).
+O aumento é consistente com um detector que aprende melhor o que o treino já pedia. É
+uma divergência de convenção de rótulo entre treino e gold, anterior a este experimento,
+que precisa ser unificada antes de ser lida como erro do detector. Os falsos positivos dentro da arena, por sua vez, são dominados pela
+semente (de 0 a 21 no JP, de 1 a 70 no BR) e não sustentam conclusão.
+
+Três sementes indicam direção, não significância. Por isso mantemos como detector
+reportado o da @tab-detector, treinado no conjunto original. Ficam dois resultados.
+Primeiro, neste experimento, anotar mais de uma única fonte não foi ganho gratuito:
+melhorou a fonte ampliada e cobrou da outra. Segundo, o desvio entre sementes (0.019 no mAP\@.5 do gold
+JP) é da mesma ordem da diferença entre as duas arquiteturas na @tab-detector (0.017),
+o que é compatível com a leitura de equivalência prática feita ali.
+
+#figure(
+  image("/results/figures/jp_data_scaling_cases.png", width: 100%),
+  caption: [Dois quadros do gold JP, semente 42. Branco: gold; vermelho: detector
+  original; verde: detector com os 14 rounds adicionais; o número é a confiança. Em
+  cima, o original marca riscos do dohyo e perde o robô na borda. Embaixo, perde o
+  robô borrado; o novo o encontra e também marca, no canto inferior, o robô já
+  ejetado, que o gold não rotula.],
+) <fig-escala>
+
 == Validação do anotador: SAM 3 vs gold
 
 Se o SAM 3 anota o treino, ele precisa concordar com o que um humano aceita. Medimos
@@ -87,10 +152,19 @@ No gold JP, em vista cenital, as caixas propostas seguem precisas (precisão 0.9
 pequenos; é o predictor de vídeo, com propagação temporal e limiar reduzido, que
 recupera os dois robôs na anotação de treino (@sec-discussao).
 
+Os 14 rounds revisados da @sec-escala-jp dão uma segunda medida, maior e do próprio
+predictor de vídeo: sobre 448 quadros e 878 caixas revisadas, ele atinge precisão
+0.80, recall 0.71 e IoU médio 0.94 nas caixas casadas, e a revisão alterou 318 dos 448
+quadros. A leitura é a mesma do gold BR na localização (a caixa proposta quase
+coincide com a humana) e diferente na cobertura: o anotador deixa cerca de três em
+cada dez robôs sem caixa, e é a revisão que os recupera. Como a revisão parte da
+proposta do SAM 3, a concordância é um limite superior.
+
 #figure(
   caption: [Concordância do SAM 3 como anotador com o gold revisado por humano, por IoU.
-  No JP, o número é do predictor de imagem quadro a quadro; a anotação de treino usa o
-  predictor de vídeo (propagação temporal).],
+  No gold JP, o número é do predictor de imagem quadro a quadro; a anotação de treino
+  usa o predictor de vídeo (propagação temporal), medido na última linha contra os 14
+  rounds revisados (448 quadros).],
   table(
     columns: 5,
     align: (left, center, center, center, center),
@@ -98,6 +172,7 @@ recupera os dois robôs na anotação de treino (@sec-discussao).
     table.header([*Fonte*], [*Precisão*], [*Recall*], [*F1*], [*IoU médio*]),
     [Gold BR], [0.98], [0.94], [0.96], [0.91],
     [Gold JP (por quadro)], [0.95], [0.22], [0.36], [0.89],
+    [JP, 14 rounds revisados (vídeo)], [0.80], [0.71], [0.75], [0.94],
   ),
 ) <tab-annotator>
 
