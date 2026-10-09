@@ -20,18 +20,18 @@ DATA_YAML = HERE / "configs" / "kanshigan.yaml"
 SEED = 42
 
 
-def train(model_name: str, epochs: int, imgsz: int, batch: int, patience: int, run_name: str | None = None) -> dict:
+def train(model_name: str, epochs: int, imgsz: int, batch: int, patience: int, run_name: str | None = None, data_yaml: Path = DATA_YAML, seed: int = SEED) -> dict:
     from ultralytics import YOLO
 
     run_name = run_name or f"{Path(model_name).stem}_kanshigan"
     model = YOLO(model_name)
     results = model.train(
-        data=str(DATA_YAML),
+        data=str(data_yaml),
         epochs=epochs,
         imgsz=imgsz,
         batch=batch,
         patience=patience,
-        seed=SEED,
+        seed=seed,
         deterministic=True,
         project=str(HERE.parents[1] / "results" / "training"),
         name=run_name,
@@ -39,10 +39,11 @@ def train(model_name: str, epochs: int, imgsz: int, batch: int, patience: int, r
     )
     summary = {
         "model": model_name,
+        "data": str(data_yaml),
         "epochs": epochs,
         "imgsz": imgsz,
         "batch": batch,
-        "seed": SEED,
+        "seed": seed,
         "save_dir": str(results.save_dir),
         "best_weights": str(Path(results.save_dir) / "weights" / "best.pt"),
         "metrics": {k: float(v) for k, v in results.results_dict.items()},
@@ -61,8 +62,10 @@ def main() -> None:
     ap.add_argument("--imgsz", type=int, default=640)
     ap.add_argument("--batch", type=int, default=16)
     ap.add_argument("--patience", type=int, default=20)
+    ap.add_argument("--data", type=Path, default=DATA_YAML)
+    ap.add_argument("--seed", type=int, default=SEED)
     args = ap.parse_args()
-    train(args.model, args.epochs, args.imgsz, args.batch, args.patience, args.name)
+    train(args.model, args.epochs, args.imgsz, args.batch, args.patience, args.name, args.data, args.seed)
 
 
 if __name__ == "__main__":
