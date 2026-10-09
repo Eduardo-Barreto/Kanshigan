@@ -23,8 +23,11 @@ Copie `configs/clips.example.yaml` para `configs/clips.yaml` e edite. Cada round
 ### 2. Cortar e decimar
 
 ```bash
-uv run python prep_clips.py
+uv run python prep_clips.py                                       # configs/clips.yaml
+uv run python prep_clips.py --config configs/clips_jp_candidates.yaml   # só os clips desse arquivo
 ```
+
+Sem `--config` o script reprocessa todos os clips de `clips.yaml` e sobrescreve os existentes; para cortar rounds novos, use um arquivo separado.
 
 Gera dois outputs por clip:
 - `data/processed/clips/<subset>/<id>.mp4` (fps nativo, full res, alimenta inferência e review)
@@ -60,6 +63,14 @@ Editor:
 - `r`: recarrega do disco
 - `q`: sai (auto-save)
 
+Para revisar de outra máquina, `web_editor.py` serve o mesmo editor no navegador, só na tailnet (escuta no IP do Tailscale desta máquina):
+
+```bash
+uv run python web_editor.py --split candidates_jp      # http://<ip-tailscale>:8765
+```
+
+Além de editar caixas, ele guarda um status por quadro (aprovado/rejeitado) em `data/annotations/<split>/review.json`; rejeitar não apaga arquivo. Atalhos: espaço dá play/pause, setas trocam de quadro, Tab troca de caixa, WASD move, Shift+WASD redimensiona, Delete apaga, Enter aprova, `x` rejeita. Não tem autenticação: não exponha fora da tailnet sem colocar uma na frente.
+
 Para revisar a anotação em vídeo (qualidade do SAM antes de treinar):
 
 ```bash
@@ -74,6 +85,12 @@ uv run python train.py --epochs 100        # YOLOv8s, seed 42, logs em results/t
 
 Equivale a `yolo train data=configs/kanshigan.yaml model=yolov8s.pt epochs=100 imgsz=640 seed=42`,
 com hiperparâmetros versionados e resumo em JSON.
+
+`--data` troca o conjunto e `--seed` a semente, para estudos que comparam configurações (ver `../pos-banca/data_scaling.py`):
+
+```bash
+uv run python train.py --data configs/kanshigan_jpplus.yaml --seed 0 --name yolov8s_kanshigan_jpplus_s0
+```
 
 ### 6. Inferência
 
@@ -107,6 +124,7 @@ uv run python evaluate.py --pred <id>.json --gold-events gold.json     # eventos
 | `train.py` | Treino do YOLOv8s |
 | `evaluate.py` | mAP, MOTA/IDF1, erro de métricas, P/R de eventos vs gold |
 | `preview_annotations.py` | Vídeo de revisão das anotações |
+| `web_editor.py` | Editor de caixas no navegador, com status de revisão por quadro |
 
 Testes da lógica pura (sem GPU): `uv run --group dev pytest`.
 
