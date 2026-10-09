@@ -1,0 +1,290 @@
+{
+  "conf": 0.25,
+  "iou_match": 0.5,
+  "before": {
+    "runs": [
+      {
+        "weights": "results/training/yolov8s_kanshigan/weights/best.pt",
+        "gold_br": {
+          "mAP@0.5": 0.965,
+          "mAP@0.5:0.95": 0.7673,
+          "precision": 0.9904,
+          "recall": 0.9643,
+          "gold_boxes": 112,
+          "missed": 4,
+          "fp_inside_dohyo": 1,
+          "fp_outside_dohyo": 0
+        },
+        "gold_jp": {
+          "mAP@0.5": 0.9757,
+          "mAP@0.5:0.95": 0.6954,
+          "precision": 0.9913,
+          "recall": 0.9146,
+          "gold_boxes": 82,
+          "missed": 5,
+          "fp_inside_dohyo": 13,
+          "fp_outside_dohyo": 17
+        }
+      },
+      {
+        "weights": "results/training/yolov8s_kanshigan_s0/weights/best.pt",
+        "gold_br": {
+          "mAP@0.5": 0.9639,
+          "mAP@0.5:0.95": 0.7872,
+          "precision": 0.9826,
+          "recall": 0.9554,
+          "gold_boxes": 112,
+          "missed": 4,
+          "fp_inside_dohyo": 28,
+          "fp_outside_dohyo": 0
+        },
+        "gold_jp": {
+          "mAP@0.5": 0.9715,
+          "mAP@0.5:0.95": 0.6517,
+          "precision": 0.9746,
+          "recall": 0.9369,
+          "gold_boxes": 82,
+          "missed": 5,
+          "fp_inside_dohyo": 1,
+          "fp_outside_dohyo": 20
+        }
+      },
+      {
+        "weights": "results/training/yolov8s_kanshigan_s1/weights/best.pt",
+        "gold_br": {
+          "mAP@0.5": 0.9745,
+          "mAP@0.5:0.95": 0.804,
+          "precision": 0.9902,
+          "recall": 0.9643,
+          "gold_boxes": 112,
+          "missed": 4,
+          "fp_inside_dohyo": 1,
+          "fp_outside_dohyo": 0
+        },
+        "gold_jp": {
+          "mAP@0.5": 0.9413,
+          "mAP@0.5:0.95": 0.6607,
+          "precision": 0.9963,
+          "recall": 0.878,
+          "gold_boxes": 82,
+          "missed": 10,
+          "fp_inside_dohyo": 0,
+          "fp_outside_dohyo": 9
+        }
+      }
+    ],
+    "summary": {
+      "gold_br": {
+        "mAP@0.5": {
+          "mean": 0.9678,
+          "std": 0.0058
+        },
+        "mAP@0.5:0.95": {
+          "mean": 0.7862,
+          "std": 0.0184
+        },
+        "precision": {
+          "mean": 0.9877,
+          "std": 0.0044
+        },
+        "recall": {
+          "mean": 0.9613,
+          "std": 0.0051
+        },
+        "gold_boxes": {
+          "mean": 112,
+          "std": 0.0
+        },
+        "missed": {
+          "mean": 4,
+          "std": 0.0
+        },
+        "fp_inside_dohyo": {
+          "mean": 10,
+          "std": 15.5885
+        },
+        "fp_outside_dohyo": {
+          "mean": 0,
+          "std": 0.0
+        }
+      },
+      "gold_jp": {
+        "mAP@0.5": {
+          "mean": 0.9628,
+          "std": 0.0188
+        },
+        "mAP@0.5:0.95": {
+          "mean": 0.6693,
+          "std": 0.0231
+        },
+        "precision": {
+          "mean": 0.9874,
+          "std": 0.0114
+        },
+        "recall": {
+          "mean": 0.9098,
+          "std": 0.0297
+        },
+        "gold_boxes": {
+          "mean": 82,
+          "std": 0.0
+        },
+        "missed": {
+          "mean": 6.6667,
+          "std": 2.8868
+        },
+        "fp_inside_dohyo": {
+          "mean": 4.6667,
+          "std": 7.2342
+        },
+        "fp_outside_dohyo": {
+          "mean": 15.3333,
+          "std": 5.6862
+        }
+      }
+    }
+  },
+  "after": {
+    "runs": [
+      {
+        "weights": "results/training/yolov8s_kanshigan_jpplus/weights/best.pt",
+        "gold_br": {
+          "mAP@0.5": 0.9749,
+          "mAP@0.5:0.95": 0.7524,
+          "precision": 0.9904,
+          "recall": 0.9732,
+          "gold_boxes": 112,
+          "missed": 3,
+          "fp_inside_dohyo": 1,
+          "fp_outside_dohyo": 0
+        },
+        "gold_jp": {
+          "mAP@0.5": 0.9768,
+          "mAP@0.5:0.95": 0.7092,
+          "precision": 0.9742,
+          "recall": 0.9146,
+          "gold_boxes": 82,
+          "missed": 0,
+          "fp_inside_dohyo": 0,
+          "fp_outside_dohyo": 54
+        }
+      },
+      {
+        "weights": "results/training/yolov8s_kanshigan_jpplus_s0/weights/best.pt",
+        "gold_br": {
+          "mAP@0.5": 0.9201,
+          "mAP@0.5:0.95": 0.6736,
+          "precision": 0.8897,
+          "recall": 0.7923,
+          "gold_boxes": 112,
+          "missed": 4,
+          "fp_inside_dohyo": 70,
+          "fp_outside_dohyo": 1
+        },
+        "gold_jp": {
+          "mAP@0.5": 0.9695,
+          "mAP@0.5:0.95": 0.7027,
+          "precision": 0.9754,
+          "recall": 0.9024,
+          "gold_boxes": 82,
+          "missed": 2,
+          "fp_inside_dohyo": 21,
+          "fp_outside_dohyo": 37
+        }
+      },
+      {
+        "weights": "results/training/yolov8s_kanshigan_jpplus_s1/weights/best.pt",
+        "gold_br": {
+          "mAP@0.5": 0.9749,
+          "mAP@0.5:0.95": 0.7566,
+          "precision": 0.9909,
+          "recall": 0.9725,
+          "gold_boxes": 112,
+          "missed": 3,
+          "fp_inside_dohyo": 1,
+          "fp_outside_dohyo": 1
+        },
+        "gold_jp": {
+          "mAP@0.5": 0.9867,
+          "mAP@0.5:0.95": 0.74,
+          "precision": 0.9839,
+          "recall": 0.9634,
+          "gold_boxes": 82,
+          "missed": 1,
+          "fp_inside_dohyo": 1,
+          "fp_outside_dohyo": 47
+        }
+      }
+    ],
+    "summary": {
+      "gold_br": {
+        "mAP@0.5": {
+          "mean": 0.9566,
+          "std": 0.0316
+        },
+        "mAP@0.5:0.95": {
+          "mean": 0.7275,
+          "std": 0.0468
+        },
+        "precision": {
+          "mean": 0.957,
+          "std": 0.0583
+        },
+        "recall": {
+          "mean": 0.9127,
+          "std": 0.1042
+        },
+        "gold_boxes": {
+          "mean": 112,
+          "std": 0.0
+        },
+        "missed": {
+          "mean": 3.3333,
+          "std": 0.5774
+        },
+        "fp_inside_dohyo": {
+          "mean": 24,
+          "std": 39.8372
+        },
+        "fp_outside_dohyo": {
+          "mean": 0.6667,
+          "std": 0.5774
+        }
+      },
+      "gold_jp": {
+        "mAP@0.5": {
+          "mean": 0.9777,
+          "std": 0.0086
+        },
+        "mAP@0.5:0.95": {
+          "mean": 0.7173,
+          "std": 0.0199
+        },
+        "precision": {
+          "mean": 0.9778,
+          "std": 0.0053
+        },
+        "recall": {
+          "mean": 0.9268,
+          "std": 0.0323
+        },
+        "gold_boxes": {
+          "mean": 82,
+          "std": 0.0
+        },
+        "missed": {
+          "mean": 1,
+          "std": 1.0
+        },
+        "fp_inside_dohyo": {
+          "mean": 7.3333,
+          "std": 11.8462
+        },
+        "fp_outside_dohyo": {
+          "mean": 46,
+          "std": 8.544
+        }
+      }
+    }
+  }
+}

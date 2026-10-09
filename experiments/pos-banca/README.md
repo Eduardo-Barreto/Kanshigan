@@ -53,3 +53,24 @@ Testes da logica pura: `uv run --group dev pytest`.
 | `max_step_cm` / `n_teleports` | deslocamento entre quadros vizinhos; salto impossivel indica troca de identidade |
 | `implausible_speed_rate` | fracao de quadros acima do teto fisico de velocidade |
 | `ring_out_detected` | se o round resolveu por ring-out ou caiu em `timeout_manual_review` |
+
+## Escala do treino JP (`data_scaling.py`)
+
+Compara detectores treinados sem e com os rounds JP adicionais (`candidates_jp`), em
+varias sementes, nos dois golds. Alem do mAP, conta os erros a confianca fixa e os separa
+por lugar: robos perdidos, falsos positivos dentro do dohyo e falsos positivos fora dele.
+A separacao importa porque o gold so rotula robos em jogo: um detector que tambem marca o
+robo ja ejetado leva falso positivo por divergencia de convencao, nao por alucinacao.
+
+Precisa da pilha do detector, entao roda com o ambiente da pre-banca:
+
+```bash
+T=../../results/training
+uv run --project ../pre-banca python data_scaling.py \
+    --before $T/yolov8s_kanshigan{,_s0,_s1}/weights/best.pt \
+    --after $T/yolov8s_kanshigan_jpplus{,_s0,_s1}/weights/best.pt \
+    --cases gold_jp:gold_jp25_0020 gold_jp:gold_jp25_0031
+```
+
+Saidas: `results/E5_jp_data_scaling/summary.json` (por semente, media e desvio) e
+`results/figures/jp_data_scaling_cases.png` (antes e depois, primeiro par de sementes).
