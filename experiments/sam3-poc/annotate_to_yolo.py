@@ -34,6 +34,7 @@ PROMPT = "toy"
 MAX_OBJECTS = 2
 MIN_BBOX_AREA_RATIO = 0.0005
 MAX_BBOX_AREA_RATIO = 0.20
+MAX_BBOX_HEIGHT_RATIO = 0.5  # no robot spans half the dohyo crop; a tripod or person in the crop corner does
 CHUNK_FRAMES = 60  # SAM 3 holds per-frame feature maps; chunking caps VRAM on 8GB GPUs
 
 
@@ -57,8 +58,20 @@ def load_video_rgb(path: Path) -> tuple[list[np.ndarray], float]:
     return frames, fps
 
 
+def dohyo_distance(box: tuple[int, int, int, int], img_w: int, img_h: int) -> float:
+    """Normalized ellipse distance of the box center from the crop center (1.0 = inscribed ellipse edge)."""
+    x, y, w, h = box
+    cx, cy = x + w / 2, y + h / 2
+    return ((cx - img_w / 2) / (0.5 * img_w)) ** 2 + ((cy - img_h / 2) / (0.5 * img_h)) ** 2
+
+
 def masks_to_bboxes(masks: np.ndarray, img_w: int, img_h: int) -> list[tuple[int, int, int, int]]:
-    """Each mask -> bounding box of largest connected component, filtered by area."""
+    """Each mask -> bounding box of largest connected component, filtered, most central first.
+
+    Ordering by distance to the dohyo center matters because callers keep only the
+    first MAX_OBJECTS: in SAM's own order, an off-arena detection (e.g. a tripod in
+    the crop corner) can push a real robot out of the kept pair.
+    """
     if masks.ndim == 4:
         masks = masks[:, 0]
     bboxes = []
@@ -73,14 +86,15 @@ def masks_to_bboxes(masks: np.ndarray, img_w: int, img_h: int) -> list[tuple[int
         area_ratio = (w * h) / img_area
         if area_ratio < MIN_BBOX_AREA_RATIO or area_ratio > MAX_BBOX_AREA_RATIO:
             continue
+        if h / img_h > MAX_BBOX_HEIGHT_RATIO:
+            continue
         # Reject detections outside the dohyo: the clip is cropped to the arena, so
         # a box centered in the frame corners (outside the inscribed ellipse) is a
         # false positive on the surrounding mat/crowd, common at low thresholds.
-        cx, cy = x + w / 2, y + h / 2
-        if ((cx - img_w / 2) / (0.5 * img_w)) ** 2 + ((cy - img_h / 2) / (0.5 * img_h)) ** 2 > 1.0:
+        if dohyo_distance((x, y, w, h), img_w, img_h) > 1.0:
             continue
         bboxes.append((x, y, w, h))
-    return bboxes
+    return sorted(bboxes, key=lambda box: dohyo_distance(box, img_w, img_h))
 
 
 def scale_bbox(box: tuple[int, int, int, int], src_w: int, src_h: int, dst_w: int, dst_h: int) -> tuple[int, int, int, int]:
