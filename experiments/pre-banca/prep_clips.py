@@ -9,9 +9,10 @@ For each clip, emits:
   data/processed/clips/<subset>/<clip_id>.roi.json   crop rectangle in native pixels
 
 Usage:
-    uv run python prep_clips.py
+    uv run python prep_clips.py [--config configs/<other>.yaml]
 """
 
+import argparse
 import json
 import subprocess
 import tempfile
@@ -61,10 +62,13 @@ def _write(frames, fps, size, path: Path) -> None:
 
 
 def main() -> None:
-    if not CLIPS_YAML.exists():
-        raise SystemExit(f"missing {CLIPS_YAML}; copy configs/clips.example.yaml and fill in.")
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--config", type=Path, default=CLIPS_YAML)
+    clips_yaml = ap.parse_args().config
+    if not clips_yaml.exists():
+        raise SystemExit(f"missing {clips_yaml}; copy configs/clips.example.yaml and fill in.")
 
-    spec = yaml.safe_load(CLIPS_YAML.read_text())
+    spec = yaml.safe_load(clips_yaml.read_text())
     for clip in spec["clips"]:
         clip_id, subset = clip["id"], clip["subset"]
         src = Path(clip["source"])
