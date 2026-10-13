@@ -26,9 +26,11 @@ import torch
 from sam3.model_builder import build_sam3_video_predictor
 
 ROOT = Path(__file__).resolve().parents[2]
-SAM_DIR = ROOT / "data" / "processed" / "sam_input"
-CLIPS_DIR = ROOT / "data" / "processed" / "clips"
-ANN_DIR = ROOT / "data" / "annotations"
+# KANSHIGAN_DATA_ROOT redirects the whole data tree, so the studio can run this against a copy.
+DATA_ROOT = Path(os.environ.get("KANSHIGAN_DATA_ROOT", ROOT / "data"))
+SAM_DIR = DATA_ROOT / "processed" / "sam_input"
+CLIPS_DIR = DATA_ROOT / "processed" / "clips"
+ANN_DIR = DATA_ROOT / "annotations"
 
 PROMPT = "toy"
 MAX_OBJECTS = 2
