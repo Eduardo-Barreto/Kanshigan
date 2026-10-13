@@ -1,0 +1,58 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Tooling state
+.omc
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Test artifacts
+coverage
+test-results
+playwright-report
+.playwright
+
+# Planning / scratch (never versioned)
+plans/
+advisor-plans/
+*spec.md
+*specs.md
+*discussion.md
+*discussao.md
+*notes.md
+*notas.md
+*rascunho.md
+*draft.md
+*temp.md
+*tmp.md
+
+# TanStack Router generator cache
+.tanstack
+
+# Scratch dir the lint-touched hook test writes into
+tmp-lint-probe/
