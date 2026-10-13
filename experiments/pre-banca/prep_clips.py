@@ -14,6 +14,7 @@ Usage:
 
 import argparse
 import json
+import os
 import subprocess
 import tempfile
 from pathlib import Path
@@ -25,8 +26,10 @@ from crop import clip_roi, crop_frame
 
 ROOT = Path(__file__).resolve().parents[2]
 CLIPS_YAML = Path(__file__).parent / "configs" / "clips.yaml"
-CLIPS_DIR = ROOT / "data" / "processed" / "clips"
-SAM_DIR = ROOT / "data" / "processed" / "sam_input"
+# KANSHIGAN_DATA_ROOT redirects the whole data tree, so the studio can run this against a copy.
+DATA_ROOT = Path(os.environ.get("KANSHIGAN_DATA_ROOT", ROOT / "data"))
+CLIPS_DIR = DATA_ROOT / "processed" / "clips"
+SAM_DIR = DATA_ROOT / "processed" / "sam_input"
 
 SAM_FPS = 10
 SAM_WIDTH = 960  # overhead JP robots fall below SAM's detection size at 480; 960 catches both

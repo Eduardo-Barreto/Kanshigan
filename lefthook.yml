@@ -1,0 +1,32 @@
+# Git hooks for the studio app (studio/). Every job is scoped to studio/ with `root`,
+# so commits that only touch docs, experiments or the paper skip them.
+
+pre-commit:
+  parallel: false
+  jobs:
+    - name: studio format
+      root: studio/
+      glob: '*.{ts,tsx,js,jsx,mjs,cjs,json,jsonc,css,md}'
+      run: bunx oxfmt {staged_files}
+      stage_fixed: true
+    - name: studio lint
+      root: studio/
+      glob: '*.{ts,tsx,js,jsx}'
+      run: bunx oxlint --fix {staged_files}
+      stage_fixed: true
+    - name: studio typecheck
+      root: studio/
+      glob: '*.{ts,tsx}'
+      run: bun run typecheck
+
+pre-push:
+  parallel: true
+  jobs:
+    - name: studio deadcode
+      root: studio/
+      glob: 'studio/**'
+      run: bun run knip
+    - name: studio test
+      root: studio/
+      glob: 'studio/**'
+      run: bun run test
