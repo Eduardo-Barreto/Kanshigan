@@ -1,0 +1,57 @@
+name: Studio
+
+on:
+  pull_request:
+    paths: ['studio/**', '.github/workflows/studio.yml']
+  push:
+    branches: [main]
+    paths: ['studio/**', '.github/workflows/studio.yml']
+
+# Read-only by default: nothing here comments, pushes or publishes, so no job needs more.
+# Actions are pinned to a commit SHA with the version in a trailing comment: a tag like `v4`
+# is mutable, so whoever owns the action can repoint it at code nobody reviewed. Bump the SHA
+# and the comment together.
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: studio
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      # fetch-depth 0: bun run policy diffs against the merge-base with the default branch.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.3.6
+      - run: bun install --frozen-lockfile
+      # -f github turns findings into inline PR annotations.
+      - run: bun run lint -- -f github
+      - run: bun run format:check
+      - run: bun run typecheck
+      - run: bun run knip
+      - run: bun run test
+      - run: bun run build
+      - run: bun run policy
+      # Reported rather than enforced: advisories so far came from dev tooling that never ships.
+      - run: bun audit --audit-level=high --prod
+        continue-on-error: true
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.3.6
+      - run: bun install --frozen-lockfile
+      - run: bunx playwright install --with-deps chromium
+      - run: bun run test:e2e
