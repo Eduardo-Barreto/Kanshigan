@@ -8,6 +8,10 @@ Automated Analysis of Robot Sumo Matches through Computer Vision
 - [Projeto de Pesquisa (ABNT)](https://nightly.link/Eduardo-Barreto/Kanshigan/workflows/build-paper/main/projeto-de-pesquisa.zip)
 - [Project Plan (Inteli)](https://nightly.link/Eduardo-Barreto/Kanshigan/workflows/build-paper/main/project-plan.zip)
 
+## Studio
+
+[`studio/`](studio/) is the annotation workbench for the dataset: browse the gold, candidate, train and validation clips, fix boxes, mark robot identity, events and rounds, and bring in new videos (upload or YouTube, round detection, SAM 3 proposals). It runs on demand on the machine with the data and the GPU. See [`studio/README.md`](studio/README.md).
+
 ## Reproducibility
 
 Pinned versions and checkpoints behind the reported results. Exact resolutions live

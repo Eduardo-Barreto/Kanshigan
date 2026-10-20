@@ -1,0 +1,143 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "react",
+    "typescript",
+    "jsx-a11y",
+    "import",
+    "oxc",
+    "unicorn",
+    "promise",
+    "node",
+    "react-perf"
+  ],
+  "env": { "browser": true, "es2024": true },
+  "options": { "typeAware": true },
+  "jsPlugins": ["./.oxlint-plugins/project-conventions.ts"],
+  "ignorePatterns": [".oxlint-plugins/fixtures/**"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "rules": {
+    "typescript/no-explicit-any": "error",
+    "typescript/no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+    ],
+    "typescript/consistent-type-imports": "error",
+    "typescript/no-floating-promises": "error",
+    "typescript/no-misused-promises": "error",
+    "typescript/await-thenable": "error",
+    "typescript/no-unsafe-assignment": "error",
+    "typescript/no-unsafe-argument": "error",
+    "typescript/no-unsafe-member-access": "error",
+    "typescript/no-unsafe-call": "error",
+    "typescript/no-unsafe-return": "error",
+    "typescript/no-unsafe-type-assertion": "error",
+    "typescript/switch-exhaustiveness-check": "error",
+    "typescript/no-unnecessary-condition": "error",
+    "typescript/no-unnecessary-type-assertion": "error",
+    "typescript/prefer-nullish-coalescing": "error",
+    "typescript/ban-ts-comment": [
+      "error",
+      {
+        "ts-expect-error": "allow-with-description",
+        "ts-ignore": true,
+        "ts-nocheck": true,
+        "minimumDescriptionLength": 20
+      }
+    ],
+    "eslint/prefer-const": "error",
+    "eslint/no-console": "warn",
+    "eslint/complexity": ["error", { "max": 10 }],
+    "eslint/max-depth": ["error", { "max": 3 }],
+    "eslint/max-lines-per-function": [
+      "error",
+      { "max": 120, "skipBlankLines": true, "skipComments": true }
+    ],
+    "eslint/max-params": ["error", { "max": 4 }],
+    "eslint/no-else-return": "error",
+    "eslint/no-nested-ternary": "error",
+    "eslint/prefer-template": "error",
+    "eslint/no-magic-numbers": [
+      "error",
+      {
+        "ignore": [0, 1, -1, 2],
+        "ignoreArrayIndexes": true,
+        "ignoreDefaultValues": true,
+        "detectObjects": false,
+        "enforceConst": true
+      }
+    ],
+    "import/no-default-export": "error",
+    "import/no-unassigned-import": ["warn", { "allow": ["**/*.css"] }],
+    "promise/prefer-await-to-then": "error",
+    "react/rules-of-hooks": "error",
+    "react/react-in-jsx-scope": "off",
+    "react/only-export-components": ["warn", { "allowConstantExport": true }],
+    "react-perf/jsx-no-new-object-as-prop": "error",
+    "react-perf/jsx-no-new-array-as-prop": "error",
+    "react-perf/jsx-no-new-function-as-prop": "off",
+    "project/no-fetch-in-effect": "error",
+    "project/query-key-from-factory": "error",
+    "project/form-requires-zod-resolver": "error",
+    "project/parse-before-use": "error",
+    "project/no-manual-loading-branch": "error",
+    "project/comment-must-be-english": "error",
+    "project/workaround-needs-issue-link": "error",
+    "project/require-tsdoc-on-exports": "error",
+    "project/no-manager-helper-suffix": "error",
+    "project/no-vague-identifier": "error",
+    "project/no-static-constant-in-component": "error",
+    "project/no-test-id-query": "error",
+    "project/test-title-no-should": "error",
+    "project/require-top-level-describe": "error"
+  },
+  "overrides": [
+    {
+      "files": ["src/routes/**", "src/components/ui/**", "src/features/**"],
+      "rules": { "react/only-export-components": "off" }
+    },
+    {
+      "files": ["src/components/ui/**"],
+      "rules": {
+        "typescript/no-unsafe-type-assertion": "off",
+        "typescript/no-unnecessary-condition": "off",
+        "typescript/no-unnecessary-type-assertion": "off",
+        "typescript/no-unsafe-assignment": "off",
+        "typescript/no-unsafe-argument": "off",
+        "typescript/no-unsafe-member-access": "off",
+        "typescript/no-unsafe-call": "off",
+        "typescript/no-unsafe-return": "off",
+        "typescript/no-unnecessary-template-expression": "off",
+        "typescript/no-unnecessary-type-conversion": "off",
+        "react-perf/jsx-no-new-object-as-prop": "off",
+        "react-perf/jsx-no-new-array-as-prop": "off",
+        "eslint/max-lines-per-function": "off",
+        "project/require-tsdoc-on-exports": "off"
+      }
+    },
+    {
+      "files": ["vite.config.ts", "playwright.config.ts", "*.config.ts"],
+      "rules": { "import/no-default-export": "off" }
+    },
+    {
+      "files": [".oxlint-plugins/project-conventions.ts"],
+      "rules": { "import/no-default-export": "off" }
+    },
+    {
+      "files": ["**/*.test.{ts,tsx}", "e2e/**/*.spec.ts"],
+      "rules": {
+        "typescript/no-non-null-assertion": "off",
+        "eslint/no-console": "off",
+        "eslint/max-lines-per-function": "off",
+        "eslint/no-magic-numbers": "off"
+      }
+    },
+    {
+      "files": ["scripts/**", ".claude/**"],
+      "rules": { "eslint/no-console": "off" }
+    }
+  ]
+}

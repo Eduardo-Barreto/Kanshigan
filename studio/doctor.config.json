@@ -1,0 +1,13 @@
+{
+  "ignore": {
+    "files": [
+      "src/components/ui/**",
+      "src/lib/utils.ts",
+      "src/routeTree.gen.ts",
+      ".claude/**",
+      "scripts/**",
+      ".oxlint-plugins/**",
+      "dist/**"
+    ]
+  }
+}
