@@ -1,0 +1,30 @@
+{
+  "iou_match": 0.5,
+  "metric": "evaluate.evaluate_annotator (greedy IoU>=0.5 per gold frame)",
+  "results": {
+    "E9_video_predictor_gold_jp (prompt toy, thresh 0.15, annotate_to_yolo.py)": {
+      "precision": 0.875,
+      "recall": 0.939,
+      "f1": 0.9059,
+      "mean_iou_matched": 0.975,
+      "frames": 57,
+      "gold_boxes": 82
+    },
+    "E1_image_predictor_gold_br (prompt robot, default thresh, annotate_gold_images.py)": {
+      "precision": 0.9813,
+      "recall": 0.9375,
+      "f1": 0.9589,
+      "mean_iou_matched": 0.9121,
+      "frames": 59,
+      "gold_boxes": 112
+    },
+    "E1_image_predictor_gold_jp (prompt toy, thresh 0.15, annotate_gold_images.py)": {
+      "precision": 1.0,
+      "recall": 0.1585,
+      "f1": 0.2737,
+      "mean_iou_matched": 0.9173,
+      "frames": 57,
+      "gold_boxes": 82
+    }
+  }
+}

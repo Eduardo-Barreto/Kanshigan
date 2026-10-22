@@ -1,0 +1,32 @@
+{
+  "/tmp/kanshigan_e6/gold_zb01_native.mp4": {
+    "pairs": 384,
+    "median_diff": 0.804,
+    "dup_lt_0.5": 169,
+    "dup_lt_1.0": 209
+  },
+  "data/processed/clips/br/gold_zb01.mp4": {
+    "pairs": 384,
+    "median_diff": 0.563,
+    "dup_lt_0.5": 185,
+    "dup_lt_1.0": 233
+  },
+  "data/processed/clips/jp/gold_jp25.mp4": {
+    "pairs": 336,
+    "median_diff": 2.023,
+    "dup_lt_0.5": 0,
+    "dup_lt_1.0": 33
+  },
+  "data/processed/clips/br/tr_B_r1.mp4": {
+    "pairs": 648,
+    "median_diff": 1.029,
+    "dup_lt_0.5": 256,
+    "dup_lt_1.0": 318
+  },
+  "data/processed/clips/br/tr_fz_r1.mp4": {
+    "pairs": 840,
+    "median_diff": 0.314,
+    "dup_lt_0.5": 466,
+    "dup_lt_1.0": 543
+  }
+}

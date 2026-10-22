@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 268" font-family="Liberation Sans, DejaVu Sans, Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#111111"/>
+    </marker>
+  </defs>
+
+  <!-- linha 1: preparação do quadro -->
+  <text x="32" y="30" font-size="9.5" font-style="italic" fill="#333333">Frame preparation</text>
+
+  <rect x="32" y="40" width="156" height="52" fill="#ffffff" stroke="#111111" stroke-width="1"/>
+  <text x="110" y="58" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Decoding</text>
+  <text x="110" y="72" font-size="9" fill="#333333" text-anchor="middle">native resolution</text>
+  <text x="110" y="83" font-size="9" fill="#333333" text-anchor="middle">and frame rate</text>
+
+  <line x1="190" y1="66" x2="210" y2="66" stroke="#111111" stroke-width="1" marker-end="url(#arr)"/>
+
+  <rect x="214" y="40" width="156" height="52" fill="#ffffff" stroke="#111111" stroke-width="1"/>
+  <text x="292" y="58" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Dohyo detection</text>
+  <text x="292" y="72" font-size="9" fill="#333333" text-anchor="middle">thresholding and</text>
+  <text x="292" y="83" font-size="9" fill="#333333" text-anchor="middle">ellipse fitting</text>
+
+  <line x1="372" y1="66" x2="392" y2="66" stroke="#111111" stroke-width="1" marker-end="url(#arr)"/>
+
+  <rect x="396" y="40" width="156" height="52" fill="#ffffff" stroke="#111111" stroke-width="1"/>
+  <text x="474" y="58" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Calibration</text>
+  <text x="474" y="72" font-size="9" fill="#333333" text-anchor="middle">cm/pixel scale from</text>
+  <text x="474" y="83" font-size="9" fill="#333333" text-anchor="middle">ellipse major axis</text>
+
+  <line x1="554" y1="66" x2="574" y2="66" stroke="#111111" stroke-width="1" marker-end="url(#arr)"/>
+
+  <rect x="578" y="40" width="156" height="52" fill="#ffffff" stroke="#111111" stroke-width="1"/>
+  <text x="656" y="58" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Crop</text>
+  <text x="656" y="72" font-size="9" fill="#333333" text-anchor="middle">fixed rectangle</text>
+  <text x="656" y="83" font-size="9" fill="#333333" text-anchor="middle">around the arena</text>
+
+  <!-- conector para a linha 2 -->
+  <path d="M 656 92 L 656 112 L 20 112 L 20 158 L 27 158" fill="none" stroke="#111111" stroke-width="1" marker-end="url(#arr)"/>
+
+  <!-- linha 2: extração de informação -->
+  <text x="32" y="126" font-size="9.5" font-style="italic" fill="#333333">Information extraction</text>
+
+  <rect x="32" y="132" width="156" height="52" fill="#ffffff" stroke="#111111" stroke-width="1"/>
+  <text x="110" y="150" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Robot detection</text>
+  <text x="110" y="164" font-size="9" fill="#333333" text-anchor="middle">YOLOv8s / YOLO26n,</text>
+  <text x="110" y="175" font-size="9" fill="#333333" text-anchor="middle">domain fine-tuning</text>
+
+  <line x1="190" y1="158" x2="210" y2="158" stroke="#111111" stroke-width="1" marker-end="url(#arr)"/>
+
+  <rect x="214" y="132" width="156" height="52" fill="#ffffff" stroke="#111111" stroke-width="1"/>
+  <text x="292" y="150" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Tracking</text>
+  <text x="292" y="164" font-size="9" fill="#333333" text-anchor="middle">OC-SORT / ByteTrack,</text>
+  <text x="292" y="175" font-size="9" fill="#333333" text-anchor="middle">motion-only association</text>
+
+  <line x1="372" y1="158" x2="392" y2="158" stroke="#111111" stroke-width="1" marker-end="url(#arr)"/>
+
+  <rect x="396" y="132" width="156" height="52" fill="#ffffff" stroke="#111111" stroke-width="1"/>
+  <text x="474" y="150" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Kinematics</text>
+  <text x="474" y="164" font-size="9" fill="#333333" text-anchor="middle">position, velocity,</text>
+  <text x="474" y="175" font-size="9" fill="#333333" text-anchor="middle">acceleration</text>
+
+  <line x1="554" y1="158" x2="574" y2="158" stroke="#111111" stroke-width="1" marker-end="url(#arr)"/>
+
+  <rect x="578" y="132" width="156" height="52" fill="#ffffff" stroke="#111111" stroke-width="1"/>
+  <text x="656" y="150" font-size="10.5" font-weight="bold" fill="#111111" text-anchor="middle">Events</text>
+  <text x="656" y="164" font-size="9" fill="#333333" text-anchor="middle">start, contact,</text>
+  <text x="656" y="175" font-size="9" fill="#333333" text-anchor="middle">ring-out</text>
+
+  <!-- ramo offline: anotação -->
+  <rect x="32" y="216" width="312" height="34" fill="#ffffff" stroke="#111111" stroke-width="1" stroke-dasharray="5 3"/>
+  <text x="188" y="237" font-size="9.5" fill="#111111" text-anchor="middle">Offline annotation: SAM 3</text>
+
+  <path d="M 110 216 L 110 189" fill="none" stroke="#111111" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+  <text x="118" y="204" font-size="8.5" font-style="italic" fill="#333333">training labels</text>
+</svg>

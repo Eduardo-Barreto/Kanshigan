@@ -1,96 +1,37 @@
-= Discussão e Trabalhos Futuros <sec-discussao>
+= Discussão <sec-discussao>
 
-== Limitações assumidas
+== O que os resultados respondem
 
-O conjunto gold é pequeno, o que impede intervalos de confiança e testes de
-significância confiáveis. Reportamos os números como ordem de grandeza e demonstração
-de viabilidade, não como modelo definitivo. A footage brasileira é capturada com câmera de mão e ângulo
-oblíquo, então a calibração centímetro-por-pixel por escala isotrópica é uma
-aproximação: a perspectiva introduz erro de foreshortening que as métricas de
-detecção e rastreamento (mAP, IDF1, FPS) não sofrem, mas que afeta as métricas
-cinemáticas em centímetros. A retificação por homografia da arena fica como
-trabalho futuro.
+A pergunta pedia a combinação de detector e rastreador que melhor equilibra acurácia e viabilidade. Nos dados medidos, a acurácia não separa as combinações, e o custo separa. Os dois detectores com ajuste fino empatam dentro da variação entre sementes; os quatro rastreadores empatam dentro de uma ou duas caixas. A escolha, então, é decidida pelo custo. Entre rastreadores, os só de movimento vencem com folga: o ReID reduz a pipeline a cerca de 40% da velocidade sem ganho mensurável. Entre detectores, o vencedor depende do hardware: em GPU os dois ficam próximos no vídeo nativo, e o YOLOv8s é mais rápido no recorte; em CPU, o YOLO26n quase dobra a velocidade.
 
-Rastreadores motion-only podem trocar identidades sob oclusão prolongada entre dois
-robôs idênticos, e testamos diretamente se a aparência corrige isso (@tab-tracking).
-Não corrige, ao menos neste round: a causa provável é o próprio domínio, dois robôs
-pretos quase idênticos oferecem pouco sinal de aparência para o ReID explorar. A
-vantagem robusta do motion-only é o throughput, que independe do número de rounds; o
-veredito de acurácia, com uma única troca de identidade nos quatro rastreadores, exige
-mais dados. Um rastreador de aparência especializado em alvos pouco texturizados, como
-o Deep HM-SORT @deephmsort2024, e um gold maior e mais denso, com identidade em vários
-rounds e anotação das passagens de cruzamento, ainda podem fechar a comparação.
+O que de fato moveu a acurácia foi o ajuste fino no domínio, não a arquitetura: ele levou o mAP\@0,5 de 0,36 para mais de 0,97 na vista cenital, enquanto multiplicar os parâmetros por quase cinco não mudou o resultado. O recorte da arena também pesou durante o desenvolvimento, ao tirar do quadro o fundo que gerava falsos positivos, mas esse ganho não é reprodutível a partir dos artefatos salvos. A lição transferível é que, para alvos rígidos numa arena conhecida, dados do domínio rendem mais que capacidade de modelo.
 
-== Anotação heterogênea (C4)
+Dois resultados não seguem o raciocínio que a literatura sugeria. Primeiro, o OC-SORT, desenhado para movimento não linear (C1), não superou o ByteTrack neste round. Com 59 quadros a 10 Hz, a referência registra pouco das colisões em que a correção do OC-SORT faria diferença; C1 continua sem teste adequado. Segundo, o ReID não ajudou, como no DanceTrack @sun2022dancetrack, mas por outro motivo: lá os alvos são parecidos; aqui são distinguíveis, e o movimento basta. A afirmação que os dados sustentam é estreita. Quando o movimento mantém a identidade, a aparência não paga seu custo. Segue em aberto se ela compensa quando os robôs são indistinguíveis e o movimento falha, como em oclusões longas.
 
-Treinar nas duas fontes exigiu adaptar a anotação semiautomática. Os robôs japoneses,
-em vista cenital, são caixas pretas pequenas que pontuam baixo para o conceito textual
-do SAM 3, então o limiar de detecção padrão (0.5 a 0.7) os perdia por completo;
-baixá-lo para 0.15, somado a uma resolução de entrada maior (960 px) e a um filtro
-geométrico que descarta caixas fora do dohyo, recuperou os dois robôs. Com isso o
-treino multi-fonte funcionou, e um único detector atinge mAP acima de 0.96 em
-ambas as fontes, apesar das câmeras opostas, o que sustenta a condição C4.
+== Ameaças à validade
 
-== Generalização cross-categoria (Sumô RC)
+*Amostra.* A detecção é avaliada em um round por fonte, e o rastreamento em um único round BR, com 59 quadros amostrados a 10 Hz. Trocas de identidade curtas entre quadros amostrados não aparecem na métrica. Não reportamos intervalos de confiança porque quadros de um mesmo round são fortemente correlacionados; as três sementes de E5 são a única estimativa de variância, e só para o YOLOv8s. A grade de rastreamento usa a semente 42; com a semente 0, o mesmo detector marca 28 falsos positivos dentro da arena no round BR, e não medimos o efeito disso no rastreamento.
 
-O detector foi treinado apenas em footage de Sumô autônomo, mas a mesma pipeline,
-sem retreino, encontra os dois robôs e a arena em partidas de Sumô de rádio-controle
-(RC), uma categoria distinta, com robôs de chassi diferente e uma arena de superfície
-metálica que não aparece no treino (@fig-rc). A @fig-rc mostra duas partidas RC do
-acervo da ThundeRatz. Não há gold rotulado para o RC, então o resultado é qualitativo:
-nenhuma métrica é reportada sobre ele. Ainda assim, a transferência zero-shot para uma
-categoria não vista é evidência a favor da classe de problemas mais ampla descrita na
-@tab-matrix, em que o detector aprende a aparência de robôs de combate em uma arena
-circular, não a aparência de um campeonato específico.
+*Independência entre treino e teste.* A divisão é por round, não por torneio. O round BR de referência é uma semifinal da IRONCup 2025 entre dois robôs que também aparecem no treino; um deles está em todos os rounds BR de treino e validação. O round JP sai do mesmo vídeo contínuo que o treino JP. Os números medem generalização para rounds novos de eventos conhecidos. A generalização para eventos novos só aparece na avaliação sem rótulos (@sec-sem-rotulos), e ali ela falha sob borrão extremo.
 
-#figure(
-  image("/results/figures/cross_category_rc.png", width: 82%),
-  caption: [Generalização zero-shot para Sumô de rádio-controle (categoria fora do treino). O detector, treinado só em Sumô autônomo, mantém arena (amarelo) e robôs A (verde) e B (laranja) em duas partidas RC sobre arena metálica. Resultado qualitativo, sem gold rotulado.],
-) <fig-rc>
+*Rótulos.* Os rótulos de treino não foram revisados, e a revisão dos 14 rounds JP alterou 71% dos quadros. O conjunto de referência partiu da proposta do SAM 3, e a revisão humana tende a aceitar caixas plausíveis, o que favorece o anotador em E1 e pode favorecer detectores treinados nas mesmas propostas.
 
-== Caso extremo: final de mundial (out-of-distribution)
+*Resolução temporal.* No clipe BR, 48% dos pares de quadros consecutivos são quase idênticos, compatível com uma gravação de 30 FPS entregue a 60. Se confirmado, a resolução temporal efetiva do BR é a metade da nominal.
 
-Testamos a pipeline na final do 84º All Japan Robot Sumo (3 kg autônomo), footage de
-broadcast bem fora da distribuição de treino: arena azul-escura, overlay de placar,
-cortes frequentes e colisões muito mais violentas, com blur extremo. A @fig-worlds
-compara o nosso detector e o SAM 3 nos mesmos dois instantes do Round 1, um por linha:
-à esquerda o nosso detector no quadro nativo, à direita o SAM 3 no recorte do dohyo. No
-início, em movimento lento, os dois métodos acham os dois robôs, e a detecção do dohyo
-generaliza para a arena de cor nova. No movimento rápido, o blur extremo derruba o nosso
-detector, que perde as duas caixas, e a metade final do round fica majoritariamente sem
-detecção: o modo de falha que um quadro do início, sozinho, esconderia. No mesmo
-instante, o SAM 3, sobre o recorte mais limpo e com propagação temporal, ainda sustenta
-um dos robôs. O fator limitante não é a semelhança entre os robôs, que carregam
-bandeiras distintas, mas o blur do combate de elite. O SAM 3 é o anotador pesado e
-offline, não a pipeline em tempo real; fechar o caso no modelo rápido exige dados de
-treino dessa distribuição, com movimento rápido e blur, não apenas mais exemplos da
-arena.
+*Decisões de desenvolvimento.* O recorte da arena foi adotado depois de observar, no round BR de referência, a precisão do detector em quadro inteiro (cerca de 0,71). Os pesos daquele detector não foram preservados.
 
-#figure(
-  image("/results/figures/worlds_model_vs_sam.png", width: 66%),
-  caption: [Nosso detector vs SAM 3 nos mesmos instantes do Round 1 da final de mundial (out-of-distribution). Cada linha é um instante; à esquerda, nosso detector no quadro nativo; à direita, SAM 3 no recorte do dohyo. Em cima, o início em movimento lento: ambos acham os dois robôs. Embaixo, um momento de movimento rápido: nosso modelo perde os dois, o SAM mantém um.],
-) <fig-worlds>
+== Cinemática e eventos
+
+A pipeline calcula posição, velocidade e eventos, mas este trabalho não os valida, por três razões. Primeiro, a escala isotrópica chega a um coeficiente de variação de 0,38 dentro de uma partida filmada com celular (@sec-sem-rotulos); velocidades em centímetros por segundo herdam esse erro até que a arena seja retificada por homografia. Segundo, as regras de evento dependem do detector: no round BR, o início do round dispara no quadro 20 com o YOLOv8s e no quadro 310 com o YOLO26n. Terceiro, não existe conjunto anotado de eventos separado do teste, e calibrar os limiares no próprio teste vazaria a avaliação. Enquanto essa validação não for feita, a saída de eventos serve como sugestão para revisão humana, não como medida.
 
 == Trabalhos futuros
 
-Além da homografia da arena, que deve estabilizar a trajetória sob câmera de mão e
-permitir validar a cinemática em centímetros, planejamos: um conjunto de calibração de
-limiares, separado do gold, para medir contato e ring-out; ampliar a base brasileira
-para reequilibrar as fontes e unificar a convenção de rótulo do robô já ejetado
-(@sec-escala-jp); adicionar broadcast profissional; ablação do detector com RT-DETR @zhao2024rtdetr;
-detecção de contato por máscara; e a evolução para uma plataforma colaborativa aberta
-de análise de combate de robôs. A pipeline e o
-conjunto de dados são públicos para reprodução e extensão.
+O passo de maior valor é ampliar o conjunto de referência com identidade, em mais rounds e nas duas fontes, incluindo confrontos entre robôs de fato parecidos e colisões anotadas em todos os quadros. Isso testaria C1 e C2 de verdade. O Studio, aplicação de anotação do repositório, já registra identidade, eventos e limites de round. Seguem: retificar a arena por homografia e validar a escala contra medidas conhecidas; anotar eventos num conjunto de calibração separado; reequilibrar as fontes e unificar a convenção do robô já fora do _dohyo_; incluir vídeo de transmissão com borrão no treino; e comparar detectores de outra família, como o RT-DETR @zhao2024rtdetr. A longo prazo, a pipeline pode sustentar uma plataforma aberta de análise de combate de robôs.
 
 = Conclusão
 
-Apresentamos o Kanshigan, a primeira pipeline aberta de detecção, rastreamento e
-extração de métricas para Sumô de Robôs autônomos. Caracterizamos o domínio por
-seis condições e recortamos a questão científica ao subconjunto em aberto:
-rastrear alvos de aparência uniforme sob movimento não linear, no equilíbrio
-entre acurácia e viabilidade. Construímos a pipeline a partir de
-tracking-by-detection, comparando duas arquiteturas de detector (YOLOv8s e
-YOLO26n) e quatro rastreadores (motion-only e com aparência), com o SAM 3 como
-anotador. Os resultados parciais sobre footage real demonstram
-viabilidade em hardware de consumo e estabelecem a base experimental para o trabalho
-final.
+Este trabalho perguntou quais combinações de detector e rastreador equilibram melhor acurácia e viabilidade ao rastrear alvos visualmente semelhantes, em movimento rápido e não linear, em vídeo não calibrado e sem marcadores. Usamos o Sumô de Robôs autônomo de 3 kg como domínio e construímos o Kanshigan, uma pipeline aberta de rastreamento por detecção, com detectores treinados em anotações do SAM 3 e avaliados contra rounds revisados à mão.
+
+A resposta, nas condições medidas, é um detector YOLO com ajuste fino no recorte da arena combinado a um rastreador só de movimento, como o OC-SORT ou o ByteTrack: o YOLOv8s ou o YOLO26n quando há GPU, o YOLO26n quando só há CPU. A acurácia vem do ajuste fino no domínio, não da arquitetura, e a aparência não paga seu custo quando o movimento já mantém a identidade. A pipeline roda em tempo real sobre vídeo 1080p numa GPU de notebook, com menos de 300 MiB de memória, e a 40 FPS só na CPU.
+
+O alcance é limitado por um round de teste por fonte e um único round com identidade, ambos de eventos presentes no treino. Cinemática e eventos são produzidos, mas não validados. O código, os scripts e resultados que geram cada tabela e o diário de bordo que registra cada decisão e cada erro estão em #link("https://github.com/Eduardo-Barreto/Kanshigan")[github.com/Eduardo-Barreto/Kanshigan].

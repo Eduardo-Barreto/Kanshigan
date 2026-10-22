@@ -27,7 +27,7 @@ jobs:
           fc-cache -fv
 
       - name: Compile Paper
-        run: typst compile docs/paper/main.typ docs/paper/kanshigan.pdf
+        run: typst compile --root . docs/paper/main.typ docs/paper/kanshigan.pdf
 
       - name: Compile SBC Paper
         run: typst compile --root . docs/paper-sbc/main.typ docs/paper-sbc/kanshigan-sbc.pdf

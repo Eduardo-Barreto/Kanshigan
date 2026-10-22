@@ -1,19 +1,17 @@
 = Introduction
 
-// TODO: Expandir introdução com base no projeto de pesquisa v1
+Robot Sumo is a competition in which two robots fight, on a circular arena called the _dohyo_, to push each other out. The sport began in Japan in 1989 with the tournament that became the All Japan Robot-Sumo Tournament, recognized as the longest-running Robot Sumo competition in the world @guinness_robotsumo. In the main category, autonomous robots of up to 3 kg fight on a 154 cm _dohyo_, with no human input during the round @fujisoft2024rules. In Brazil, RoboCore Experience is the largest robot combat event in Latin America @robocore_experience, and tournaments such as IRONCup host the Sumo categories every edition @ironcup2026. The sport is also used in engineering education, because it joins mechanical design, electronics and programming in a closed, measurable problem @carbone2022robotsumo.
 
-Robot Sumo competitions are high-speed autonomous robotics events where two robots attempt to push each other out of a circular arena (dohyo) within fractions of a second. With approximately 80,000 active competitors across over 30 countries, the sport has a large and engaged global community participating in tournaments such as the All Japan Robot Sumo Tournament @fujisoft-about and regional competitions like RoboCore (Brazil) and RoboGames (USA) @robogames-rules.
+The autonomous 3 kg category poses a particular analysis problem. Robots accelerate at full power from the start, and the phase that decides the match, from first contact to leaving the _dohyo_, lasts about one second#footnote[Median of 1.1 s (range 0.2 to 2.2 s) over 9 hand-reviewed Japanese rounds, with contact and exit inferred from boxes sampled at 10 Hz: touching boxes, and a robot center outside the arena ellipse. Whole rounds last several seconds. In the Brazilian source, too few rounds had both contact and exit detected to estimate a median.]. Contact and victory are decided within a few dozen frames, too fast to measure by eye. Still, all performance analysis relies on human observation. Teams tune strategy and hardware from memory and manual video replay, without measuring speed, reaction time or movement patterns.
 
-Despite this scale, all performance analysis remains entirely manual and subjective. No automated tools, structured databases, or standardized metrics exist for the domain. This absence of quantitative data affects three key stakeholder groups:
+The contrast with human sports is stark. Computer vision transformed the analysis of soccer, basketball and tennis, where player and ball tracking feeds statistics, refereeing and training @thomas2017computer @naik2022comprehensive. That infrastructure, however, assumes distinguishable athletes, professional broadcasts and events on the scale of seconds. For Robot Sumo, as far as our search goes, there is no published pipeline, dataset or benchmark for post-match analysis from external video (@sec-related).
 
-+ *Competitive teams* lack real combat data to inform design decisions, relying on intuition and memory rather than evidence.
-+ *Competition organizers* have no structured historical documentation or objective analysis tools.
-+ *Spectators* watch live broadcasts without any performance statistics, limiting engagement and comprehension of what differentiates a winning robot --- a stark contrast to traditional sports where real-time analytics are integral to the viewing experience.
+The domain embodies a general tracking problem, and this work asks: _which detector and tracker combinations best balance accuracy and practical viability when tracking visually similar targets in fast, non-linear motion, from uncalibrated, markerless video?_ Practical viability means running on consumer hardware without special instrumentation. Analysis only helps teams if it runs on the computer they own.
 
-In the computer vision literature, sports analytics has seen significant advances in domains such as soccer @giancola2018soccernet, combat sports, and table tennis. However, no prior work addresses automated external analysis of Robot Sumo matches. The domain presents unique technical challenges: extreme speed (sub-second rounds), small visually similar objects, mutual occlusion during contact, and heterogeneous video quality ranging from professional broadcasts to amateur recordings.
+We answer by comparing two detectors and four trackers on real tournament video from Brazil and Japan, against a hand-reviewed reference set. Under the measured conditions, accuracy does not separate the combinations, and cost does. A YOLO detector fine-tuned on the arena crop, paired with a motion-only tracker, matches the alternatives' accuracy at a fraction of their cost and runs in real time on a laptop. Domain fine-tuning, not architecture, is what moves accuracy.
 
-This paper makes the following contributions:
-+ *Kanshigan*, the first open-source computer vision pipeline for automated analysis of Robot Sumo matches.
-+ The first publicly available annotated dataset representative of the current competitive 3kg autonomous Robot Sumo category.
-+ A comparative benchmark of detection and tracking approaches applied to this novel domain.
-+ A set of standardized quantitative performance metrics for Robot Sumo (position, velocity, acceleration, reaction time).
+Our contributions are:
++ six conditions that characterize the domain and isolate the open question: tracking uniform-appearance targets under non-linear motion in uncontrolled video;
++ Kanshigan, an open pipeline for detection, tracking and metric extraction in Robot Sumo, with a comparison of two detector architectures and four trackers in accuracy and cost;
++ a semi-automatic annotation protocol with SAM 3 @carion2025sam3, measured against human review on 15 Japanese rounds;
++ a label-free evaluation, anchored on the reference set, that measures where the pipeline fails outside it.
