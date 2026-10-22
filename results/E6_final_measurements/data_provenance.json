@@ -1,0 +1,19 @@
+{
+  "method": "configs/clips.yaml (round -> source video) plus YouTube metadata read on 2026-10-21 with `yt-dlp --skip-download --print \"%(id)s | %(upload_date)s | %(channel)s | %(title)s\"`",
+  "br_sources": {
+    "ZB4dF1ub5QM": {"use": "gold_zb01 (gold BR)", "title": "Galena (Auto) vs. Gyarados (Auto) - SEMIFINAL - IRONCup 2025", "upload_date": "2025-02-23"},
+    "B-8zYgxxh1g": {"use": "tr_B_r1 (train)", "title": "Galena (Auto) vs. Gyarados (Auto) - IRONCup 2025", "upload_date": "2025-02-22"},
+    "fzqPnLXHBb0": {"use": "tr_fz_r1 (train)", "title": "Galena (Auto) vs. Gyarados (Auto) - GRANDE FINAL - IRONCup 2025", "upload_date": "2025-02-24"},
+    "jtSCvt3Oh8I": {"use": "tr_jt_r1..r3 (train)", "title": "Galena (Auto) vs. Bulbassauro (Auto) - IRONCup 2025", "upload_date": "2025-02-24"},
+    "xynNGVM-8KY": {"use": "tr_xy_r1 (train)", "title": "Galena (Auto) vs. Aldebaran (Auto) - IRONCup 2025", "upload_date": "2025-02-24"},
+    "Y0sKxKV6208": {"use": "va_Y0_r1 (val)", "title": "Galena (Auto) vs. Excalibull (Auto)", "upload_date": "2025-02-27"}
+  },
+  "jp_sources": {
+    "Z_MC3r_c2P0": {"use": "tr_jp_r03..r24 (train, 8 rounds), va_jp_r18 (val), gold_jp25 (gold JP), cand_jp_* (candidates_jp)", "title": "ロボット相撲イオンモール杯 北海道・東北大会 全試合", "channel": "0w0_sleep", "upload_date": "2021-07-24"}
+  },
+  "answers": {
+    "gold_br_shares_event_and_robots_with_train": "yes: same event (IRONCup 2025, ThundeRatz channel), same camera style, and the same pair of robots. gold_zb01 is Galena vs Gyarados (semifinal); train rounds tr_B_r1 and tr_fz_r1 are Galena vs Gyarados too (another match and the grand final), and Galena is in every BR train and val round. The gold BR is a held-out round, not a held-out event or robot.",
+    "gold_jp_same_video_as_train_jp": "yes: gold_jp25 (378.6-384.2 s) is a later round of Z_MC3r_c2P0.mp4, the same continuous fixed-camera video as the 8 JP train rounds, the JP val round and the 15 candidates_jp rounds.",
+    "crop_gain_0.71_to_0.99_measured_on": "gold BR only (gold_zb01, 59 frames). Before: a detector trained and evaluated on full frames (data/annotations/gold, native 1920x1080), from git history (diario 14, commit e7e1cd4: 'O recorte levou recall 0.91->0.98 e precisao 0.71->0.98'); no weights, run directory or JSON of that full-frame model survive in results/. After: the current crop-trained YOLOv8s on gold_crop (val P 0.990, R 0.964, reproduced in detection/detector_eval.json). The paper sentence therefore compares two different models on the same BR round, and the 'before' number is not reproducible from saved artifacts."
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "gold": "data/annotations/gold_crop/identity.txt",
+  "video": "data/processed/clips/br/gold_zb01.mp4",
+  "n_crops": 111,
+  "crops_per_id": {
+    "0": 56,
+    "1": 55
+  },
+  "min_side_px": 12,
+  "min_gap_frames": 30,
+  "extractors": {
+    "osnet_x0_25_msmt17 (boxmot ReID)": {
+      "intra": {
+        "n": 3025,
+        "mean": 0.8493,
+        "std": 0.1237
+      },
+      "intra_far": {
+        "n": 2601,
+        "mean": 0.8389,
+        "std": 0.1237
+      },
+      "inter": {
+        "n": 3080,
+        "mean": 0.5415,
+        "std": 0.0373
+      },
+      "auc_intra_vs_inter": 0.9398,
+      "auc_intra_far_vs_inter": 0.9344,
+      "overlap_intra_vs_inter": 0.1087,
+      "overlap_intra_far_vs_inter": 0.1167,
+      "nn_identity_accuracy_gap_ge_min": 0.973
+    },
+    "resnet50_imagenet (torchvision IMAGENET1K_V2)": {
+      "intra": {
+        "n": 3025,
+        "mean": 0.7368,
+        "std": 0.1414
+      },
+      "intra_far": {
+        "n": 2601,
+        "mean": 0.7231,
+        "std": 0.1397
+      },
+      "inter": {
+        "n": 3080,
+        "mean": 0.4774,
+        "std": 0.0653
+      },
+      "auc_intra_vs_inter": 0.9115,
+      "auc_intra_far_vs_inter": 0.9035,
+      "overlap_intra_vs_inter": 0.124,
+      "overlap_intra_far_vs_inter": 0.1333,
+      "nn_identity_accuracy_gap_ge_min": 0.973
+    },
+    "hsv_histogram_8x8x8": {
+      "intra": {
+        "n": 3025,
+        "mean": 0.8373,
+        "std": 0.1897
+      },
+      "intra_far": {
+        "n": 2601,
+        "mean": 0.8233,
+        "std": 0.1913
+      },
+      "inter": {
+        "n": 3080,
+        "mean": 0.452,
+        "std": 0.0704
+      },
+      "auc_intra_vs_inter": 0.9237,
+      "auc_intra_far_vs_inter": 0.9169,
+      "overlap_intra_vs_inter": 0.1483,
+      "overlap_intra_far_vs_inter": 0.1586,
+      "nn_identity_accuracy_gap_ge_min": 0.955
+    }
+  }
+}

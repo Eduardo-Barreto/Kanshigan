@@ -1,0 +1,1285 @@
+{
+  "weights": "results/training/yolov8s_kanshigan/weights/best.pt",
+  "tracker": "ocsort",
+  "label_stride": 6,
+  "round_marks_br01": {
+    "rounds_native_frames": [
+      [
+        0,
+        160
+      ],
+      [
+        186,
+        369
+      ],
+      [
+        401,
+        481
+      ],
+      [
+        512,
+        897
+      ]
+    ],
+    "fps": 60.0,
+    "durations_s": [
+      2.67,
+      3.05,
+      1.33,
+      6.42
+    ],
+    "note": "old mark_rounds.py format (no stride key): native frames, per diary 22"
+  },
+  "summary": {
+    "jp": {
+      "window_s": {
+        "n": 26,
+        "median": 4.0,
+        "mean": 4.308,
+        "min": 3.0,
+        "max": 11.2,
+        "share_under_1s": 0.0
+      },
+      "pipeline_move_to_exit_s": {
+        "n": 11,
+        "median": 1.4,
+        "mean": 1.383,
+        "min": 0.383,
+        "max": 2.9,
+        "share_under_1s": 0.364
+      },
+      "pipeline_contact_to_exit_s": {
+        "n": 10,
+        "median": 1.167,
+        "mean": 1.197,
+        "min": 0.217,
+        "max": 2.133,
+        "share_under_1s": 0.4
+      },
+      "pipeline_move_to_contact_s": {
+        "n": 11,
+        "median": 0.5,
+        "mean": 1.144,
+        "min": 0.15,
+        "max": 5.0,
+        "share_under_1s": 0.818
+      },
+      "labels_contact_to_exit_s": {
+        "n": 14,
+        "median": 0.75,
+        "mean": 0.971,
+        "min": 0.0,
+        "max": 2.7,
+        "share_under_1s": 0.571
+      },
+      "abs_pipeline_minus_label_exit_s": {
+        "n": 14,
+        "median": 0.067,
+        "mean": 0.52,
+        "min": 0.0,
+        "max": 3.817,
+        "share_under_1s": 0.857
+      },
+      "abs_pipeline_minus_label_contact_s": {
+        "n": 13,
+        "median": 0.083,
+        "mean": 0.312,
+        "min": 0.0,
+        "max": 0.95,
+        "share_under_1s": 1.0
+      },
+      "clips_without_exit": [
+        "tr_jp_r03",
+        "tr_jp_r04",
+        "gold_jp25",
+        "cand_jp_r01",
+        "cand_jp_r02",
+        "cand_jp_r10",
+        "cand_jp_r13",
+        "cand_jp_r14",
+        "cand_jp_r21",
+        "cand_jp_r23",
+        "cand_jp_r26"
+      ]
+    },
+    "br": {
+      "window_s": {
+        "n": 8,
+        "median": 10.7,
+        "mean": 14.175,
+        "min": 4.4,
+        "max": 33.4,
+        "share_under_1s": 0.0
+      },
+      "pipeline_move_to_exit_s": {
+        "n": 2,
+        "median": 14.15,
+        "mean": 14.15,
+        "min": 4.2,
+        "max": 24.1,
+        "share_under_1s": 0.0
+      },
+      "pipeline_contact_to_exit_s": {
+        "n": 1,
+        "median": 23.8,
+        "mean": 23.8,
+        "min": 23.8,
+        "max": 23.8,
+        "share_under_1s": 0.0
+      },
+      "pipeline_move_to_contact_s": {
+        "n": 2,
+        "median": 1.25,
+        "mean": 1.25,
+        "min": 0.3,
+        "max": 2.2,
+        "share_under_1s": 0.5
+      },
+      "labels_contact_to_exit_s": {
+        "n": 3,
+        "median": 0.5,
+        "mean": 2.433,
+        "min": 0.2,
+        "max": 6.6,
+        "share_under_1s": 0.667
+      },
+      "abs_pipeline_minus_label_exit_s": {
+        "n": 3,
+        "median": 3.85,
+        "mean": 4.022,
+        "min": 0.067,
+        "max": 8.15,
+        "share_under_1s": 0.333
+      },
+      "abs_pipeline_minus_label_contact_s": {
+        "n": 1,
+        "median": 3.483,
+        "mean": 3.483,
+        "min": 3.483,
+        "max": 3.483,
+        "share_under_1s": 0.0
+      },
+      "clips_without_exit": [
+        "tr_B_r1",
+        "tr_jt_r1",
+        "tr_fz_r1",
+        "gold_zb01"
+      ]
+    },
+    "all": {
+      "window_s": {
+        "n": 34,
+        "median": 4.2,
+        "mean": 6.629,
+        "min": 3.0,
+        "max": 33.4,
+        "share_under_1s": 0.0
+      },
+      "pipeline_move_to_exit_s": {
+        "n": 13,
+        "median": 1.733,
+        "mean": 3.347,
+        "min": 0.383,
+        "max": 24.1,
+        "share_under_1s": 0.308
+      },
+      "pipeline_contact_to_exit_s": {
+        "n": 11,
+        "median": 1.333,
+        "mean": 3.252,
+        "min": 0.217,
+        "max": 23.8,
+        "share_under_1s": 0.364
+      },
+      "pipeline_move_to_contact_s": {
+        "n": 13,
+        "median": 0.5,
+        "mean": 1.16,
+        "min": 0.15,
+        "max": 5.0,
+        "share_under_1s": 0.769
+      },
+      "labels_contact_to_exit_s": {
+        "n": 17,
+        "median": 0.7,
+        "mean": 1.229,
+        "min": 0.0,
+        "max": 6.6,
+        "share_under_1s": 0.588
+      },
+      "abs_pipeline_minus_label_exit_s": {
+        "n": 17,
+        "median": 0.067,
+        "mean": 1.138,
+        "min": 0.0,
+        "max": 8.15,
+        "share_under_1s": 0.765
+      },
+      "abs_pipeline_minus_label_contact_s": {
+        "n": 14,
+        "median": 0.083,
+        "mean": 0.538,
+        "min": 0.0,
+        "max": 3.483,
+        "share_under_1s": 0.929
+      },
+      "clips_without_exit": [
+        "tr_B_r1",
+        "tr_jt_r1",
+        "tr_fz_r1",
+        "tr_jp_r03",
+        "tr_jp_r04",
+        "gold_zb01",
+        "gold_jp25",
+        "cand_jp_r01",
+        "cand_jp_r02",
+        "cand_jp_r10",
+        "cand_jp_r13",
+        "cand_jp_r14",
+        "cand_jp_r21",
+        "cand_jp_r23",
+        "cand_jp_r26"
+      ]
+    }
+  },
+  "clips": [
+    {
+      "clip": "tr_B_r1",
+      "subset": "br",
+      "source": "B-8zYgxxh1g.mp4",
+      "window_s": 10.8,
+      "fps": 60.0,
+      "n_frames": 649,
+      "clip_s": 10.82,
+      "pipeline": {
+        "move": 263,
+        "contact": 395,
+        "exit": null,
+        "event_first_contact": 396,
+        "event_ring_out": null,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": 2.2
+      },
+      "labels": {
+        "split": "train",
+        "frames": 60,
+        "first_native_frame": 72,
+        "last_native_frame": 648,
+        "contact": 186,
+        "exit": 582,
+        "contact_to_exit_s": 6.6,
+        "pipeline_minus_label_contact_s": 3.483,
+        "pipeline_minus_label_exit_s": null
+      }
+    },
+    {
+      "clip": "tr_jt_r1",
+      "subset": "br",
+      "source": "jtSCvt3Oh8I.mp4",
+      "window_s": 4.4,
+      "fps": 60.0,
+      "n_frames": 265,
+      "clip_s": 4.42,
+      "pipeline": {
+        "move": 73,
+        "contact": null,
+        "exit": null,
+        "event_first_contact": null,
+        "event_ring_out": null,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "train",
+        "frames": 6,
+        "first_native_frame": 234,
+        "last_native_frame": 264,
+        "contact": null,
+        "exit": null,
+        "contact_to_exit_s": null,
+        "pipeline_minus_label_contact_s": null,
+        "pipeline_minus_label_exit_s": null
+      }
+    },
+    {
+      "clip": "tr_jt_r2",
+      "subset": "br",
+      "source": "jtSCvt3Oh8I.mp4",
+      "window_s": 33.4,
+      "fps": 60.0,
+      "n_frames": 2005,
+      "clip_s": 33.42,
+      "pipeline": {
+        "move": 9,
+        "contact": 27,
+        "exit": 1455,
+        "event_first_contact": 543,
+        "event_ring_out": 1456,
+        "move_to_exit_s": 24.1,
+        "contact_to_exit_s": 23.8,
+        "move_to_contact_s": 0.3
+      },
+      "labels": {
+        "split": "train",
+        "frames": 11,
+        "first_native_frame": 1944,
+        "last_native_frame": 2004,
+        "contact": null,
+        "exit": 1944,
+        "contact_to_exit_s": null,
+        "pipeline_minus_label_contact_s": null,
+        "pipeline_minus_label_exit_s": -8.15
+      }
+    },
+    {
+      "clip": "tr_jt_r3",
+      "subset": "br",
+      "source": "jtSCvt3Oh8I.mp4",
+      "window_s": 23.4,
+      "fps": 60.0,
+      "n_frames": 1405,
+      "clip_s": 23.42,
+      "pipeline": {
+        "move": 726,
+        "contact": null,
+        "exit": 231,
+        "event_first_contact": null,
+        "event_ring_out": null,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "train",
+        "frames": 160,
+        "first_native_frame": 0,
+        "last_native_frame": 1296,
+        "contact": 180,
+        "exit": 0,
+        "contact_to_exit_s": null,
+        "pipeline_minus_label_contact_s": null,
+        "pipeline_minus_label_exit_s": 3.85
+      }
+    },
+    {
+      "clip": "tr_xy_r1",
+      "subset": "br",
+      "source": "xynNGVM-8KY.mp4",
+      "window_s": 10.4,
+      "fps": 60.0,
+      "n_frames": 625,
+      "clip_s": 10.42,
+      "pipeline": {
+        "move": 298,
+        "contact": null,
+        "exit": 550,
+        "event_first_contact": null,
+        "event_ring_out": null,
+        "move_to_exit_s": 4.2,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "train",
+        "frames": 84,
+        "first_native_frame": 66,
+        "last_native_frame": 576,
+        "contact": 264,
+        "exit": null,
+        "contact_to_exit_s": null,
+        "pipeline_minus_label_contact_s": null,
+        "pipeline_minus_label_exit_s": null
+      }
+    },
+    {
+      "clip": "tr_fz_r1",
+      "subset": "br",
+      "source": "fzqPnLXHBb0.mp4",
+      "window_s": 14.0,
+      "fps": 60.0,
+      "n_frames": 841,
+      "clip_s": 14.02,
+      "pipeline": {
+        "move": 612,
+        "contact": null,
+        "exit": null,
+        "event_first_contact": null,
+        "event_ring_out": null,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "train",
+        "frames": 102,
+        "first_native_frame": 66,
+        "last_native_frame": 678,
+        "contact": 240,
+        "exit": 270,
+        "contact_to_exit_s": 0.5,
+        "pipeline_minus_label_contact_s": null,
+        "pipeline_minus_label_exit_s": null
+      }
+    },
+    {
+      "clip": "tr_jp_r03",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 4.2,
+      "fps": 60.0,
+      "n_frames": 253,
+      "clip_s": 4.22,
+      "pipeline": {
+        "move": 245,
+        "contact": 148,
+        "exit": null,
+        "event_first_contact": null,
+        "event_ring_out": null,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "train",
+        "frames": 9,
+        "first_native_frame": 204,
+        "last_native_frame": 252,
+        "contact": 204,
+        "exit": 204,
+        "contact_to_exit_s": 0.0,
+        "pipeline_minus_label_contact_s": -0.933,
+        "pipeline_minus_label_exit_s": null
+      }
+    },
+    {
+      "clip": "tr_jp_r04",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 5.0,
+      "fps": 60.0,
+      "n_frames": 301,
+      "clip_s": 5.02,
+      "pipeline": {
+        "move": null,
+        "contact": null,
+        "exit": null,
+        "event_first_contact": null,
+        "event_ring_out": null,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "train",
+        "frames": 19,
+        "first_native_frame": 192,
+        "last_native_frame": 300,
+        "contact": null,
+        "exit": null,
+        "contact_to_exit_s": null,
+        "pipeline_minus_label_contact_s": null,
+        "pipeline_minus_label_exit_s": null
+      }
+    },
+    {
+      "clip": "tr_jp_r06",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 4.2,
+      "fps": 60.0,
+      "n_frames": 253,
+      "clip_s": 4.22,
+      "pipeline": {
+        "move": 57,
+        "contact": 55,
+        "exit": 176,
+        "event_first_contact": null,
+        "event_ring_out": 177,
+        "move_to_exit_s": 1.983,
+        "contact_to_exit_s": 2.017,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "train",
+        "frames": 43,
+        "first_native_frame": 0,
+        "last_native_frame": 252,
+        "contact": 18,
+        "exit": 180,
+        "contact_to_exit_s": 2.7,
+        "pipeline_minus_label_contact_s": 0.617,
+        "pipeline_minus_label_exit_s": -0.067
+      }
+    },
+    {
+      "clip": "tr_jp_r08",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 6.4,
+      "fps": 60.0,
+      "n_frames": 385,
+      "clip_s": 6.42,
+      "pipeline": {
+        "move": 27,
+        "contact": 25,
+        "exit": 131,
+        "event_first_contact": null,
+        "event_ring_out": 148,
+        "move_to_exit_s": 1.733,
+        "contact_to_exit_s": 1.767,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "train",
+        "frames": 5,
+        "first_native_frame": 360,
+        "last_native_frame": 384,
+        "contact": null,
+        "exit": 360,
+        "contact_to_exit_s": null,
+        "pipeline_minus_label_contact_s": null,
+        "pipeline_minus_label_exit_s": -3.817
+      }
+    },
+    {
+      "clip": "tr_jp_r09",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 4.0,
+      "fps": 60.0,
+      "n_frames": 241,
+      "clip_s": 4.02,
+      "pipeline": {
+        "move": 2,
+        "contact": null,
+        "exit": 0,
+        "event_first_contact": null,
+        "event_ring_out": 0,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "train",
+        "frames": 35,
+        "first_native_frame": 36,
+        "last_native_frame": 240,
+        "contact": null,
+        "exit": 36,
+        "contact_to_exit_s": null,
+        "pipeline_minus_label_contact_s": null,
+        "pipeline_minus_label_exit_s": -0.6
+      }
+    },
+    {
+      "clip": "tr_jp_r12",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 4.8,
+      "fps": 60.0,
+      "n_frames": 289,
+      "clip_s": 4.82,
+      "pipeline": {
+        "move": null,
+        "contact": null,
+        "exit": 73,
+        "event_first_contact": null,
+        "event_ring_out": null,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "train",
+        "frames": 31,
+        "first_native_frame": 0,
+        "last_native_frame": 288,
+        "contact": null,
+        "exit": null,
+        "contact_to_exit_s": null,
+        "pipeline_minus_label_contact_s": null,
+        "pipeline_minus_label_exit_s": null
+      }
+    },
+    {
+      "clip": "tr_jp_r17",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 4.2,
+      "fps": 60.0,
+      "n_frames": 253,
+      "clip_s": 4.22,
+      "pipeline": {
+        "move": 51,
+        "contact": 60,
+        "exit": 74,
+        "event_first_contact": 76,
+        "event_ring_out": 74,
+        "move_to_exit_s": 0.383,
+        "contact_to_exit_s": 0.233,
+        "move_to_contact_s": 0.15
+      },
+      "labels": {
+        "split": "train",
+        "frames": 19,
+        "first_native_frame": 18,
+        "last_native_frame": 252,
+        "contact": 60,
+        "exit": 78,
+        "contact_to_exit_s": 0.3,
+        "pipeline_minus_label_contact_s": 0.0,
+        "pipeline_minus_label_exit_s": -0.067
+      }
+    },
+    {
+      "clip": "tr_jp_r24",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 4.6,
+      "fps": 60.0,
+      "n_frames": 277,
+      "clip_s": 4.62,
+      "pipeline": {
+        "move": 107,
+        "contact": 128,
+        "exit": 180,
+        "event_first_contact": 180,
+        "event_ring_out": 186,
+        "move_to_exit_s": 1.217,
+        "contact_to_exit_s": 0.867,
+        "move_to_contact_s": 0.35
+      },
+      "labels": {
+        "split": "train",
+        "frames": 41,
+        "first_native_frame": 36,
+        "last_native_frame": 276,
+        "contact": 132,
+        "exit": 180,
+        "contact_to_exit_s": 0.8,
+        "pipeline_minus_label_contact_s": -0.067,
+        "pipeline_minus_label_exit_s": 0.0
+      }
+    },
+    {
+      "clip": "va_Y0_r1",
+      "subset": "br",
+      "source": "Y0sKxKV6208.mp4",
+      "window_s": 10.6,
+      "fps": 60.0,
+      "n_frames": 637,
+      "clip_s": 10.62,
+      "pipeline": {
+        "move": 167,
+        "contact": null,
+        "exit": 148,
+        "event_first_contact": null,
+        "event_ring_out": 147,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "val",
+        "frames": 59,
+        "first_native_frame": 6,
+        "last_native_frame": 354,
+        "contact": null,
+        "exit": 144,
+        "contact_to_exit_s": null,
+        "pipeline_minus_label_contact_s": null,
+        "pipeline_minus_label_exit_s": 0.067
+      }
+    },
+    {
+      "clip": "va_jp_r18",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 4.0,
+      "fps": 60.0,
+      "n_frames": 241,
+      "clip_s": 4.02,
+      "pipeline": {
+        "move": null,
+        "contact": null,
+        "exit": 55,
+        "event_first_contact": null,
+        "event_ring_out": null,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "val",
+        "frames": 15,
+        "first_native_frame": 24,
+        "last_native_frame": 240,
+        "contact": 42,
+        "exit": 60,
+        "contact_to_exit_s": 0.3,
+        "pipeline_minus_label_contact_s": null,
+        "pipeline_minus_label_exit_s": -0.083
+      }
+    },
+    {
+      "clip": "gold_zb01",
+      "subset": "br",
+      "source": "ZB4dF1ub5QM.mp4",
+      "window_s": 6.4,
+      "fps": 60.0,
+      "n_frames": 385,
+      "clip_s": 6.42,
+      "pipeline": {
+        "move": 20,
+        "contact": null,
+        "exit": null,
+        "event_first_contact": null,
+        "event_ring_out": null,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "gold_crop",
+        "frames": 59,
+        "first_native_frame": 6,
+        "last_native_frame": 354,
+        "contact": 318,
+        "exit": 330,
+        "contact_to_exit_s": 0.2,
+        "pipeline_minus_label_contact_s": null,
+        "pipeline_minus_label_exit_s": null
+      }
+    },
+    {
+      "clip": "gold_jp25",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 5.6,
+      "fps": 60.0,
+      "n_frames": 337,
+      "clip_s": 5.62,
+      "pipeline": {
+        "move": null,
+        "contact": null,
+        "exit": null,
+        "event_first_contact": null,
+        "event_ring_out": null,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "gold_jp",
+        "frames": 57,
+        "first_native_frame": 0,
+        "last_native_frame": 336,
+        "contact": 30,
+        "exit": 54,
+        "contact_to_exit_s": 0.4,
+        "pipeline_minus_label_contact_s": null,
+        "pipeline_minus_label_exit_s": null
+      }
+    },
+    {
+      "clip": "cand_jp_r01",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 3.2,
+      "fps": 60.0,
+      "n_frames": 193,
+      "clip_s": 3.22,
+      "pipeline": {
+        "move": 82,
+        "contact": null,
+        "exit": null,
+        "event_first_contact": null,
+        "event_ring_out": null,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "candidates_jp",
+        "frames": 29,
+        "first_native_frame": 24,
+        "last_native_frame": 192,
+        "contact": null,
+        "exit": null,
+        "contact_to_exit_s": null,
+        "pipeline_minus_label_contact_s": null,
+        "pipeline_minus_label_exit_s": null
+      }
+    },
+    {
+      "clip": "cand_jp_r02",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 3.0,
+      "fps": 60.0,
+      "n_frames": 181,
+      "clip_s": 3.02,
+      "pipeline": {
+        "move": 35,
+        "contact": 57,
+        "exit": null,
+        "event_first_contact": null,
+        "event_ring_out": null,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": 0.367
+      }
+    },
+    {
+      "clip": "cand_jp_r05",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 4.0,
+      "fps": 60.0,
+      "n_frames": 241,
+      "clip_s": 4.02,
+      "pipeline": {
+        "move": 70,
+        "contact": null,
+        "exit": 95,
+        "event_first_contact": null,
+        "event_ring_out": null,
+        "move_to_exit_s": 0.417,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "candidates_jp",
+        "frames": 41,
+        "first_native_frame": 0,
+        "last_native_frame": 240,
+        "contact": 30,
+        "exit": 96,
+        "contact_to_exit_s": 1.1,
+        "pipeline_minus_label_contact_s": null,
+        "pipeline_minus_label_exit_s": -0.017
+      }
+    },
+    {
+      "clip": "cand_jp_r07",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 3.0,
+      "fps": 60.0,
+      "n_frames": 181,
+      "clip_s": 3.02,
+      "pipeline": {
+        "move": 58,
+        "contact": 83,
+        "exit": 174,
+        "event_first_contact": 107,
+        "event_ring_out": null,
+        "move_to_exit_s": 1.933,
+        "contact_to_exit_s": 1.517,
+        "move_to_contact_s": 0.417
+      },
+      "labels": {
+        "split": "candidates_jp",
+        "frames": 10,
+        "first_native_frame": 126,
+        "last_native_frame": 180,
+        "contact": 126,
+        "exit": 168,
+        "contact_to_exit_s": 0.7,
+        "pipeline_minus_label_contact_s": -0.717,
+        "pipeline_minus_label_exit_s": 0.1
+      }
+    },
+    {
+      "clip": "cand_jp_r10",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 3.0,
+      "fps": 60.0,
+      "n_frames": 181,
+      "clip_s": 3.02,
+      "pipeline": {
+        "move": null,
+        "contact": null,
+        "exit": null,
+        "event_first_contact": null,
+        "event_ring_out": null,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "candidates_jp",
+        "frames": 30,
+        "first_native_frame": 6,
+        "last_native_frame": 180,
+        "contact": null,
+        "exit": 6,
+        "contact_to_exit_s": null,
+        "pipeline_minus_label_contact_s": null,
+        "pipeline_minus_label_exit_s": null
+      }
+    },
+    {
+      "clip": "cand_jp_r11",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 3.2,
+      "fps": 60.0,
+      "n_frames": 193,
+      "clip_s": 3.22,
+      "pipeline": {
+        "move": null,
+        "contact": null,
+        "exit": 25,
+        "event_first_contact": null,
+        "event_ring_out": null,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "candidates_jp",
+        "frames": 16,
+        "first_native_frame": 0,
+        "last_native_frame": 192,
+        "contact": 0,
+        "exit": 24,
+        "contact_to_exit_s": 0.4,
+        "pipeline_minus_label_contact_s": null,
+        "pipeline_minus_label_exit_s": 0.017
+      }
+    },
+    {
+      "clip": "cand_jp_r13",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 3.2,
+      "fps": 60.0,
+      "n_frames": 193,
+      "clip_s": 3.22,
+      "pipeline": {
+        "move": 43,
+        "contact": null,
+        "exit": null,
+        "event_first_contact": null,
+        "event_ring_out": null,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "candidates_jp",
+        "frames": 21,
+        "first_native_frame": 72,
+        "last_native_frame": 192,
+        "contact": null,
+        "exit": null,
+        "contact_to_exit_s": null,
+        "pipeline_minus_label_contact_s": null,
+        "pipeline_minus_label_exit_s": null
+      }
+    },
+    {
+      "clip": "cand_jp_r14",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 7.0,
+      "fps": 60.0,
+      "n_frames": 421,
+      "clip_s": 7.02,
+      "pipeline": {
+        "move": 7,
+        "contact": 211,
+        "exit": null,
+        "event_first_contact": 213,
+        "event_ring_out": null,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": 3.4
+      },
+      "labels": {
+        "split": "candidates_jp",
+        "frames": 71,
+        "first_native_frame": 0,
+        "last_native_frame": 420,
+        "contact": 210,
+        "exit": null,
+        "contact_to_exit_s": null,
+        "pipeline_minus_label_contact_s": 0.017,
+        "pipeline_minus_label_exit_s": null
+      }
+    },
+    {
+      "clip": "cand_jp_r15",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 5.4,
+      "fps": 60.0,
+      "n_frames": 325,
+      "clip_s": 5.42,
+      "pipeline": {
+        "move": 2,
+        "contact": 48,
+        "exit": 176,
+        "event_first_contact": 95,
+        "event_ring_out": null,
+        "move_to_exit_s": 2.9,
+        "contact_to_exit_s": 2.133,
+        "move_to_contact_s": 0.767
+      },
+      "labels": {
+        "split": "candidates_jp",
+        "frames": 53,
+        "first_native_frame": 0,
+        "last_native_frame": 312,
+        "contact": 48,
+        "exit": 180,
+        "contact_to_exit_s": 2.2,
+        "pipeline_minus_label_contact_s": 0.0,
+        "pipeline_minus_label_exit_s": -0.067
+      }
+    },
+    {
+      "clip": "cand_jp_r16",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 3.2,
+      "fps": 60.0,
+      "n_frames": 193,
+      "clip_s": 3.22,
+      "pipeline": {
+        "move": 7,
+        "contact": 37,
+        "exit": 117,
+        "event_first_contact": null,
+        "event_ring_out": null,
+        "move_to_exit_s": 1.833,
+        "contact_to_exit_s": 1.333,
+        "move_to_contact_s": 0.5
+      },
+      "labels": {
+        "split": "candidates_jp",
+        "frames": 33,
+        "first_native_frame": 0,
+        "last_native_frame": 192,
+        "contact": 42,
+        "exit": 150,
+        "contact_to_exit_s": 1.8,
+        "pipeline_minus_label_contact_s": -0.083,
+        "pipeline_minus_label_exit_s": -0.55
+      }
+    },
+    {
+      "clip": "cand_jp_r19",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 3.2,
+      "fps": 60.0,
+      "n_frames": 193,
+      "clip_s": 3.22,
+      "pipeline": {
+        "move": 83,
+        "contact": 97,
+        "exit": 110,
+        "event_first_contact": null,
+        "event_ring_out": null,
+        "move_to_exit_s": 0.45,
+        "contact_to_exit_s": 0.217,
+        "move_to_contact_s": 0.233
+      },
+      "labels": {
+        "split": "candidates_jp",
+        "frames": 32,
+        "first_native_frame": 0,
+        "last_native_frame": 186,
+        "contact": 102,
+        "exit": 114,
+        "contact_to_exit_s": 0.2,
+        "pipeline_minus_label_contact_s": -0.083,
+        "pipeline_minus_label_exit_s": -0.067
+      }
+    },
+    {
+      "clip": "cand_jp_r20",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 3.0,
+      "fps": 60.0,
+      "n_frames": 181,
+      "clip_s": 3.02,
+      "pipeline": {
+        "move": 22,
+        "contact": 53,
+        "exit": 106,
+        "event_first_contact": null,
+        "event_ring_out": null,
+        "move_to_exit_s": 1.4,
+        "contact_to_exit_s": 0.883,
+        "move_to_contact_s": 0.517
+      },
+      "labels": {
+        "split": "candidates_jp",
+        "frames": 31,
+        "first_native_frame": 0,
+        "last_native_frame": 180,
+        "contact": 54,
+        "exit": 0,
+        "contact_to_exit_s": null,
+        "pipeline_minus_label_contact_s": -0.017,
+        "pipeline_minus_label_exit_s": 1.767
+      }
+    },
+    {
+      "clip": "cand_jp_r21",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 3.4,
+      "fps": 60.0,
+      "n_frames": 205,
+      "clip_s": 3.42,
+      "pipeline": {
+        "move": 103,
+        "contact": 156,
+        "exit": null,
+        "event_first_contact": null,
+        "event_ring_out": null,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": 0.883
+      },
+      "labels": {
+        "split": "candidates_jp",
+        "frames": 19,
+        "first_native_frame": 96,
+        "last_native_frame": 204,
+        "contact": 156,
+        "exit": null,
+        "contact_to_exit_s": null,
+        "pipeline_minus_label_contact_s": 0.0,
+        "pipeline_minus_label_exit_s": null
+      }
+    },
+    {
+      "clip": "cand_jp_r22",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 3.0,
+      "fps": 60.0,
+      "n_frames": 181,
+      "clip_s": 3.02,
+      "pipeline": {
+        "move": 60,
+        "contact": 58,
+        "exit": 118,
+        "event_first_contact": 94,
+        "event_ring_out": null,
+        "move_to_exit_s": 0.967,
+        "contact_to_exit_s": 1.0,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "candidates_jp",
+        "frames": 31,
+        "first_native_frame": 0,
+        "last_native_frame": 180,
+        "contact": 24,
+        "exit": 114,
+        "contact_to_exit_s": 1.5,
+        "pipeline_minus_label_contact_s": 0.567,
+        "pipeline_minus_label_exit_s": 0.067
+      }
+    },
+    {
+      "clip": "cand_jp_r23",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 3.0,
+      "fps": 60.0,
+      "n_frames": 181,
+      "clip_s": 3.02,
+      "pipeline": {
+        "move": 77,
+        "contact": 75,
+        "exit": null,
+        "event_first_contact": 76,
+        "event_ring_out": null,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": null
+      },
+      "labels": {
+        "split": "candidates_jp",
+        "frames": 31,
+        "first_native_frame": 0,
+        "last_native_frame": 180,
+        "contact": 18,
+        "exit": 90,
+        "contact_to_exit_s": 1.2,
+        "pipeline_minus_label_contact_s": 0.95,
+        "pipeline_minus_label_exit_s": null
+      }
+    },
+    {
+      "clip": "cand_jp_r26",
+      "subset": "jp",
+      "source": "Z_MC3r_c2P0.mp4",
+      "window_s": 11.2,
+      "fps": 60.0,
+      "n_frames": 640,
+      "clip_s": 10.67,
+      "pipeline": {
+        "move": 173,
+        "contact": 473,
+        "exit": null,
+        "event_first_contact": 475,
+        "event_ring_out": null,
+        "move_to_exit_s": null,
+        "contact_to_exit_s": null,
+        "move_to_contact_s": 5.0
+      }
+    }
+  ],
+  "consensus_exit": {
+    "tolerance_s": 0.1,
+    "clips": [
+      "tr_jp_r06",
+      "tr_jp_r17",
+      "tr_jp_r24",
+      "va_Y0_r1",
+      "va_jp_r18",
+      "cand_jp_r05",
+      "cand_jp_r07",
+      "cand_jp_r11",
+      "cand_jp_r15",
+      "cand_jp_r19",
+      "cand_jp_r22"
+    ],
+    "pipeline_move_to_exit_s": {
+      "n": 8,
+      "median": 1.092,
+      "mean": 1.281,
+      "min": 0.383,
+      "max": 2.9,
+      "share_under_1s": 0.5
+    },
+    "pipeline_contact_to_exit_s": {
+      "n": 7,
+      "median": 1.0,
+      "mean": 1.141,
+      "min": 0.217,
+      "max": 2.133,
+      "share_under_1s": 0.429
+    },
+    "labels_contact_to_exit_s": {
+      "n": 10,
+      "median": 0.75,
+      "mean": 1.02,
+      "min": 0.2,
+      "max": 2.7,
+      "share_under_1s": 0.6
+    }
+  }
+}
