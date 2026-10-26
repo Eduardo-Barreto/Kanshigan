@@ -1,0 +1,312 @@
+{
+  "conf": 0.25,
+  "iou_match": 0.5,
+  "imgsz": 640,
+  "detectors": {
+    "yolov8s_kanshigan": {
+      "weights": "results/training/yolov8s_kanshigan/weights/best.pt",
+      "gold_br": {
+        "val": {
+          "mAP@0.5": 0.965,
+          "mAP@0.5:0.95": 0.7673,
+          "precision_at_maxF1": 0.9904,
+          "recall_at_maxF1": 0.9643
+        },
+        "fixed_conf_0.25": {
+          "no_filter": {
+            "tp": 108,
+            "fp": 1,
+            "fn": 4,
+            "precision": 0.9908,
+            "recall": 0.9643,
+            "f1": 0.9774
+          },
+          "dohyo_filter_m1.0": {
+            "tp": 108,
+            "fp": 1,
+            "fn": 4,
+            "precision": 0.9908,
+            "recall": 0.9643,
+            "f1": 0.9774
+          },
+          "dohyo_filter_m1.15": {
+            "tp": 108,
+            "fp": 1,
+            "fn": 4,
+            "precision": 0.9908,
+            "recall": 0.9643,
+            "f1": 0.9774
+          },
+          "gold_boxes": 112,
+          "gold_boxes_outside_dohyo_m1.0": 0,
+          "frames_without_dohyo_fit_used_inscribed_ellipse": 2
+        }
+      },
+      "gold_jp": {
+        "val": {
+          "mAP@0.5": 0.9757,
+          "mAP@0.5:0.95": 0.6954,
+          "precision_at_maxF1": 0.9913,
+          "recall_at_maxF1": 0.9146
+        },
+        "fixed_conf_0.25": {
+          "no_filter": {
+            "tp": 77,
+            "fp": 30,
+            "fn": 5,
+            "precision": 0.7196,
+            "recall": 0.939,
+            "f1": 0.8148
+          },
+          "dohyo_filter_m1.0": {
+            "tp": 76,
+            "fp": 13,
+            "fn": 6,
+            "precision": 0.8539,
+            "recall": 0.9268,
+            "f1": 0.8889
+          },
+          "dohyo_filter_m1.15": {
+            "tp": 77,
+            "fp": 13,
+            "fn": 5,
+            "precision": 0.8556,
+            "recall": 0.939,
+            "f1": 0.8953
+          },
+          "gold_boxes": 82,
+          "gold_boxes_outside_dohyo_m1.0": 1,
+          "frames_without_dohyo_fit_used_inscribed_ellipse": 0
+        }
+      }
+    },
+    "yolo26n_kanshigan": {
+      "weights": "results/training/yolo26n_kanshigan/weights/best.pt",
+      "gold_br": {
+        "val": {
+          "mAP@0.5": 0.9684,
+          "mAP@0.5:0.95": 0.7717,
+          "precision_at_maxF1": 0.9625,
+          "recall_at_maxF1": 0.9554
+        },
+        "fixed_conf_0.25": {
+          "no_filter": {
+            "tp": 108,
+            "fp": 9,
+            "fn": 4,
+            "precision": 0.9231,
+            "recall": 0.9643,
+            "f1": 0.9432
+          },
+          "dohyo_filter_m1.0": {
+            "tp": 108,
+            "fp": 9,
+            "fn": 4,
+            "precision": 0.9231,
+            "recall": 0.9643,
+            "f1": 0.9432
+          },
+          "dohyo_filter_m1.15": {
+            "tp": 108,
+            "fp": 9,
+            "fn": 4,
+            "precision": 0.9231,
+            "recall": 0.9643,
+            "f1": 0.9432
+          },
+          "gold_boxes": 112,
+          "gold_boxes_outside_dohyo_m1.0": 0,
+          "frames_without_dohyo_fit_used_inscribed_ellipse": 2
+        }
+      },
+      "gold_jp": {
+        "val": {
+          "mAP@0.5": 0.9926,
+          "mAP@0.5:0.95": 0.6908,
+          "precision_at_maxF1": 0.9855,
+          "recall_at_maxF1": 0.9756
+        },
+        "fixed_conf_0.25": {
+          "no_filter": {
+            "tp": 79,
+            "fp": 13,
+            "fn": 3,
+            "precision": 0.8587,
+            "recall": 0.9634,
+            "f1": 0.908
+          },
+          "dohyo_filter_m1.0": {
+            "tp": 78,
+            "fp": 1,
+            "fn": 4,
+            "precision": 0.9873,
+            "recall": 0.9512,
+            "f1": 0.9689
+          },
+          "dohyo_filter_m1.15": {
+            "tp": 79,
+            "fp": 2,
+            "fn": 3,
+            "precision": 0.9753,
+            "recall": 0.9634,
+            "f1": 0.9693
+          },
+          "gold_boxes": 82,
+          "gold_boxes_outside_dohyo_m1.0": 1,
+          "frames_without_dohyo_fit_used_inscribed_ellipse": 0
+        }
+      }
+    },
+    "yolov8s_coco": {
+      "weights": "experiments/pre-banca/yolov8s.pt",
+      "gold_br": {
+        "val": {
+          "mAP@0.5": 0.0259,
+          "mAP@0.5:0.95": 0.0171,
+          "precision_at_maxF1": 0.0318,
+          "recall_at_maxF1": 0.75
+        },
+        "fixed_conf_0.25": {
+          "no_filter": {
+            "tp": 0,
+            "fp": 26,
+            "fn": 112,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "dohyo_filter_m1.0": {
+            "tp": 0,
+            "fp": 26,
+            "fn": 112,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "dohyo_filter_m1.15": {
+            "tp": 0,
+            "fp": 26,
+            "fn": 112,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "gold_boxes": 112,
+          "gold_boxes_outside_dohyo_m1.0": 0,
+          "frames_without_dohyo_fit_used_inscribed_ellipse": 2
+        }
+      },
+      "gold_br_class_agnostic": {
+        "val": {
+          "mAP@0.5": 0.7574,
+          "mAP@0.5:0.95": 0.57,
+          "precision_at_maxF1": 0.7637,
+          "recall_at_maxF1": 0.6925
+        },
+        "fixed_conf_0.25": {
+          "no_filter": {
+            "tp": 80,
+            "fp": 35,
+            "fn": 32,
+            "precision": 0.6957,
+            "recall": 0.7143,
+            "f1": 0.7048
+          },
+          "dohyo_filter_m1.0": {
+            "tp": 80,
+            "fp": 35,
+            "fn": 32,
+            "precision": 0.6957,
+            "recall": 0.7143,
+            "f1": 0.7048
+          },
+          "dohyo_filter_m1.15": {
+            "tp": 80,
+            "fp": 35,
+            "fn": 32,
+            "precision": 0.6957,
+            "recall": 0.7143,
+            "f1": 0.7048
+          },
+          "gold_boxes": 112,
+          "gold_boxes_outside_dohyo_m1.0": 0,
+          "frames_without_dohyo_fit_used_inscribed_ellipse": 2
+        }
+      },
+      "gold_jp": {
+        "val": {
+          "mAP@0.5": 0.0615,
+          "mAP@0.5:0.95": 0.039,
+          "precision_at_maxF1": 0.302,
+          "recall_at_maxF1": 0.0732
+        },
+        "fixed_conf_0.25": {
+          "no_filter": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 82,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "dohyo_filter_m1.0": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 82,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "dohyo_filter_m1.15": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 82,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "gold_boxes": 82,
+          "gold_boxes_outside_dohyo_m1.0": 1,
+          "frames_without_dohyo_fit_used_inscribed_ellipse": 0
+        }
+      },
+      "gold_jp_class_agnostic": {
+        "val": {
+          "mAP@0.5": 0.3585,
+          "mAP@0.5:0.95": 0.2519,
+          "precision_at_maxF1": 0.3981,
+          "recall_at_maxF1": 0.4634
+        },
+        "fixed_conf_0.25": {
+          "no_filter": {
+            "tp": 19,
+            "fp": 20,
+            "fn": 63,
+            "precision": 0.4872,
+            "recall": 0.2317,
+            "f1": 0.314
+          },
+          "dohyo_filter_m1.0": {
+            "tp": 19,
+            "fp": 20,
+            "fn": 63,
+            "precision": 0.4872,
+            "recall": 0.2317,
+            "f1": 0.314
+          },
+          "dohyo_filter_m1.15": {
+            "tp": 19,
+            "fp": 20,
+            "fn": 63,
+            "precision": 0.4872,
+            "recall": 0.2317,
+            "f1": 0.314
+          },
+          "gold_boxes": 82,
+          "gold_boxes_outside_dohyo_m1.0": 1,
+          "frames_without_dohyo_fit_used_inscribed_ellipse": 0
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,699 @@
+{
+  "weights": "results/training/yolov8s_kanshigan/weights/best.pt",
+  "tracker": "ocsort",
+  "duplicates": {
+    "IMG_1573.MOV": "IMG_1573(1).MOV",
+    "IMG_1575.MOV": "IMG_1575(1).MOV",
+    "IMG_1577.MOV": "IMG_1577(1).MOV"
+  },
+  "rounds": [
+    {
+      "clip": "rc_img_1573(1)_r1",
+      "video": "IMG_1573(1).MOV",
+      "start_s": 0.0,
+      "end_s": 6.2,
+      "source_size": [
+        1920,
+        1080
+      ],
+      "source_fps": "60000/1001",
+      "scaled_to_1920": false,
+      "n_frames": 346,
+      "fps": 59.94,
+      "events": [
+        [
+          "round_start",
+          118
+        ],
+        [
+          "round_end",
+          345
+        ],
+        [
+          "winner",
+          345
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1574_r1",
+      "video": "IMG_1574.MOV",
+      "start_s": 0.0,
+      "end_s": 4.0,
+      "source_size": [
+        1920,
+        1080
+      ],
+      "source_fps": "60000/1001",
+      "scaled_to_1920": false,
+      "n_frames": 210,
+      "fps": 59.94,
+      "events": [
+        [
+          "ring_out",
+          136
+        ],
+        [
+          "round_end",
+          136
+        ],
+        [
+          "winner",
+          136
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1575(1)_r1",
+      "video": "IMG_1575(1).MOV",
+      "start_s": 0.0,
+      "end_s": 10.01,
+      "source_size": [
+        1920,
+        1080
+      ],
+      "source_fps": "60000/1001",
+      "scaled_to_1920": false,
+      "n_frames": 568,
+      "fps": 59.94,
+      "events": [
+        [
+          "round_start",
+          274
+        ],
+        [
+          "round_end",
+          480
+        ],
+        [
+          "winner",
+          480
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1577(1)_r1",
+      "video": "IMG_1577(1).MOV",
+      "start_s": 0.0,
+      "end_s": 12.81,
+      "source_size": [
+        1920,
+        1080
+      ],
+      "source_fps": "60000/1001",
+      "scaled_to_1920": false,
+      "n_frames": 739,
+      "fps": 59.94,
+      "events": [
+        [
+          "round_start",
+          400
+        ],
+        [
+          "round_end",
+          424
+        ],
+        [
+          "winner",
+          424
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1579_r1",
+      "video": "IMG_1579.MOV",
+      "start_s": 0.0,
+      "end_s": 6.6,
+      "source_size": [
+        1920,
+        1080
+      ],
+      "source_fps": "60000/1001",
+      "scaled_to_1920": false,
+      "n_frames": 369,
+      "fps": 59.94,
+      "events": [
+        [
+          "round_start",
+          18
+        ],
+        [
+          "round_end",
+          273
+        ],
+        [
+          "winner",
+          273
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1580_r1",
+      "video": "IMG_1580.MOV",
+      "start_s": 0.0,
+      "end_s": 3.0,
+      "source_size": [
+        1920,
+        1080
+      ],
+      "source_fps": "60000/1001",
+      "scaled_to_1920": false,
+      "n_frames": 180,
+      "fps": 59.94,
+      "events": [
+        [
+          "round_start",
+          8
+        ],
+        [
+          "round_end",
+          179
+        ],
+        [
+          "winner",
+          179
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1580_r2",
+      "video": "IMG_1580.MOV",
+      "start_s": 2.6,
+      "end_s": 8.2,
+      "source_size": [
+        1920,
+        1080
+      ],
+      "source_fps": "60000/1001",
+      "scaled_to_1920": false,
+      "n_frames": 302,
+      "fps": 59.94,
+      "events": [
+        [
+          "round_start",
+          10
+        ],
+        [
+          "round_end",
+          296
+        ],
+        [
+          "winner",
+          296
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1582_r1",
+      "video": "IMG_1582.MOV",
+      "start_s": 0.0,
+      "end_s": 9.0,
+      "source_size": [
+        1920,
+        1080
+      ],
+      "source_fps": "30/1",
+      "scaled_to_1920": false,
+      "n_frames": 254,
+      "fps": 30.0,
+      "events": [
+        [
+          "round_start",
+          4
+        ],
+        [
+          "first_contact",
+          212
+        ],
+        [
+          "round_end",
+          213
+        ],
+        [
+          "winner",
+          213
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1583_r1",
+      "video": "IMG_1583.MOV",
+      "start_s": 0.0,
+      "end_s": 4.8,
+      "source_size": [
+        1920,
+        1080
+      ],
+      "source_fps": "30/1",
+      "scaled_to_1920": false,
+      "n_frames": 132,
+      "fps": 30.0,
+      "events": [
+        [
+          "round_start",
+          12
+        ],
+        [
+          "ring_out",
+          89
+        ],
+        [
+          "round_end",
+          89
+        ],
+        [
+          "winner",
+          89
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1584_r1",
+      "video": "IMG_1584.MOV",
+      "start_s": 0.0,
+      "end_s": 5.8,
+      "source_size": [
+        3840,
+        2160
+      ],
+      "source_fps": "30/1",
+      "scaled_to_1920": true,
+      "n_frames": 158,
+      "fps": 30.0,
+      "events": [
+        [
+          "round_start",
+          39
+        ],
+        [
+          "round_end",
+          157
+        ],
+        [
+          "winner",
+          157
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1585_r1",
+      "video": "IMG_1585.MOV",
+      "start_s": 0.0,
+      "end_s": 9.01,
+      "source_size": [
+        3840,
+        2160
+      ],
+      "source_fps": "60000/1001",
+      "scaled_to_1920": true,
+      "n_frames": 510,
+      "fps": 59.94,
+      "events": [
+        [
+          "round_start",
+          221
+        ],
+        [
+          "ring_out",
+          453
+        ],
+        [
+          "round_end",
+          453
+        ],
+        [
+          "winner",
+          453
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1588_r1",
+      "video": "IMG_1588.MOV",
+      "start_s": 0.0,
+      "end_s": 9.21,
+      "source_size": [
+        3840,
+        2160
+      ],
+      "source_fps": "60000/1001",
+      "scaled_to_1920": true,
+      "n_frames": 522,
+      "fps": 59.94,
+      "events": [
+        [
+          "round_start",
+          98
+        ],
+        [
+          "round_end",
+          215
+        ],
+        [
+          "winner",
+          215
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1589_r1",
+      "video": "IMG_1589.MOV",
+      "start_s": 0.0,
+      "end_s": 3.4,
+      "source_size": [
+        3840,
+        2160
+      ],
+      "source_fps": "60000/1001",
+      "scaled_to_1920": true,
+      "n_frames": 174,
+      "fps": 59.94,
+      "events": [
+        [
+          "round_start",
+          2
+        ],
+        [
+          "ring_out",
+          87
+        ],
+        [
+          "round_end",
+          87
+        ],
+        [
+          "winner",
+          87
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1590_r1",
+      "video": "IMG_1590.MOV",
+      "start_s": 0.0,
+      "end_s": 7.6,
+      "source_size": [
+        3840,
+        2160
+      ],
+      "source_fps": "60000/1001",
+      "scaled_to_1920": true,
+      "n_frames": 429,
+      "fps": 59.94,
+      "events": [
+        [
+          "round_start",
+          88
+        ],
+        [
+          "first_contact",
+          220
+        ],
+        [
+          "round_end",
+          333
+        ],
+        [
+          "winner",
+          333
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1591_r1",
+      "video": "IMG_1591.MOV",
+      "start_s": 0.0,
+      "end_s": 12.61,
+      "source_size": [
+        3840,
+        2160
+      ],
+      "source_fps": "60000/1001",
+      "scaled_to_1920": true,
+      "n_frames": 732,
+      "fps": 59.94,
+      "events": [
+        [
+          "round_start",
+          196
+        ],
+        [
+          "round_end",
+          704
+        ],
+        [
+          "winner",
+          704
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1592_r1",
+      "video": "IMG_1592.MOV",
+      "start_s": 0.0,
+      "end_s": 6.8,
+      "source_size": [
+        3840,
+        2160
+      ],
+      "source_fps": "60000/1001",
+      "scaled_to_1920": true,
+      "n_frames": 375,
+      "fps": 59.94,
+      "events": [
+        [
+          "round_start",
+          141
+        ],
+        [
+          "round_end",
+          374
+        ],
+        [
+          "winner",
+          374
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1593_r1",
+      "video": "IMG_1593.MOV",
+      "start_s": 0.0,
+      "end_s": 6.2,
+      "source_size": [
+        3840,
+        2160
+      ],
+      "source_fps": "60000/1001",
+      "scaled_to_1920": true,
+      "n_frames": 348,
+      "fps": 59.94,
+      "events": [
+        [
+          "round_start",
+          188
+        ],
+        [
+          "first_contact",
+          233
+        ],
+        [
+          "round_end",
+          295
+        ],
+        [
+          "winner",
+          295
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1594_r1",
+      "video": "IMG_1594.MOV",
+      "start_s": 0.0,
+      "end_s": 6.0,
+      "source_size": [
+        3840,
+        2160
+      ],
+      "source_fps": "60000/1001",
+      "scaled_to_1920": true,
+      "n_frames": 334,
+      "fps": 59.94,
+      "events": [
+        [
+          "round_start",
+          136
+        ],
+        [
+          "first_contact",
+          179
+        ],
+        [
+          "round_end",
+          256
+        ],
+        [
+          "winner",
+          256
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1595_r1",
+      "video": "IMG_1595.MOV",
+      "start_s": 0.0,
+      "end_s": 8.8,
+      "source_size": [
+        3840,
+        2160
+      ],
+      "source_fps": "60000/1001",
+      "scaled_to_1920": true,
+      "n_frames": 499,
+      "fps": 59.94,
+      "events": [
+        [
+          "round_start",
+          216
+        ],
+        [
+          "ring_out",
+          289
+        ],
+        [
+          "round_end",
+          289
+        ],
+        [
+          "winner",
+          289
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1597_r1",
+      "video": "IMG_1597.MOV",
+      "start_s": 0.0,
+      "end_s": 9.21,
+      "source_size": [
+        3840,
+        2160
+      ],
+      "source_fps": "60000/1001",
+      "scaled_to_1920": true,
+      "n_frames": 520,
+      "fps": 59.94,
+      "events": [
+        [
+          "round_start",
+          202
+        ],
+        [
+          "round_end",
+          255
+        ],
+        [
+          "winner",
+          255
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1598_r1",
+      "video": "IMG_1598.MOV",
+      "start_s": 0.0,
+      "end_s": 3.0,
+      "source_size": [
+        3840,
+        2160
+      ],
+      "source_fps": "60000/1001",
+      "scaled_to_1920": true,
+      "n_frames": 153,
+      "fps": 59.94,
+      "events": [
+        [
+          "round_start",
+          31
+        ],
+        [
+          "round_end",
+          135
+        ],
+        [
+          "winner",
+          135
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1599_r1",
+      "video": "IMG_1599.MOV",
+      "start_s": 0.0,
+      "end_s": 5.6,
+      "source_size": [
+        3840,
+        2160
+      ],
+      "source_fps": "60000/1001",
+      "scaled_to_1920": true,
+      "n_frames": 311,
+      "fps": 59.94,
+      "events": [
+        [
+          "round_start",
+          92
+        ],
+        [
+          "ring_out",
+          111
+        ],
+        [
+          "round_end",
+          111
+        ],
+        [
+          "winner",
+          111
+        ],
+        [
+          "first_contact",
+          162
+        ]
+      ]
+    },
+    {
+      "clip": "rc_img_1600_r1",
+      "video": "IMG_1600.MOV",
+      "start_s": 0.0,
+      "end_s": 15.21,
+      "source_size": [
+        3840,
+        2160
+      ],
+      "source_fps": "60000/1001",
+      "scaled_to_1920": true,
+      "n_frames": 885,
+      "fps": 59.94,
+      "events": [
+        [
+          "round_start",
+          41
+        ],
+        [
+          "first_contact",
+          623
+        ],
+        [
+          "round_end",
+          659
+        ],
+        [
+          "winner",
+          659
+        ]
+      ]
+    }
+  ]
+}

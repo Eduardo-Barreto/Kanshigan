@@ -1,0 +1,243 @@
+{
+  "label": "gpu_crop_yolo26n_ocsort",
+  "note": "gold_zb01 pre-cropped clip 1558x506 (prep_clips.py crop done offline)",
+  "video": "data/processed/clips/br/gold_zb01.mp4",
+  "weights": "results/training/yolo26n_kanshigan/weights/best.pt",
+  "tracker": "ocsort",
+  "device": "cuda:0",
+  "crop_in_timer": "the per-clip dohyo ROI and the per-frame crop run inside process_s; a pre-cropped clip (prep_clips.py) had its crop done offline, outside any timer",
+  "hardware": {
+    "cpu": "Intel(R) Core(TM) Ultra 9 185H",
+    "cpu_logical_cores": 22,
+    "torch_threads": 16,
+    "torch": "2.12.0+cu126",
+    "cuda_available": true,
+    "python": "3.12.12",
+    "gpu": "NVIDIA GeForce RTX 4070 Laptop GPU",
+    "gpu_total_mb": 7837,
+    "ultralytics": "8.4.55",
+    "boxmot": "18.0.0"
+  },
+  "nvml_available": true,
+  "runs": [
+    {
+      "n_frames": 385,
+      "frame_size": [
+        1558,
+        506
+      ],
+      "roi_xywh": [
+        0,
+        1,
+        1558,
+        504
+      ],
+      "decode_s": 0.327,
+      "model_load_s": 0.065,
+      "process_s": 3.055,
+      "e2e_fps": 111.69,
+      "infer_py_fps": 123.4,
+      "process_fps": 126.02,
+      "decode_fps": 1177.81,
+      "torch_peak_allocated_mb": 63.4,
+      "torch_peak_reserved_mb": 86.0,
+      "events": [
+        {
+          "kind": "round_start",
+          "frame": 310
+        },
+        {
+          "kind": "round_end",
+          "frame": 334
+        },
+        {
+          "kind": "winner",
+          "frame": 334
+        }
+      ],
+      "nvml_process_peak_mb": 272.0,
+      "kind": "cold"
+    },
+    {
+      "n_frames": 385,
+      "frame_size": [
+        1558,
+        506
+      ],
+      "roi_xywh": [
+        0,
+        1,
+        1558,
+        504
+      ],
+      "decode_s": 0.295,
+      "model_load_s": 0.024,
+      "process_s": 2.712,
+      "e2e_fps": 126.98,
+      "infer_py_fps": 140.67,
+      "process_fps": 141.94,
+      "decode_fps": 1304.5,
+      "torch_peak_allocated_mb": 74.2,
+      "torch_peak_reserved_mb": 94.0,
+      "events": [
+        {
+          "kind": "round_start",
+          "frame": 310
+        },
+        {
+          "kind": "round_end",
+          "frame": 334
+        },
+        {
+          "kind": "winner",
+          "frame": 334
+        }
+      ],
+      "nvml_process_peak_mb": 280.0,
+      "kind": "warm"
+    },
+    {
+      "n_frames": 385,
+      "frame_size": [
+        1558,
+        506
+      ],
+      "roi_xywh": [
+        0,
+        1,
+        1558,
+        504
+      ],
+      "decode_s": 0.196,
+      "model_load_s": 0.03,
+      "process_s": 2.757,
+      "e2e_fps": 129.09,
+      "infer_py_fps": 138.17,
+      "process_fps": 139.67,
+      "decode_fps": 1963.97,
+      "torch_peak_allocated_mb": 82.7,
+      "torch_peak_reserved_mb": 102.0,
+      "events": [
+        {
+          "kind": "round_start",
+          "frame": 310
+        },
+        {
+          "kind": "round_end",
+          "frame": 334
+        },
+        {
+          "kind": "winner",
+          "frame": 334
+        }
+      ],
+      "nvml_process_peak_mb": 288.0,
+      "kind": "warm"
+    },
+    {
+      "n_frames": 385,
+      "frame_size": [
+        1558,
+        506
+      ],
+      "roi_xywh": [
+        0,
+        1,
+        1558,
+        504
+      ],
+      "decode_s": 0.242,
+      "model_load_s": 0.028,
+      "process_s": 2.758,
+      "e2e_fps": 127.14,
+      "infer_py_fps": 138.21,
+      "process_fps": 139.59,
+      "decode_fps": 1588.56,
+      "torch_peak_allocated_mb": 91.4,
+      "torch_peak_reserved_mb": 110.0,
+      "events": [
+        {
+          "kind": "round_start",
+          "frame": 310
+        },
+        {
+          "kind": "round_end",
+          "frame": 334
+        },
+        {
+          "kind": "winner",
+          "frame": 334
+        }
+      ],
+      "nvml_process_peak_mb": 296.0,
+      "kind": "warm"
+    }
+  ],
+  "cold": {
+    "n_frames": 385,
+    "frame_size": [
+      1558,
+      506
+    ],
+    "roi_xywh": [
+      0,
+      1,
+      1558,
+      504
+    ],
+    "decode_s": 0.327,
+    "model_load_s": 0.065,
+    "process_s": 3.055,
+    "e2e_fps": 111.69,
+    "infer_py_fps": 123.4,
+    "process_fps": 126.02,
+    "decode_fps": 1177.81,
+    "torch_peak_allocated_mb": 63.4,
+    "torch_peak_reserved_mb": 86.0,
+    "events": [
+      {
+        "kind": "round_start",
+        "frame": 310
+      },
+      {
+        "kind": "round_end",
+        "frame": 334
+      },
+      {
+        "kind": "winner",
+        "frame": 334
+      }
+    ],
+    "nvml_process_peak_mb": 272.0,
+    "kind": "cold"
+  },
+  "warm_summary": {
+    "e2e_fps": {
+      "mean": 127.74,
+      "std": 1.17
+    },
+    "infer_py_fps": {
+      "mean": 139.02,
+      "std": 1.43
+    },
+    "process_fps": {
+      "mean": 140.4,
+      "std": 1.33
+    },
+    "decode_s": {
+      "mean": 0.24,
+      "std": 0.05
+    },
+    "model_load_s": {
+      "mean": 0.03,
+      "std": 0.0
+    },
+    "process_s": {
+      "mean": 2.74,
+      "std": 0.03
+    }
+  },
+  "warm_peak_nvml_mb": 296.0,
+  "warm_peak_torch_reserved_mb": 110.0,
+  "warm_peak_torch_allocated_mb": 91.4
+}

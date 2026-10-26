@@ -1,117 +1,31 @@
 = Trabalhos Relacionados <sec-related>
 
-A visão computacional já aparece no Sumô de Robôs, porém no sentido oposto ao deste
-trabalho: percepção embarcada, em que o próprio robô detecta o oponente por
-infravermelho, ultrassom ou visão onboard durante a luta. A análise post-match, de um
-observador externo que mede a partida a partir de vídeo de terceira pessoa, não tem,
-até onde nossa busca alcança, pipeline, dataset ou benchmark publicado#footnote[Busca de junho de 2026, em busca web indexada e no arXiv, com quatro strings booleanas combinando "robot sumo", "sumo robot" e "combat robot" a termos de visão, detecção, rastreamento, métricas e arbitragem; strings, achados e categorização ficam versionados no repositório.]. Os trabalhos ao redor confirmam o recorte por contraste: datasets de detecção de robôs de hobby, sem identidade, cinemática nem eventos, e a análise por visão de combate humano. A revisão se organiza, então, pelos quatro corpos de literatura mais
-próximos do problema: o rastreamento multiobjeto genérico, que fornece os
-algoritmos de base; o rastreamento em esportes, que enfrenta alvos parecidos e
-movimento rápido; a visão aplicada a combate e a robôs de competição, os
-domínios mais análogos ao nosso; e os foundation models de segmentação, que
-mudaram o custo de construir um dataset. Dessa análise emergem seis condições
-(C1 a C6) que caracterizam o domínio; a @tab-matrix as consolida e situa o
-recorte científico deste trabalho.
+A visão computacional já aparece no Sumô de Robôs, mas embarcada no robô, não como análise externa: o robô detecta o oponente por infravermelho, ultrassom ou câmera própria durante a luta. Até onde nossa busca alcança, a análise pós-partida, feita por um observador externo a partir de vídeo de terceira pessoa, não tem pipeline, conjunto de dados nem _benchmark_ publicado#footnote[Busca de junho de 2026 em mecanismo de busca web e no arXiv, com quatro strings que combinam "robot sumo", "sumo robot" e "combat robot" a termos de visão, detecção, rastreamento, métricas e arbitragem. Strings, achados e categorização estão versionados no repositório. Não cobrimos bases autenticadas como IEEE Xplore e Scopus.]. Organizamos a revisão em três linhas próximas do problema e delas derivamos seis condições (C1 a C6) que caracterizam o domínio (@tab-matrix).
 
-== Rastreamento multiobjeto por tracking-by-detection
+== Rastreamento multiobjeto e esportes
 
-O paradigma dominante em rastreamento multiobjeto é o *tracking-by-detection*:
-um detector localiza os alvos quadro a quadro e um algoritmo de associação liga
-as detecções no tempo. O SORT @bewley2016sort fixou a formulação mínima: um
-filtro de Kalman com velocidade constante prediz a posição de cada alvo no
-próximo quadro, e a associação resolve uma atribuição por sobreposição (IoU),
-sem usar aparência. As variantes posteriores refinam esse desenho.
+O paradigma dominante em rastreamento multiobjeto é o rastreamento por detecção. O SORT @bewley2016sort fixou a formulação mínima: um filtro de Kalman de velocidade constante prediz cada alvo no quadro seguinte, e uma atribuição por sobreposição (IoU) liga as detecções, sem usar aparência. O ByteTrack @zhang2022bytetrack passou a associar também as detecções de baixa confiança, o que reduz buracos de trajetória sob oclusão e borrão (HOTA 63,1 no MOT17). O OC-SORT @cao2023ocsort atacou outra fragilidade: o Kalman de velocidade constante acumula erro quando o alvo manobra ou some. O método recalcula o filtro a partir das observações em torno da oclusão e atinge HOTA 63,2 no MOT17. Robôs que colidem, giram e ricocheteiam quebram justamente a hipótese de velocidade constante. Daí a primeira condição, *C1, movimento não linear*: colisões e mudanças bruscas de direção ocorrem em todo round.
 
-O ByteTrack @zhang2022bytetrack refinou a associação: em vez de descartar
-detecções de baixa confiança, associa primeiro as de alta confiança e usa as
-restantes para recuperar alvos parcialmente visíveis, reduzindo buracos de
-trajetória sob oclusão e borrão (HOTA 63.1 no MOT17). O OC-SORT @cao2023ocsort
-atacou outra fragilidade: o Kalman de velocidade constante acumula erro quando o
-alvo manobra ou some; o método recalcula o filtro retroativamente a partir das
-observações que cercam a oclusão, mantendo a associação por movimento, com HOTA
-equivalente.
+Os benchmarks do MOT17 filmam pedestres de roupas distintas, que a aparência ajuda a separar. O DanceTrack @sun2022dancetrack isola o caso contrário: 100 vídeos de dança em grupo, com dançarinos uniformizados e movimento diverso. Nele, os rastreadores que dominavam o MOT17 degradam: o ByteTrack cai para HOTA 47,7 e o OC-SORT fica em 55,1 (valores da tabela do DanceTrack). Sucessores que reforçam pistas geométricas, como o C-BIoU @yang2023cbiou e o Hybrid-SORT @yang2024hybridsort, chegam a 60,6 e 62,2. Dois robôs de combate são caixas escuras e parecidas, o que define *C2, aparência uniforme entre alvos*: a identidade precisa vir do movimento.
 
-Esses métodos motion-only são o ponto de partida natural para o Sumô: robôs que
-colidem, giram e ricocheteiam quebram exatamente a hipótese de velocidade
-constante que o OC-SORT relaxa. Dessa análise sai a primeira característica do
-nosso problema: *C1, movimento não linear*, em que colisões e mudanças bruscas de
-direção são o evento central da modalidade, recorrente em todo round. Os benchmarks em que
-esses métodos reportam resultados (MOT17, MOT20) são, porém, de pedestres
-filmados por câmeras profissionais, alvos com roupas e aparências distintas; o
-que acontece quando os alvos são indistinguíveis é o tema da próxima subseção.
+O SportsMOT @cui2023sportsmot leva o problema a 240 vídeos de basquete, vôlei e futebol, com velocidade alta e variável. O método dos autores atinge HOTA 74,1, e o basquete, de mais contato físico, é o esporte mais difícil. O Deep-EIoU @huang2024deepeiou e o Deep HM-SORT @deephmsort2024 combinam caixas expandidas com aparência para jogadores. No Sumô de Robôs a escala temporal é mais extrema: o contato que decide o round dura poucos quadros. Daí *C3, eventos decisivos de poucos quadros*: perder dez quadros num rali de vôlei custa pouco, mas no Sumô esses quadros podem conter o empurrão que decide a partida. O SoccerNet-Tracking @cioppa2022soccernet, por fim, usa a câmera principal de transmissões profissionais de futebol, em alta resolução. O vídeo de torneios de Sumô é o oposto: câmera de mão de espectador, ângulo oblíquo e iluminação de ginásio, ao lado de câmera cenital fixa no Japão. Daí *C4, vídeo de qualidade heterogênea*.
 
-== Rastreamento em esportes: alvos parecidos, movimento rápido
+== Alvos idênticos fora dos esportes
 
-O DanceTrack @sun2022dancetrack isola essa pergunta: 100 vídeos de dança em
-grupo, com dançarinos uniformizados e movimento diverso, em que a associação não
-pode se apoiar na aparência. Os rastreadores que dominavam o MOT17 degradam: o
-ByteTrack cai de HOTA 63.1 para 47.7, e o OC-SORT, líder motion-only, fica em
-55.1. O paralelo é direto: dois robôs de combate são caixas escuras e parecidas.
-Disso deriva *C2, aparência uniforme entre alvos*: a identidade vem do movimento,
-não do visual.
+O rastreamento de alvos indistinguíveis é um campo maduro na biologia. O idtracker.ai @romeroferrero2019idtracker identifica até 100 animais sem marcadores, com acerto acima de 99,9%. O TRex @walter2021trex rastreia centenas de indivíduos, e o SLEAP @pereira2022sleap rastreia poses de vários animais. Esses sistemas, porém, aprendem a identidade a partir do próprio vídeo. Exigem gravações longas, de câmera fixa e com fundo estável, em que todos os alvos apareçam separados ao menos uma vez. O Sumô de Robôs nega essas premissas: um round dura segundos, os robôs passam boa parte dele em contato e a câmera brasileira está na mão. Não há tempo nem condição de captura para aprender a aparência de cada robô.
 
-O SportsMOT @cui2023sportsmot estende a esportes reais (240 sequências de
-basquete, vôlei e futebol) com movimento de velocidade alta e variável; o melhor
-método dos autores fica em HOTA 66.2 no basquete. No Sumô a escala temporal é mais
-extrema: o round inteiro cabe em menos de um segundo, e os eventos que decidem a
-partida duram poucos quadros. Disso deriva *C3, eventos sub-segundo com decisão
-crítica*: perder dez quadros num rally de vôlei custa pouco; no Sumô, perde o
-round.
+== Combate e robôs de competição
 
-O SoccerNet-Tracking @cioppa2022soccernet traz a escala de broadcast profissional:
-futebol televisionado, multicâmera, alta resolução. O vídeo de torneios de Sumô é
-o oposto: câmera de mão de espectador, ângulo oblíquo e iluminação de ginásio, ao
-lado de footage cenital fixa do Japão. Disso deriva *C4, vídeo de qualidade
-heterogênea*: a pipeline funciona sobre o material que existe, não sobre o que um
-broadcast produziria.
+Dois domínios chegam mais perto do Sumô de Robôs. No combate humano, #cite(<hudovernik2022jiujitsu>, form: "prose") pontuam lutas de jiu-jitsu a partir de vídeo de câmera fixa, com estimativa de pose para resolver o contato entre corpos. O trabalho mostra que analisar combate em vídeo gravado é viável. Esse regime define *C5, análise pós-partida*. A técnica, porém, não se aplica a chassis rígidos, que não têm pose a estimar.
 
-== Visão em combate e em robôs de competição
+Nos robôs de competição, o SSL-Vision @zickler2010sslvision, sistema oficial da RoboCup Small Size League desde 2010, localiza robôs rápidos com câmeras fixas e padrões coloridos no topo de cada robô. Rastrear robôs rápidos é tratável quando se controla a instrumentação. O Sumô de Robôs nega essa premissa: o regulamento não prevê marcadores, o acervo de vídeo não os tem e não há câmera calibrada. Daí *C6, ausência de marcadores fiduciais*, que descarta as soluções instrumentadas e exige detectar os robôs pela aparência natural.
 
-Dois domínios chegam mais perto do Sumô de Robôs. No combate humano, o scoring de
-jiu-jitsu de Hudovernik e Skočaj @hudovernik2022jiujitsu pontua a luta por regras
-a partir de vídeo de câmera fixa, com estimativa de pose para resolver o contato
-corpo a corpo. Confirma que a análise post-match de combate por vídeo é viável
-(*C5, análise post-match*: sobre vídeo gravado, depois da luta), mas a técnica não
-transfere: robôs de Sumô são chassis rígidos, sem pose a estimar.
+== O recorte em aberto
 
-Nos robôs de competição, o SSL-Vision @zickler2010sslvision (RoboCup Small Size
-League) usa câmeras fixas e padrões coloridos no topo de cada robô para
-localização global em tempo real, obrigatório na liga desde 2010: rastrear robôs
-rápidos é tratável quando se controla a instrumentação. O Sumô nega as premissas:
-o regulamento não prevê marcadores, o acervo de vídeo não os tem, e não há câmera
-calibrada fixa. Disso deriva *C6, ausência de marcadores fiduciais*, que descarta
-as soluções instrumentadas e exige detecção pela aparência natural.
-
-== Foundation models como anotadores
-
-Construir um detector supervisionado sem dataset público esbarra na anotação.
-Modelos de fundação de vocabulário aberto mudaram esse custo: o Grounding DINO
-@liu2024groundingdino detecta por descrição textual sem treino no domínio, e a
-família SAM @ravi2024sam2 @carion2025sam3 segmenta e propaga máscaras em vídeo a
-partir de prompts, o SAM 3 aceitando conceitos textuais. O custo computacional os
-mantém longe de inferência prática em vídeo longo, o que consolidou uma divisão: o
-foundation model anota, e um modelo compacto treinado nessas anotações roda a
-inferência. Adotamos essa divisão, validando o anotador contra revisão humana
-(metodologia).
-
-== O recorte científico em aberto
-
-As seis condições derivadas acima caracterizam o domínio: *C1* movimento não
-linear, *C2* aparência uniforme, *C3* eventos sub-segundo, *C4* vídeo
-heterogêneo, *C5* análise post-match e *C6* ausência de fiduciais. Nem todas
-pesam igual para a ciência. *C5* descreve o regime de uso, não uma
-dificuldade técnica: a análise é post-match, sobre vídeo gravado, como no scoring
-de jiu-jitsu. *C6* também não mede dificuldade: satisfeita por quase todos, é o
-critério que exclui as soluções instrumentadas, como o SSL-Vision. *C3* e *C4* descrevem a instância. O que permanece em aberto, com
-maior valor científico transferível, é o par *C1+C2*: rastrear alvos de aparência
-uniforme sob movimento não linear. O DanceTrack isola esse par e mostra a queda dos
-melhores rastreadores, mas em captura controlada; sob vídeo não calibrado e sem
-marcadores, e julgado pela acurácia e pelo custo de rodar em hardware
-de consumo, o melhor equilíbrio segue sem resposta. É esse o recorte que a
-pergunta deste trabalho ataca.
+Nem todas as condições pesam igual. C5 descreve o regime de uso, não uma dificuldade técnica. C6 também não mede dificuldade: quase todos os trabalhos da @tab-matrix operam sem marcadores, e a condição serve para excluir as soluções instrumentadas. C3 e C4 descrevem o caso do Sumô de Robôs, não o problema geral. O que permanece em aberto, com valor transferível, é o par *C1+C2* sob vídeo não controlado (C4, C6): rastrear alvos de aparência uniforme em movimento não linear. O DanceTrack isola esse par, mas com câmera estável e alvos inteiros no quadro. A biologia o resolve com gravações longas de câmera fixa. Sob vídeo de torneio, curto e não calibrado, e julgado pela acurácia e pelo custo de rodar em hardware de consumo, o melhor equilíbrio segue sem resposta. É esse o recorte que a pergunta deste trabalho ataca.
 
 #figure(
-  caption: [Cobertura das seis condições do domínio (#sym.circle.filled cobre, #sym.circle.filled.tiny parcial, #sym.circle não força). C1 movimento não linear; C2 aparência uniforme; C3 eventos sub-segundo; C4 vídeo heterogêneo; C5 análise post-match; C6 ausência de fiduciais. Mapa de condições, não placar de desempenho: o par C1+C2 sob o regime não controlado (C4, C6) é a célula em aberto.],
+  caption: [Cobertura das seis condições do domínio (#sym.circle.filled cobre, #sym.circle.filled.tiny parcial, #sym.circle não força). C1 movimento não linear; C2 aparência uniforme; C3 eventos decisivos de poucos quadros; C4 vídeo heterogêneo; C5 análise pós-partida; C6 ausência de marcadores. Em C5 e C6, #sym.circle.filled indica que o trabalho opera nesse regime. É um mapa de condições, não um placar de desempenho; a última linha descreve o domínio-alvo, não um resultado.],
   table(
     columns: (auto, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr),
     align: (left, center, center, center, center, center, center),
@@ -127,17 +41,11 @@ pergunta deste trabalho ataca.
     [DanceTrack @sun2022dancetrack], [#sym.circle.filled], [#sym.circle.filled], [#sym.circle], [#sym.circle], [#sym.circle], [#sym.circle.filled],
     [SportsMOT @cui2023sportsmot], [#sym.circle.filled.tiny], [#sym.circle.filled], [#sym.circle], [#sym.circle], [#sym.circle], [#sym.circle.filled],
     [SoccerNet-Tracking @cioppa2022soccernet], [#sym.circle.filled.tiny], [#sym.circle.filled], [#sym.circle.filled.tiny], [#sym.circle], [#sym.circle.filled.tiny], [#sym.circle.filled],
-    [Jiu-jitsu scoring @hudovernik2022jiujitsu], [#sym.circle.filled], [#sym.circle.filled.tiny], [#sym.circle.filled.tiny], [#sym.circle], [#sym.circle.filled], [#sym.circle.filled],
-    [SSL-Vision @zickler2010sslvision], [#sym.circle.filled], [#sym.circle.filled], [#sym.circle.filled], [#sym.circle], [#sym.circle], [#sym.circle],
-    [*Sumô de Robôs (este trabalho)*], [#sym.circle.filled], [#sym.circle.filled], [#sym.circle.filled], [#sym.circle.filled], [#sym.circle.filled], [#sym.circle.filled],
+    [idtracker.ai @romeroferrero2019idtracker], [#sym.circle.filled.tiny], [#sym.circle.filled], [#sym.circle], [#sym.circle], [#sym.circle.filled], [#sym.circle.filled],
+    [Jiu-jitsu @hudovernik2022jiujitsu], [#sym.circle.filled], [#sym.circle.filled.tiny], [#sym.circle.filled.tiny], [#sym.circle], [#sym.circle.filled], [#sym.circle.filled],
+    [SSL-Vision @zickler2010sslvision], [#sym.circle.filled], [#sym.circle], [#sym.circle.filled], [#sym.circle], [#sym.circle], [#sym.circle],
+    [_Sumô de Robôs (domínio-alvo)_], [#sym.circle.filled], [#sym.circle.filled], [#sym.circle.filled], [#sym.circle.filled], [#sym.circle.filled], [#sym.circle.filled],
   ),
 ) <tab-matrix>
 
-Os trabalhos mais próximos cobrem plenamente no máximo três das seis condições, e
-nenhum reúne o par C1+C2 ao regime não controlado do Sumô: os rastreadores
-genéricos e os benchmarks esportivos operam sobre captura controlada, e o
-SSL-Vision depende da instrumentação que o Sumô não tem. Essa lacuna define uma
-classe de problemas mais ampla (drone racing sem fiduciais, outras categorias de
-combate de robôs, disputas rápidas entre alvos rígidos idênticos) para a qual a
-contribuição é transferível, com o Sumô como veículo em que as condições aparecem
-em estado puro.
+Hipotetizamos que a resposta vale para outras disputas rápidas entre alvos rígidos parecidos, como outras categorias de combate de robôs; a @sec-sem-rotulos traz um primeiro indício com o Sumô de rádio-controle.
