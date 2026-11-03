@@ -1,0 +1,46 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "jsx-a11y", "import", "oxc", "unicorn", "promise"],
+  "env": { "browser": true, "es2024": true },
+  "options": { "typeAware": true },
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "rules": {
+    "jsx-a11y/prefer-tag-over-role": "off",
+    "typescript/no-explicit-any": "error",
+    "typescript/no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+    ],
+    "typescript/consistent-type-imports": "error",
+    "typescript/no-floating-promises": "error",
+    "typescript/no-misused-promises": "error",
+    "typescript/no-unsafe-assignment": "error",
+    "typescript/no-unsafe-member-access": "error",
+    "typescript/no-unsafe-call": "error",
+    "typescript/no-unnecessary-condition": "error",
+    "typescript/prefer-nullish-coalescing": "error",
+    "eslint/prefer-const": "error",
+    "eslint/no-console": "warn",
+    "eslint/no-nested-ternary": "error",
+    "eslint/prefer-template": "error",
+    "import/no-default-export": "error",
+    "import/no-unassigned-import": ["warn", { "allow": ["**/*.css"] }],
+    "react/rules-of-hooks": "error",
+    "react/react-in-jsx-scope": "off",
+    "react/only-export-components": "off",
+    "jsx-a11y/alt-text": "error"
+  },
+  "overrides": [
+    {
+      "files": ["vite.config.ts", "playwright.config.ts"],
+      "rules": { "import/no-default-export": "off" }
+    },
+    {
+      "files": ["scripts/**", ".claude/**", "e2e/**"],
+      "rules": { "eslint/no-console": "off" }
+    }
+  ]
+}

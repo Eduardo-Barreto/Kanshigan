@@ -1,0 +1,46 @@
+.arena {
+  flex-direction: row;
+  align-items: center;
+  gap: 72px;
+}
+.arena-text {
+  flex: 0 0 760px;
+}
+.arena .headline {
+  font-size: 60px;
+}
+.arena .lede {
+  font-size: 30px;
+}
+.arena-ablation {
+  margin-top: 40px;
+}
+.arena-ablation .caption {
+  margin: 0;
+  font-size: 26px;
+}
+.arena-bar {
+  display: flex;
+  gap: 6px;
+  height: 64px;
+  margin: 16px 0;
+}
+.arena-bar span {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-radius: 12px;
+  font: 600 22px/1 var(--sans);
+  white-space: nowrap;
+  color: #fff;
+}
+.arena-bar span:first-child {
+  color: var(--text);
+}
+.arena-note {
+  color: var(--text-subtle);
+}
+.arena-frame {
+  flex: 1;
+  aspect-ratio: 16 / 9;
+}

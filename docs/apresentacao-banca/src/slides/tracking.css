@@ -1,0 +1,43 @@
+.track-grid {
+  display: grid;
+  grid-template-columns: 340px 1fr 1fr;
+  column-gap: 64px;
+  margin-top: 64px;
+}
+.track-row {
+  display: contents;
+}
+.track-row > * {
+  height: 104px;
+  border-top: 1px solid var(--border);
+}
+.track-row .chart-name {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+.track-row .pill {
+  align-self: flex-start;
+  font-size: 18px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.track-row .pill[data-appearance] {
+  background: #fdf0e4;
+  color: #b4540a;
+}
+.track-cell {
+  display: grid;
+  grid-template-columns: 1fr 110px;
+  align-items: center;
+  gap: 20px;
+}
+.track-cell .bar {
+  height: 36px;
+}
+.track-take {
+  margin-top: 40px;
+  max-width: 60ch;
+  font-size: 32px;
+}

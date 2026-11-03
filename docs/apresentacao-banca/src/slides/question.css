@@ -1,0 +1,19 @@
+.question {
+  justify-content: center;
+}
+.question-text {
+  margin: 0;
+  max-width: 30ch;
+  font: 600 64px/1.18 var(--display);
+  letter-spacing: -0.03em;
+  color: var(--text);
+  text-wrap: balance;
+}
+.question-text em {
+  font-style: normal;
+  color: var(--accent);
+}
+.question-note {
+  margin-top: 48px;
+  max-width: 50ch;
+}

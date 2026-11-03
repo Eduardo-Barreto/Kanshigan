@@ -1,0 +1,48 @@
+.crop .headline {
+  font-size: 60px;
+  max-width: 34ch;
+}
+.crop-row {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  margin-top: 64px;
+}
+.crop-fig {
+  margin: 0;
+}
+.crop-raw {
+  width: 720px;
+  aspect-ratio: 16 / 9;
+}
+.crop-after {
+  width: 800px;
+  aspect-ratio: 918 / 387;
+}
+.crop-fig figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 24px;
+}
+.crop-fig figcaption span {
+  font: 600 22px/1 var(--sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+.crop-fig figcaption b {
+  font: 650 36px/1.2 var(--display);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-soft);
+}
+.crop-fig figcaption .crop-good {
+  color: var(--accent);
+}
+.crop-arrow {
+  flex: 0 0 40px;
+  height: 40px;
+  background: var(--border-strong);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}

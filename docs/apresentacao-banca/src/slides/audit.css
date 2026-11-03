@@ -1,0 +1,15 @@
+.audit .chart {
+  flex-basis: 900px;
+}
+.audit .chart-row {
+  height: 56px;
+  margin-bottom: 14px;
+}
+.audit .result-side .caption {
+  margin-top: 0;
+}
+.audit-clip {
+  aspect-ratio: 16 / 9;
+  margin-top: 40px;
+  border-radius: 22px;
+}

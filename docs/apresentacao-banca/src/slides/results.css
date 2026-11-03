@@ -1,0 +1,72 @@
+/* Shared by the result slides: a bar chart on the left, the takeaway on the right. */
+
+.result .headline {
+  font-size: 64px;
+  max-width: 28ch;
+}
+.result-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 96px;
+  margin-top: 64px;
+}
+.result-side {
+  flex: 1;
+}
+.result-side .figure {
+  margin: 0;
+}
+.result-side .caption {
+  margin-top: 20px;
+}
+.result-warn {
+  padding-top: 28px;
+  border-top: 1px solid var(--border);
+  margin-top: 36px !important;
+}
+.result-warn b {
+  color: var(--fail);
+}
+
+.chart {
+  flex: 0 0 960px;
+}
+.chart-axis {
+  margin: 0 0 20px;
+  font: 500 20px/1 var(--mono);
+  color: var(--text-subtle);
+}
+.chart-row {
+  display: grid;
+  grid-template-columns: 330px 1fr 110px;
+  align-items: center;
+  gap: 24px;
+  height: 64px;
+  margin-bottom: 20px;
+}
+.chart-name {
+  font: 400 26px/1.15 var(--sans);
+  color: var(--text-subtle);
+}
+.chart-name b {
+  display: block;
+  font-weight: 600;
+  color: var(--text);
+}
+.chart-row .bar {
+  height: 40px;
+}
+.chart-value {
+  font: 650 34px/1 var(--display);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--text);
+}
+.result-side .figure small {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.3em;
+  letter-spacing: -0.01em;
+  color: var(--text-subtle);
+}

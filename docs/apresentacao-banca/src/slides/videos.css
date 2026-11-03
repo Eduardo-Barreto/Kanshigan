@@ -1,0 +1,18 @@
+.videos {
+  padding-top: 80px;
+  padding-bottom: 64px;
+}
+.videos .headline {
+  font-size: 60px;
+}
+.videos-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  width: 1340px;
+  margin: 36px auto 0;
+}
+.videos-frame {
+  aspect-ratio: 16 / 9;
+  border-radius: 22px;
+}

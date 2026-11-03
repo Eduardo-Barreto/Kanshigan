@@ -1,0 +1,204 @@
+/* Tokens and shared pieces. Slide-specific CSS sits next to each slide. */
+
+:root {
+  --canvas: #fbfbfd;
+  --surface-2: #f2f2f5;
+  --surface-3: #e8e8ed;
+  --border: #e3e3e8;
+  --border-strong: #c7c7cc;
+  --text: #1d1d1f;
+  --text-soft: #424245;
+  --text-subtle: #6e6e73;
+  --brand: #0071e3;
+  --accent: #0071e3;
+  --accent-soft: #e8f1fc;
+  --robot-a: #1f9d48;
+  --robot-b: #e8730c;
+  --fail: #d70015;
+  --fail-soft: #fdecee;
+  --display: 'Geist', system-ui, sans-serif;
+  --out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.page {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 104px 128px 96px;
+}
+
+.eyebrow {
+  margin: 0 0 20px;
+  font: 600 26px/1.2 var(--sans);
+  letter-spacing: 0.005em;
+  color: var(--accent);
+}
+
+.headline {
+  margin: 0;
+  max-width: 24ch;
+  font: 700 76px/1.04 var(--display);
+  letter-spacing: -0.035em;
+  color: var(--text);
+  text-wrap: balance;
+}
+
+.lede {
+  margin: 24px 0 0;
+  max-width: 46ch;
+  font: 400 34px/1.4 var(--sans);
+  letter-spacing: -0.005em;
+  color: var(--text-soft);
+  text-wrap: pretty;
+}
+.lede b {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.source {
+  position: absolute;
+  right: 128px;
+  bottom: 48px;
+  margin: 0;
+  font: 500 18px/1 var(--mono);
+  color: var(--text-subtle);
+}
+
+/* Media sits in a rounded frame with a soft, deep shadow, like a window on the page. */
+
+.frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  background: #000;
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.06),
+    0 40px 80px -32px rgb(0 0 0 / 0.35);
+}
+.frame > img,
+.frame > video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Glass label over media. Light material, heavier text so it reads over any frame. */
+
+.chip {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.72);
+  backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.6);
+  font: 600 22px/1.2 var(--sans);
+  letter-spacing: 0.01em;
+  color: var(--text);
+}
+.chip[data-tone='fail'] {
+  background: rgb(215 0 21 / 0.85);
+  color: #fff;
+  box-shadow: none;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .chip {
+    background: #fff;
+    backdrop-filter: none;
+  }
+}
+
+/* Numbers */
+
+.figure {
+  font: 700 128px/0.9 var(--display);
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.figure small {
+  font-size: 0.45em;
+  letter-spacing: -0.02em;
+}
+
+.caption {
+  margin: 16px 0 0;
+  font: 400 28px/1.35 var(--sans);
+  color: var(--text-soft);
+  text-wrap: pretty;
+}
+.caption b {
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Horizontal bar used by the result charts. --v is the bar length from 0 to 1. */
+
+.bar {
+  position: relative;
+  height: 100%;
+  border-radius: 10px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.bar > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--v) * 100%);
+  min-width: 6px;
+  border-radius: 10px;
+  background: var(--tone, var(--accent));
+}
+
+.pill {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font: 600 20px/1.2 var(--sans);
+  background: var(--surface-2);
+  color: var(--text-soft);
+}
+
+/* Rail: open columns hung from one hairline, each with a marker on the line. Replaces boxed cards. */
+
+.rail {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 4), 1fr);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: rail var(--start, 0);
+}
+.rail > * {
+  position: relative;
+  padding: 40px 48px 0 0;
+  border-top: 2px solid var(--border);
+  counter-increment: rail;
+}
+.rail > *::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  translate: 0 -50%;
+  background: var(--accent);
+}
+.rail[data-numbered] > *::before {
+  content: counter(rail);
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--accent);
+  background: var(--canvas);
+  font: 600 20px/1 var(--mono);
+  color: var(--accent);
+}

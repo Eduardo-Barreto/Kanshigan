@@ -1,0 +1,63 @@
+.dataset .headline {
+  font-size: 60px;
+  max-width: 30ch;
+}
+.dataset-body {
+  display: flex;
+  gap: 80px;
+  margin-top: 48px;
+}
+.dataset-left {
+  flex: 0 0 780px;
+}
+.dataset-left > .caption {
+  margin: 0;
+}
+.dataset-table {
+  width: 100%;
+  margin-top: 36px;
+  border-collapse: collapse;
+  font: 400 28px/1.2 var(--sans);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-soft);
+}
+.dataset-table th,
+.dataset-table td {
+  padding: 18px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.dataset-table thead th {
+  font: 600 20px/1 var(--sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+  border-bottom: 2px solid var(--border-strong);
+}
+.dataset-table tbody th {
+  font-weight: 600;
+  color: var(--text);
+}
+.dataset-table tbody tr:last-child {
+  background: var(--accent-soft);
+}
+.dataset-right {
+  flex: 1;
+}
+.dataset-frame {
+  aspect-ratio: 880 / 504;
+}
+.dataset-score {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-top: 32px;
+}
+.dataset-score .figure {
+  font-size: 104px;
+  color: var(--accent);
+}
+.dataset-score .caption {
+  margin: 0;
+  font-size: 24px;
+}

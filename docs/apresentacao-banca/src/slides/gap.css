@@ -1,0 +1,139 @@
+.gap {
+  padding-top: 88px;
+}
+.gap-title {
+  font-size: 64px;
+}
+
+.gap-matrix {
+  margin-top: 40px;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font: 400 26px/1.2 var(--sans);
+  color: var(--text-soft);
+}
+.gap-matrix th,
+.gap-matrix td {
+  padding: 13px 16px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  transition:
+    opacity 0.5s var(--out),
+    background-color 0.5s var(--out);
+}
+.gap-matrix thead th {
+  vertical-align: bottom;
+  border-bottom: 2px solid var(--border-strong);
+}
+.gap-matrix .gap-work {
+  width: 320px;
+  text-align: left;
+  font-weight: 500;
+  color: var(--text);
+}
+.gap-cond {
+  width: 150px;
+}
+.gap-cond b {
+  display: block;
+  font: 700 28px/1 var(--display);
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.gap-cond span {
+  display: block;
+  margin-top: 6px;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--text-subtle);
+}
+.gap-matrix .gap-regime {
+  width: 380px;
+  text-align: left;
+  font-size: 23px;
+  opacity: 0;
+}
+.gap-matrix tr[data-ours] th,
+.gap-matrix tr[data-ours] td {
+  border-bottom: 0;
+  font-weight: 600;
+  color: var(--text);
+}
+.gap-matrix tr[data-ours] {
+  background: var(--accent-soft);
+}
+
+/* Coverage dots: solid, half and ring. */
+
+.dot {
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+.dot[data-c='full'] {
+  background: var(--text);
+}
+.dot[data-c='part'] {
+  background: linear-gradient(90deg, var(--text) 50%, transparent 50%);
+  box-shadow: inset 0 0 0 2.5px var(--text);
+}
+.dot[data-c='none'] {
+  box-shadow: inset 0 0 0 2.5px var(--border-strong);
+}
+
+/* Second step: the C1 + C2 pair lights up, the rest steps back, the regime column arrives. */
+
+.gap-matrix[data-focus] td:not([data-pair]):not(.gap-regime),
+.gap-matrix[data-focus] th.gap-cond:not([data-pair]) {
+  opacity: 0.22;
+}
+.gap-matrix[data-focus] [data-pair] {
+  background: rgb(0 113 227 / 0.08);
+}
+.gap-matrix[data-focus] tr[data-ours] [data-pair] {
+  background: rgb(0 113 227 / 0.16);
+}
+.gap-matrix[data-focus] .gap-regime {
+  opacity: 1;
+}
+
+.gap-band {
+  margin-top: 32px;
+  padding: 24px 32px;
+  border-radius: 20px;
+  background: var(--accent);
+  color: #fff;
+}
+.gap-band p {
+  margin: 0;
+  font: 500 30px/1.35 var(--sans);
+}
+.gap-band b {
+  font-weight: 700;
+}
+
+.gap-key {
+  position: absolute;
+  right: 128px;
+  top: 116px;
+  display: flex;
+  gap: 32px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: 500 22px/1 var(--sans);
+  color: var(--text-subtle);
+}
+.gap-key li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.gap-key .dot {
+  width: 20px;
+  height: 20px;
+}

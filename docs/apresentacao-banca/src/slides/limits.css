@@ -1,0 +1,34 @@
+.limits .headline {
+  font-size: 64px;
+  max-width: 26ch;
+}
+.limits-list {
+  margin-top: 48px;
+}
+.limits-row {
+  display: grid;
+  grid-template-columns: 1fr 72px 600px;
+  align-items: center;
+  padding: 24px 0;
+  border-top: 1px solid var(--border);
+}
+.limits-problem {
+  margin: 0;
+  font: 650 36px/1.15 var(--display);
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.limits-row .caption {
+  margin-top: 8px;
+  font-size: 26px;
+  color: var(--text-subtle);
+}
+.limits-arrow {
+  font: 400 40px/1 var(--sans);
+  color: var(--text-subtle);
+}
+.limits-action {
+  margin: 0;
+  font: 600 34px/1.2 var(--sans);
+  color: var(--accent);
+}

@@ -1,0 +1,15 @@
+node_modules
+dist
+*.local
+.DS_Store
+.omc
+.env
+.env.*
+!.env.example
+
+# deck CLI output: PDF, screenshots, text dump
+.deck
+
+# Playwright
+test-results
+playwright-report

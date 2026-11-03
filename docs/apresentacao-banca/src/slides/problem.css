@@ -1,0 +1,12 @@
+.problem {
+  flex-direction: row;
+  align-items: center;
+  gap: 80px;
+}
+.problem-frame {
+  flex: 0 0 1000px;
+  aspect-ratio: 16 / 9;
+}
+.problem-text .headline {
+  font-size: 68px;
+}

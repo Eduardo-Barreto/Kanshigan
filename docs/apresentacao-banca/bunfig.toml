@@ -1,0 +1,3 @@
+[run]
+# vite.config.ts imports @nimbus/deck/vite, which ships as TypeScript; Node will not strip types inside node_modules.
+bun = true

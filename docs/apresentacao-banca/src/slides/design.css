@@ -1,0 +1,25 @@
+.design-cols {
+  --cols: 3;
+  margin-top: 96px;
+}
+.design-col h3 {
+  margin: 0;
+  font: 650 36px/1.1 var(--display);
+  letter-spacing: -0.02em;
+  color: var(--accent);
+}
+.design-col ul {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.design-col li {
+  padding-left: 22px;
+  border-left: 3px solid var(--surface-3);
+  font: 400 28px/1.35 var(--sans);
+  color: var(--text-soft);
+  text-wrap: pretty;
+}
