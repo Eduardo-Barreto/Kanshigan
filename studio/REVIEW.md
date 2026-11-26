@@ -2,7 +2,7 @@
 
 Tuning for the adversarial PR review in `.github/workflows/adversarial-review.yml`. Both review lanes read this file and treat it as the highest-priority instruction.
 
-It also sets the bar for the local `review-judgment` agent, which reviews the same kind of diff in phase 6 of `/deliver`, before the PR exists.
+It also sets the bar for the local `review-judgment` agent, which reviews the same kind of diff before the PR exists.
 
 ## Severity for this repo
 

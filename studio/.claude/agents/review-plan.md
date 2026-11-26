@@ -1,6 +1,6 @@
 ---
 name: review-plan
-description: Reviews a drafted plan (product and implementation) for gaps, scope creep, and fit with this project's stack before it's presented to the user for sign-off. Use during phase 2 of /deliver, before showing a plan for approval, or whenever asked to sanity-check a plan.
+description: Reviews a drafted plan (product and implementation) for gaps, scope creep, and fit with this project's stack before it's presented to the user for sign-off. Use before showing a plan for approval, or whenever asked to sanity-check a plan.
 tools: Read, Grep, Glob, Bash
 model: opus
 ---
