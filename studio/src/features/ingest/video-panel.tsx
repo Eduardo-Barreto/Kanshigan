@@ -16,6 +16,7 @@ const MS_PER_SECOND = 1000
 const SOURCES: { value: RawSource; label: string }[] = [
   { value: 'br', label: 'BR, câmera de mão' },
   { value: 'jp', label: 'JP, câmera fixa' },
+  { value: 'intl', label: 'Outros países' },
 ]
 
 /** Derives a directory-safe video name from an uploaded file name. */

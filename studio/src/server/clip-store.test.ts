@@ -5,6 +5,7 @@ import { join } from 'node:path'
 
 import type { ClipDetail } from '@/shared/clip'
 
+import { findClipVideo } from './clip-layout'
 import { moveBlockers, moveClip } from './clip-move'
 import { loadClip, toDetail, toSummary } from './clip-read'
 import { resolveFrameImage, saveFrames, saveTimeline } from './clip-write'
@@ -124,6 +125,18 @@ describe('loadClip, toSummary and toDetail', () => {
       hasVideo: false,
       canExtractFrames: false,
     })
+  })
+
+  test('finds the video of a clip cut from a tournament outside BR and JP as intl', async () => {
+    const path = join(config.paths.clipVideos, 'intl', 'match.mp4')
+    await Bun.write(path, '')
+    expect(await findClipVideo(config, 'match')).toEqual({ path, source: 'intl' })
+  })
+
+  test('presents web_candidates as clips waiting for review', async () => {
+    await seedThreeFrames('web_candidates', 'match')
+    const summary = toSummary(await loadClip(config, { dataset: 'web_candidates', clip: 'match' }))
+    expect(summary).toMatchObject({ role: 'gold_candidate', approvedCount: 0 })
   })
 
   test('rejects a missing clip with a 404 problem', async () => {

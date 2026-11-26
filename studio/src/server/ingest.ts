@@ -20,7 +20,7 @@ import { runProcess } from './process'
 import { emptySidecar, readSidecar, writeSidecar } from './sidecar'
 import { probeVideo } from './video'
 
-const RAW_SOURCES: RawSource[] = ['br', 'jp']
+const RAW_SOURCES: RawSource[] = ['br', 'jp', 'intl']
 const VIDEO_EXTENSION = '.mp4'
 const YOUTUBE_HOSTS = new Set(['youtube.com', 'www.youtube.com', 'm.youtube.com', 'youtu.be'])
 const YOUTUBE_VIDEO_ID = /^[A-Za-z0-9_-]{11}$/

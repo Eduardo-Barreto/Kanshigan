@@ -7,7 +7,12 @@ import { frameImageUrl } from '@/lib/api'
 import { formatCount, formatShare } from '@/lib/format'
 import type { ClipSummary } from '@/shared/clip'
 
-const SOURCE_LABEL: Record<ClipSummary['source'], string> = { br: 'BR', jp: 'JP', unknown: '?' }
+const SOURCE_LABEL: Record<ClipSummary['source'], string> = {
+  br: 'BR',
+  jp: 'JP',
+  intl: 'INT',
+  unknown: '?',
+}
 
 function Thumbnail({ clip }: { clip: ClipSummary }) {
   if (clip.thumbnailIndex === null) {

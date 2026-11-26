@@ -8,7 +8,7 @@ import { listDirectory } from './files'
 const FRAME_STEM = /^(?<clip>.+)_(?<index>\d+)$/
 const IMAGE_EXTENSION = '.jpg'
 const STEM_INDEX_DIGITS = 4
-const VIDEO_SUBSETS: FootageSource[] = ['br', 'jp']
+const VIDEO_SUBSETS: FootageSource[] = ['br', 'jp', 'intl']
 
 /** Identifies one clip inside one dataset directory. */
 export type ClipLocation = { dataset: string; clip: string }

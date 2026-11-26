@@ -19,6 +19,12 @@ const KNOWN_DATASETS: Record<string, DatasetProfile> = {
     label: 'Candidatos a gold',
     description: 'Partidas anotadas pelo SAM 3 que ainda esperam revisão e aprovação.',
   },
+  web_candidates: {
+    role: 'gold_candidate',
+    label: 'Candidatos da web',
+    description:
+      'Rounds de torneios públicos (BR, JP e outros países) anotados pelo SAM 3, esperando revisão.',
+  },
   train: {
     role: 'train',
     label: 'Treino',

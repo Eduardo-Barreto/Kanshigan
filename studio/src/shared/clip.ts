@@ -10,7 +10,7 @@ const ROLES = ['gold', 'gold_candidate', 'train', 'val', 'other'] as const
 const roleSchema = z.enum(ROLES)
 export type Role = z.infer<typeof roleSchema>
 
-const FOOTAGE_SOURCES = ['br', 'jp', 'unknown'] as const
+const FOOTAGE_SOURCES = ['br', 'jp', 'intl', 'unknown'] as const
 export const footageSourceSchema = z.enum(FOOTAGE_SOURCES)
 export type FootageSource = z.infer<typeof footageSourceSchema>
 
