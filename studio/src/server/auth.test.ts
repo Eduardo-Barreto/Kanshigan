@@ -1,9 +1,7 @@
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test } from 'bun:test'
+import { afterEach, beforeEach, describe, expect, test } from 'bun:test'
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-
-import { GlobalRegistrator } from '@happy-dom/global-registrator'
 
 import { sessionSchema } from '@/shared/auth'
 
@@ -15,10 +13,6 @@ const PASSWORD = 'a-long-test-password'
 const MAX_FAILED_LOGINS = 5
 
 let dataRoot = ''
-
-// happy-dom's Headers hides Set-Cookie, so the session cookie is only visible with native globals.
-beforeAll(() => GlobalRegistrator.unregister())
-afterAll(() => GlobalRegistrator.register())
 
 beforeEach(async () => {
   dataRoot = await mkdtemp(join(tmpdir(), 'studio-auth-'))
