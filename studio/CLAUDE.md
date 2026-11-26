@@ -8,7 +8,7 @@ Kanshigan Studio: the annotation workbench for the Kanshigan dataset. A Bun + Ho
 - `bun run start`: production build, then the server on `127.0.0.1:4310` serving both the API and the built front end.
 - `bun run tailnet` / `bun run funnel` / `bun run expose:off`: put the running server on the tailnet or the public internet through Tailscale, and take it off. See `scripts/expose.ts`.
 - `bun run doctor`: oxlint (type-aware plus the project's own rules), oxfmt check, typecheck, knip, unit tests. Run before every commit.
-- `bun run policy`: diff-level checks against the base branch (source changed with no test, dead relative link, lint config widened). Runs in CI and in the `gh pr create` gate.
+- `bun run policy`: diff-level checks against the base branch (source changed with no test, dead relative link, lint config widened). Runs in CI.
 - `bun run react-doctor`: React-specific health scan (anti-patterns, perf, a11y) layered on oxlint. Vendored `ui/` and generated files are excluded via `doctor.config.json`; the CI action reports only PR-introduced issues.
 - `bun run test`: unit tests (bun test, over `src`, `.claude/hooks`, `scripts` and `.oxlint-plugins`).
 - `bun run test:e2e`: Playwright end-to-end against a throwaway copy of `e2e/fixtures/library`, including the axe accessibility sweep. It builds first.
@@ -17,9 +17,7 @@ Kanshigan Studio: the annotation workbench for the Kanshigan dataset. A Bun + Ho
 
 ## Delivery
 
-`/deliver` runs the full structured pipeline for this repo: grilling + docs, visual plan with test plan, implementation with an anti-slop cleanup pass, the deterministic gate, one Opus review of intent and cross-file logic, PR, then babysitting CI and the adversarial review workflow to green. It overrides the generic `/deliver`. See `.claude/skills/deliver/SKILL.md`.
-
-Three hooks in `.claude/settings.json` enforce this regardless of which flow you use: a `Stop` hook runs `bun run doctor` whenever the working tree has uncommitted changes, a `PreToolUse` hook blocks `gh pr create` until the gate passes and `review-judgment` has signed off on the current scope hash, and a `PostToolUse` hook lints each edited file and feeds the diagnostics straight back.
+Two hooks in `.claude/settings.json` enforce the gate: a `Stop` hook runs `bun run doctor` whenever the working tree has uncommitted changes, and a `PostToolUse` hook lints each edited file and feeds the diagnostics straight back.
 
 Everything a parser can decide is enforced by `bun run doctor`, not by a reviewer reading this file. The conventions below are checked by oxlint's type-aware rules plus this project's own rules in `.oxlint-plugins/`, each with a test in `.oxlint-plugins/project-conventions.test.ts`. If you disagree with a rule, change the rule; don't work around it.
 
@@ -52,9 +50,9 @@ src/
   lib/               typed API client, query client, formatting
   test/              bun test setup + jest-dom matcher types
 e2e/                 Playwright specs and the fixture library they run against
-scripts/             expose (Tailscale), e2e-server, scope-hash, diff-policy
+scripts/             expose (Tailscale), e2e-server, diff-scope, diff-policy
 .oxlint-plugins/     this project's conventions as real lint rules
-.claude/             hooks, review agents, and the /deliver skill
+.claude/             hooks and review agents
 ```
 
 CI for this folder is `../.github/workflows/studio.yml`.
