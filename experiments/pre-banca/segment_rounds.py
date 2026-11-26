@@ -39,9 +39,14 @@ def round_windows(path: Path) -> list[tuple[float, float]]:
 
     prev = None
     samples: list[tuple[float, bool, bool]] = []  # (t, active, has_dohyo)
-    for i in range(0, n, step):
-        cap.set(cv2.CAP_PROP_POS_FRAMES, i)
-        ok, frame = cap.read()
+    # Sequential grab() skips frames without decoding them; seeking to every sample
+    # re-decodes from the previous keyframe and made hour-long streams impractical.
+    for i in range(n):
+        if not cap.grab():
+            break
+        if i % step:
+            continue
+        ok, frame = cap.retrieve()
         if not ok:
             break
         gray = cv2.cvtColor(cv2.resize(frame, (320, 180)), cv2.COLOR_BGR2GRAY)
