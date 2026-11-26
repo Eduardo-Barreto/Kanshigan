@@ -57,6 +57,11 @@ YOUTUBE_FORMAT = "bv*[height<=1080][vcodec^=avc1]/bv*[height<=1080]"
 SCOUT_FORMAT = "bv*[height<=360][vcodec^=avc1]/bv*[height<=360]"
 SCOUT_MERGE_GAP_S = 30.0  # rounds of one match sit seconds apart; merging saves yt-dlp calls
 SCOUT_PAD_S = 5.0
+# A regional stream holds 100+ matches; 40 stretches spread over the day keep many
+# different robots without one stream taking most of the GPU time.
+SCOUT_MAX_SECTIONS = 40
+# YouTube answers a burst of requests with a bot check that blocks the whole IP.
+POLITE = ["--sleep-requests", "1", "--sleep-interval", "3", "--max-sleep-interval", "8"]
 MIN_ROUND_S = 2.0
 MAX_ROUND_S = 30.0  # longer windows merge rounds with resets and people on the dohyo
 SOURCES = ("br", "jp", "intl")
@@ -101,7 +106,13 @@ def read_manifest(path: Path) -> list[Row]:
 
 def scouted_sections(row: Row) -> tuple[tuple[int, int], ...]:
     path = HARVEST / "scout" / f"{row.video_id}.json"
-    return tuple(map(tuple, json.loads(path.read_text()))) if path.exists() else ()
+    if not path.exists():
+        return ()
+    sections = [tuple(pair) for pair in json.loads(path.read_text())]
+    if len(sections) > SCOUT_MAX_SECTIONS:
+        step = len(sections) / SCOUT_MAX_SECTIONS
+        sections = [sections[int(i * step)] for i in range(SCOUT_MAX_SECTIONS)]
+    return tuple(sections)
 
 
 def sections_of(row: Row) -> tuple[tuple[int, int], ...]:
@@ -136,7 +147,7 @@ def scout(row: Row) -> str:
     low_res.parent.mkdir(parents=True, exist_ok=True)
     if not low_res.exists():
         command = [
-            "uvx", "--from", "yt-dlp[default]", "yt-dlp", "--no-playlist", "--no-warnings",
+            "uvx", "--from", "yt-dlp[default]", "yt-dlp", "--no-playlist", "--no-warnings", *POLITE,
             "--format", SCOUT_FORMAT, "--remux-video", "mp4", "-N", "4",
             "--output", str(low_res.with_suffix(".%(ext)s")),
             "--", f"https://www.youtube.com/watch?v={row.video_id}",
@@ -180,7 +191,7 @@ def download(video: RawVideo) -> str:
         start, end = next(pair for pair in sections_of(video.row) if pair[0] == video.offset)
         section = ["--download-sections", f"*{start}-{end}"]
     command = [
-        "uvx", "--from", "yt-dlp[default]", "yt-dlp", "--no-playlist", "--no-warnings",
+        "uvx", "--from", "yt-dlp[default]", "yt-dlp", "--no-playlist", "--no-warnings", *POLITE,
         "--format", YOUTUBE_FORMAT, "--remux-video", "mp4", *section,
         "--output", str(video.path.with_suffix(".%(ext)s")),
         "--", f"https://www.youtube.com/watch?v={video.row.video_id}",
