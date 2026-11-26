@@ -38,10 +38,12 @@ MIN_BBOX_AREA_RATIO = 0.0005
 MAX_BBOX_AREA_RATIO = 0.20
 MAX_BBOX_HEIGHT_RATIO = 0.5  # no robot spans half the dohyo crop; a tripod or person in the crop corner does
 CHUNK_FRAMES = 60  # SAM 3 holds per-frame feature maps; chunking caps VRAM on 8GB GPUs
+MIN_CHUNK_FRAMES = 15
+
 
 
 def find_clip_subset(clip_id: str) -> str:
-    for sub in ("br", "jp"):
+    for sub in ("br", "jp", "intl"):
         if (CLIPS_DIR / sub / f"{clip_id}.mp4").exists():
             return sub
     raise FileNotFoundError(f"native clip not found for {clip_id}")
@@ -67,8 +69,8 @@ def dohyo_distance(box: tuple[int, int, int, int], img_w: int, img_h: int) -> fl
     return ((cx - img_w / 2) / (0.5 * img_w)) ** 2 + ((cy - img_h / 2) / (0.5 * img_h)) ** 2
 
 
-def masks_to_bboxes(masks: np.ndarray, img_w: int, img_h: int) -> list[tuple[int, int, int, int]]:
-    """Each mask -> bounding box of largest connected component, filtered, most central first.
+def kept_objects(masks: np.ndarray, img_w: int, img_h: int) -> list[tuple[tuple[int, int, int, int], np.ndarray]]:
+    """Each mask -> (bounding box of its largest connected component, mask), filtered, most central first.
 
     Ordering by distance to the dohyo center matters because callers keep only the
     first MAX_OBJECTS: in SAM's own order, an off-arena detection (e.g. a tripod in
@@ -76,7 +78,7 @@ def masks_to_bboxes(masks: np.ndarray, img_w: int, img_h: int) -> list[tuple[int
     """
     if masks.ndim == 4:
         masks = masks[:, 0]
-    bboxes = []
+    kept = []
     img_area = img_w * img_h
     for m in masks:
         m_u8 = (m > 0).astype(np.uint8)
@@ -95,8 +97,13 @@ def masks_to_bboxes(masks: np.ndarray, img_w: int, img_h: int) -> list[tuple[int
         # false positive on the surrounding mat/crowd, common at low thresholds.
         if dohyo_distance((x, y, w, h), img_w, img_h) > 1.0:
             continue
-        bboxes.append((x, y, w, h))
-    return sorted(bboxes, key=lambda box: dohyo_distance(box, img_w, img_h))
+        kept.append(((x, y, w, h), m > 0))
+    return sorted(kept, key=lambda obj: dohyo_distance(obj[0], img_w, img_h))
+
+
+def masks_to_bboxes(masks: np.ndarray, img_w: int, img_h: int) -> list[tuple[int, int, int, int]]:
+    """Bounding boxes of the kept objects, most central first."""
+    return [box for box, _mask in kept_objects(masks, img_w, img_h)]
 
 
 def scale_bbox(box: tuple[int, int, int, int], src_w: int, src_h: int, dst_w: int, dst_h: int) -> tuple[int, int, int, int]:
@@ -125,14 +132,19 @@ def _write_chunk(frames_rgb: list[np.ndarray], fps: float, path: Path) -> None:
 def _run_session(predictor, video_path: Path, prompt: str) -> dict[int, np.ndarray]:
     resp = predictor.handle_request(request=dict(type="start_session", resource_path=str(video_path)))
     session_id = resp["session_id"]
-    resp = predictor.handle_request(
-        request=dict(type="add_prompt", session_id=session_id, frame_index=0, text=prompt)
-    )
-    out_per_frame = {0: resp["outputs"]}
-    for r in predictor.handle_stream_request(
-        request=dict(type="propagate_in_video", session_id=session_id)
-    ):
-        out_per_frame[r["frame_index"]] = r["outputs"]
+    # Closed in `finally`: a session left open after an OOM keeps its feature maps on the
+    # GPU, and every later clip in the same process then fails too.
+    try:
+        resp = predictor.handle_request(
+            request=dict(type="add_prompt", session_id=session_id, frame_index=0, text=prompt)
+        )
+        out_per_frame = {0: resp["outputs"]}
+        for r in predictor.handle_stream_request(
+            request=dict(type="propagate_in_video", session_id=session_id)
+        ):
+            out_per_frame[r["frame_index"]] = r["outputs"]
+    finally:
+        predictor.handle_request(request=dict(type="close_session", session_id=session_id))
 
     masks = {}
     for fidx, out in out_per_frame.items():
@@ -142,8 +154,6 @@ def _run_session(predictor, video_path: Path, prompt: str) -> dict[int, np.ndarr
         if isinstance(m, torch.Tensor):
             m = m.cpu().numpy()
         masks[fidx] = m
-
-    predictor.handle_request(request=dict(type="close_session", session_id=session_id))
     return masks
 
 
@@ -164,7 +174,19 @@ def _set_detection_threshold(predictor, thresh: float) -> None:
         model.score_threshold_detection = thresh
 
 
-def run_sam(sam_frames: list[np.ndarray], sam_fps: float, prompt: str = PROMPT, score_thresh: float | None = None) -> dict[int, np.ndarray]:
+
+def build_predictor():
+    return build_sam3_video_predictor(gpus_to_use=[torch.cuda.current_device()])
+
+
+def run_sam(
+    sam_frames: list[np.ndarray],
+    sam_fps: float,
+    prompt: str = PROMPT,
+    score_thresh: float | None = None,
+    predictor=None,
+    max_tracked: int | None = None,
+) -> dict[int, np.ndarray]:
     """Masks per global frame index, processing in chunks to bound VRAM.
 
     SAM 3's video predictor keeps feature maps for every frame in a session, so a
@@ -172,31 +194,64 @@ def run_sam(sam_frames: list[np.ndarray], sam_fps: float, prompt: str = PROMPT, 
     at its frame 0), and the cache is cleared between chunks. Robot Sumo rounds are
     only seconds long, so an 80-frame (8 s at 10 fps) window comfortably spans one.
     """
-    predictor = build_sam3_video_predictor(gpus_to_use=[torch.cuda.current_device()])
+    predictor = predictor or build_predictor()
     if score_thresh is not None:
         _set_detection_threshold(predictor, score_thresh)
+    if max_tracked is not None:
+        predictor.model.max_num_objects = max_tracked
     result: dict[int, np.ndarray] = {}
     with tempfile.TemporaryDirectory() as tmp:
         for start in range(0, len(sam_frames), CHUNK_FRAMES):
-            chunk = sam_frames[start : start + CHUNK_FRAMES]
-            chunk_path = Path(tmp) / f"chunk_{start:05d}.mp4"
-            _write_chunk(chunk, sam_fps, chunk_path)
-            print(f"  chunk {start}-{start + len(chunk) - 1}")
-            for local_idx, masks in _run_session(predictor, chunk_path, prompt).items():
-                result[start + local_idx] = masks
-            torch.cuda.empty_cache()
+            result.update(_run_chunk(predictor, sam_frames, start, min(start + CHUNK_FRAMES, len(sam_frames)), sam_fps, prompt, Path(tmp)))
     return result
 
 
-def main() -> None:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("clip_id")
-    ap.add_argument("--split", default="train", help="output subdir under data/annotations (train|val|gold or scratch name)")
-    ap.add_argument("--prompt", default=PROMPT, help="SAM 3 text prompt")
-    ap.add_argument("--score-thresh", type=float, default=None, help="lower SAM detection threshold (e.g. 0.15 for JP)")
-    args = ap.parse_args()
+def _run_chunk(predictor, sam_frames, start: int, end: int, sam_fps: float, prompt: str, tmp: Path) -> dict[int, np.ndarray]:
+    """Masks for frames [start, end), halving the chunk on CUDA OOM down to MIN_CHUNK_FRAMES.
 
-    clip_id = args.clip_id
+    A chunk that still overflows at that size yields no masks instead of failing the clip.
+    """
+    chunk_path = tmp / f"chunk_{start:05d}_{end:05d}.mp4"
+    _write_chunk(sam_frames[start:end], sam_fps, chunk_path)
+    print(f"  chunk {start}-{end - 1}")
+    try:
+        masks = _run_session(predictor, chunk_path, prompt)
+    except torch.OutOfMemoryError:
+        torch.cuda.empty_cache()
+        if end - start <= MIN_CHUNK_FRAMES:
+            # Leaving these frames unlabelled keeps the rest of the clip; the studio can
+            # decode and annotate them by hand.
+            print(f"  OOM on {start}-{end - 1} at the minimum chunk size, frames left unlabelled")
+            return {}
+        middle = (start + end) // 2
+        print(f"  OOM on {start}-{end - 1}, retrying as two halves")
+        return {
+            **_run_chunk(predictor, sam_frames, start, middle, sam_fps, prompt, tmp),
+            **_run_chunk(predictor, sam_frames, middle, end, sam_fps, prompt, tmp),
+        }
+    finally:
+        chunk_path.unlink(missing_ok=True)
+        torch.cuda.empty_cache()
+    return {start + local_idx: m for local_idx, m in masks.items()}
+
+
+def annotate_clip(
+    clip_id: str,
+    split: str,
+    prompt: str = PROMPT,
+    score_thresh: float | None = None,
+    predictor=None,
+    masks_dir: Path | None = None,
+    max_tracked: int | None = None,
+) -> int:
+    """Label one prepared clip with SAM 3 and return how many frames got a label.
+
+    `max_tracked` caps how many masklets SAM 3 keeps alive (by detection score); it bounds
+    VRAM when a low threshold makes SAM track many spurious objects.
+    With `masks_dir`, the masks of the kept objects are also saved (bit-packed, at SAM
+    resolution) as `<masks_dir>/<clip_id>.npz`, so shape and heading can be recovered
+    later without another GPU pass.
+    """
     subset = find_clip_subset(clip_id)
     sam_clip = SAM_DIR / f"{clip_id}.mp4"
     native_clip = CLIPS_DIR / subset / f"{clip_id}.mp4"
@@ -204,8 +259,8 @@ def main() -> None:
     if not sam_clip.exists():
         raise FileNotFoundError(f"SAM input missing: {sam_clip}. Run prep_clips.py first.")
 
-    out_images = ANN_DIR / args.split / "images"
-    out_labels = ANN_DIR / args.split / "labels"
+    out_images = ANN_DIR / split / "images"
+    out_labels = ANN_DIR / split / "labels"
     out_images.mkdir(parents=True, exist_ok=True)
     out_labels.mkdir(parents=True, exist_ok=True)
 
@@ -222,13 +277,14 @@ def main() -> None:
     native_count = int(native_cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
     print(f"[{clip_id}] running SAM 3 ({len(sam_frames)} frames @ {sam_fps:.1f}fps, {sam_w}x{sam_h})")
-    masks_per_frame = run_sam(sam_frames, sam_fps, args.prompt, args.score_thresh)
+    masks_per_frame = run_sam(sam_frames, sam_fps, prompt, score_thresh, predictor, max_tracked)
 
     stride = max(1, round(native_fps / sam_fps))
     written = 0
+    saved_masks: dict[str, np.ndarray] = {}
     for sam_idx, masks in sorted(masks_per_frame.items()):
-        bboxes_small = masks_to_bboxes(masks, sam_w, sam_h)[:MAX_OBJECTS]
-        if not bboxes_small:
+        objects = kept_objects(masks, sam_w, sam_h)[:MAX_OBJECTS]
+        if not objects:
             continue
 
         native_idx = min(sam_idx * stride, native_count - 1)
@@ -239,15 +295,30 @@ def main() -> None:
 
         lines = [
             to_yolo_line(scale_bbox(box, sam_w, sam_h, native_w, native_h), native_w, native_h)
-            for box in bboxes_small
+            for box, _mask in objects
         ]
         stem = f"{clip_id}_{sam_idx:04d}"
         cv2.imwrite(str(out_images / f"{stem}.jpg"), native_bgr)
         (out_labels / f"{stem}.txt").write_text("\n".join(lines) + "\n")
+        saved_masks[stem] = np.packbits(np.stack([mask for _box, mask in objects]), axis=-1)
         written += 1
 
     native_cap.release()
-    print(f"[{clip_id}] wrote {written} labeled frames to {args.split}")
+    if masks_dir is not None and saved_masks:
+        masks_dir.mkdir(parents=True, exist_ok=True)
+        np.savez_compressed(masks_dir / f"{clip_id}.npz", width=sam_w, height=sam_h, **saved_masks)
+    print(f"[{clip_id}] wrote {written} labeled frames to {split}")
+    return written
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("clip_id")
+    ap.add_argument("--split", default="train", help="output subdir under data/annotations (train|val|gold or scratch name)")
+    ap.add_argument("--prompt", default=PROMPT, help="SAM 3 text prompt")
+    ap.add_argument("--score-thresh", type=float, default=None, help="lower SAM detection threshold (e.g. 0.15 for JP)")
+    args = ap.parse_args()
+    annotate_clip(args.clip_id, args.split, args.prompt, args.score_thresh)
 
 
 if __name__ == "__main__":
