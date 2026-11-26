@@ -3,16 +3,16 @@
  * Diff-level policy the per-file linters can't see: source changed without a test, a dead
  * relative link in prose, and lint config widened against the base branch.
  *
- * Widening is reported, not blocked. Whether a new `"off"` is justified is a judgment call,
- * which is `review-judgment`'s job; this only makes sure the call is visible instead of
- * buried in a config diff nobody reads.
+ * Widening is reported, not blocked. Whether a new `"off"` is justified is a judgment call
+ * for the PR review; this only makes sure the call is visible instead of buried in a config
+ * diff nobody reads.
  */
 
 import { spawnSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
 import { dirname, join, normalize } from 'node:path'
 
-import { defaultBranch, mergeBase, scopeFiles } from './scope-hash.ts'
+import { defaultBranch, mergeBase, scopeFiles } from './diff-scope.ts'
 
 const GIT_TIMEOUT_MS = 10_000
 const SOURCE_FILE = /^src\/.*\.tsx?$/
