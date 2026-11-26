@@ -25,7 +25,7 @@ python3 $H register --manifest m.tsv            # sidecars + data/harvest/proven
 python3 $H report   --manifest m.tsv
 ```
 
-Cada etapa pula o que já existe em disco, então pode ser interrompida e retomada. Etapas longas devem rodar desacopladas do terminal (`nohup`).
+Cada etapa pula o que já existe em disco, então pode ser interrompida e retomada. Etapas longas rodam como unidade do systemd (`systemd-run --user --unit=... --collect`): `nohup` morre junto com a sessão do agente.
 
 Para conferir a anotação de um conjunto, `qa_sheet.py` monta uma prancha por clip com as caixas desenhadas:
 
