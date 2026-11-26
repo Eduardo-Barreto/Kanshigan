@@ -43,25 +43,25 @@ def _cut(src: Path, start: float, end: float, dst: Path) -> None:
     )
 
 
-def _read_frames(path: Path):
+def _frames(path: Path):
+    cap = cv2.VideoCapture(str(path))
+    try:
+        while True:
+            ok, frame = cap.read()
+            if not ok:
+                return
+            yield frame
+    finally:
+        cap.release()
+
+
+def _video_info(path: Path) -> tuple[float, int]:
+    """FPS and decoded frame count. The container's frame count is not trusted: after a
+    stream-copy cut it can disagree with what decodes, and the crop sample depends on it."""
     cap = cv2.VideoCapture(str(path))
     fps = cap.get(cv2.CAP_PROP_FPS)
-    frames = []
-    while True:
-        ok, frame = cap.read()
-        if not ok:
-            break
-        frames.append(frame)
     cap.release()
-    return frames, fps
-
-
-def _write(frames, fps, size, path: Path) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    writer = cv2.VideoWriter(str(path), cv2.VideoWriter_fourcc(*"mp4v"), fps, size)
-    for frame in frames:
-        writer.write(frame)
-    writer.release()
+    return fps, sum(1 for _ in _frames(path))
 
 
 def main() -> None:
@@ -78,26 +78,35 @@ def main() -> None:
         if not src.is_absolute():
             src = ROOT / src
 
+        # Frames are streamed (count, sample for the crop, then crop and write) instead of
+        # held in memory: a 30 s 1080p60 round would need ~11 GB.
         with tempfile.TemporaryDirectory() as tmp:
             raw = Path(tmp) / "cut.mp4"
             _cut(src, clip["start"], clip["end"], raw)
-            frames, fps = _read_frames(raw)
+            fps, count = _video_info(raw)
+            sample_every = max(1, count // 12)
+            sample = [f for i, f in enumerate(_frames(raw)) if i % sample_every == 0]
+            roi = clip_roi(sample)
+            x0, y0, w, h = roi
+            print(f"[{clip_id}] {clip['start']}-{clip['end']} from {src.name}; dohyo crop {w}x{h}")
 
-        sample = frames[:: max(1, len(frames) // 12)]
-        roi = clip_roi(sample)
-        x0, y0, w, h = roi
-        cropped = [crop_frame(f, roi) for f in frames]
-        print(f"[{clip_id}] {clip['start']}-{clip['end']} from {src.name}; dohyo crop {w}x{h}")
-
-        native_path = CLIPS_DIR / subset / f"{clip_id}.mp4"
-        _write(cropped, fps, (w, h), native_path)
-        (native_path.with_suffix(".roi.json")).write_text(json.dumps({"x0": x0, "y0": y0, "w": w, "h": h}))
-
-        sam_h = int(round(SAM_WIDTH * h / w))
-        sam_h -= sam_h % 2
-        step = max(1, round(fps / SAM_FPS))
-        sam_frames = [cv2.resize(f, (SAM_WIDTH, sam_h)) for f in cropped[::step]]
-        _write(sam_frames, SAM_FPS, (SAM_WIDTH, sam_h), SAM_DIR / f"{clip_id}.mp4")
+            native_path = CLIPS_DIR / subset / f"{clip_id}.mp4"
+            native_path.parent.mkdir(parents=True, exist_ok=True)
+            (native_path.with_suffix(".roi.json")).write_text(json.dumps({"x0": x0, "y0": y0, "w": w, "h": h}))
+            sam_h = int(round(SAM_WIDTH * h / w))
+            sam_h -= sam_h % 2
+            step = max(1, round(fps / SAM_FPS))
+            SAM_DIR.mkdir(parents=True, exist_ok=True)
+            fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+            native_writer = cv2.VideoWriter(str(native_path), fourcc, fps, (w, h))
+            sam_writer = cv2.VideoWriter(str(SAM_DIR / f"{clip_id}.mp4"), fourcc, SAM_FPS, (SAM_WIDTH, sam_h))
+            for i, frame in enumerate(_frames(raw)):
+                cropped = crop_frame(frame, roi)
+                native_writer.write(cropped)
+                if i % step == 0:
+                    sam_writer.write(cv2.resize(cropped, (SAM_WIDTH, sam_h)))
+            native_writer.release()
+            sam_writer.release()
 
 
 if __name__ == "__main__":
